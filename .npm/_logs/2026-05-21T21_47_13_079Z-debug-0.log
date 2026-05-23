@@ -1,0 +1,18 @@
+0 verbose cli /usr/bin/node /usr/bin/npm
+1 info using npm@10.8.2
+2 info using node@v20.20.2
+3 silly config load:file:/usr/lib/node_modules/npm/npmrc
+4 silly config load:file:/home/manikandarajsmart/.npmrc
+5 silly config load:file:/usr/etc/npmrc
+6 verbose title npm list
+7 verbose argv "list" "--global" "--depth" "0"
+8 verbose logfile logs-max:10 dir:/home/manikandarajsmart/.npm/_logs/2026-05-21T21_47_13_079Z-
+9 verbose logfile /home/manikandarajsmart/.npm/_logs/2026-05-21T21_47_13_079Z-debug-0.log
+10 silly packumentCache heap:2102132736 maxSize:525533184 maxEntrySize:262766592
+11 silly logfile done cleaning log files
+12 verbose cwd /home/manikandarajsmart
+13 verbose os Linux 6.8.0-1058-gcp
+14 verbose node v20.20.2
+15 verbose npm  v10.8.2
+16 verbose exit 0
+17 info ok

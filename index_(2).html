@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Gym</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:sans-serif;background:#0A0C10;color:#E8E4DC;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:20px;}
+    .logo{width:80px;height:80px;background:linear-gradient(135deg,#C9A84C,#8B6914);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:40px;font-weight:700;color:#0A0C10;margin-bottom:32px}
+    h1{font-size:48px;font-weight:800;background:linear-gradient(135deg,#E8E4DC,#C9A84C);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:16px}
+    p{color:#8899AA;font-size:20px;max-width:500px;margin-bottom:40px}
+    
+    .contact-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(201, 168, 76, 0.1);
+      padding: 32px;
+      border-radius: 16px;
+      max-width: 450px;
+      width: 100%;
+    }
+    
+    form {
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-top: 24px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 14px;
+      color: #C9A84C;
+      font-weight: 600;
+    }
+    
+    input {
+      width: 100%;
+      padding: 14px;
+      background: #121620;
+      border: 1px solid rgba(201, 168, 76, 0.2);
+      border-radius: 8px;
+      color: #E8E4DC;
+      font-size: 16px;
+      outline: none;
+      transition: 0.3s;
+    }
+    
+    input:focus {
+      border-color: #C9A84C;
+      background: #161B29;
+    }
+    
+    button {
+      padding: 16px;
+      background: linear-gradient(135deg,#C9A84C,#8B6914);
+      color: #0A0C10;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: 0.3s;
+    }
+    
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(201,168,76,0.3);
+    }
+    
+    #formMessage {
+      margin-top: 16px;
+      font-weight: 600;
+      text-align: center;
+      font-size: 15px;
+    }
+  </style>
+</head>
+<body>
+
+  <img src="/images/logo.png" alt="Smart Gym Logo" style="width:80px;height:auto;border-radius:12px;margin-bottom:32px;">
+  <h1>Smart Gym</h1>
+  <p>India's first AI-powered personal training platform. Launching 2026.</p>
+
+  <div class="contact-card">
+    <h2 style="color: #C9A84C; font-size: 24px; margin-bottom: 8px;">Ready to transform?</h2>
+    <p style="font-size: 15px; color: #8899AA; margin-bottom: 0;">Book a free consultation and start your journey toward elite-level fitness.</p>
+    
+    <form id="consultationForm">
+      <div>
+        <label>Full Name</label>
+        <input type="text" id="userName" required placeholder="Enter your full name">
+      </div>
+      <div>
+        <label>Mobile Number</label>
+        <input type="tel" id="userPhone" required placeholder="Enter your 10-digit mobile number">
+      </div>
+      <button type="submit">Submit Request →</button>
+    </form>
+    
+    <div id="formMessage"></div>
+  </div>
+
+  <script>
+    document.getElementById('consultationForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const name = document.getElementById('userName').value;
+      const phone = document.getElementById('userPhone').value;
+      const messageDiv = document.getElementById('formMessage');
+      
+      messageDiv.style.color = '#C9A84C';
+      messageDiv.innerText = 'Sending request...';
+      
+      try {
+        // உங்கள் கூகுள் கிளவுட் எக்ஸ்டெர்னல் ஐபி (35.235.241.113) இங்கே இணைக்கப்பட்டுள்ளது
+        const response = await fetch('http://35.235.241.113:3000/users', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ name: name, phone: phone })
+        });
+        
+        if (response.ok) {
+          messageDiv.style.color = '#4CAF50';
+          messageDiv.innerText = '🎉 Request submitted successfully! We will contact you soon.';
+          document.getElementById('consultationForm').reset();
+        } else {
+          throw new Error('Failed to submit');
+        }
+      } catch (error) {
+        messageDiv.style.color = '#F44336';
+        messageDiv.innerText = '❌ Error submitting request. Please try again.';
+      }
+    });
+  </script>
+
+</body>
+</html>
