@@ -1,0 +1,35 @@
+export default async function Home() {
+  const res = await fetch("https://api.smartgym.cloud", {
+    cache: "no-store",
+  });
+
+  const data = await res.text();
+
+  return (
+    <main
+      style={{
+        height: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        fontFamily: "Arial",
+      }}
+    >
+      <h1>🏋️ Smart Gym Cloud</h1>
+
+      <p>{data}</p>
+
+      <div
+        style={{
+          marginTop: 20,
+          padding: 20,
+          border: "1px solid #ccc",
+          borderRadius: 10,
+        }}
+      >
+        Frontend ↔ Backend Connected Successfully 🚀
+      </div>
+    </main>
+  );
+}
