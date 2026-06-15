@@ -1,0 +1,62 @@
+"use client";
+
+import { useState } from "react";
+import { QrReader } from "react-qr-reader";
+
+export default function ScanPage() {
+  const [result, setResult] = useState("No Result");
+
+  return (
+    <div
+      style={{
+        minHeight: "100vh",
+        background: "black",
+        color: "white",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: "20px",
+        padding: "20px",
+      }}
+    >
+      <h1 style={{ fontSize: "60px" }}>📷 Live QR Scanner</h1>
+
+      <div
+        style={{
+          width: "320px",
+          height: "320px",
+          overflow: "hidden",
+          borderRadius: "20px",
+          border: "4px solid lime",
+        }}
+      >
+        <QrReader
+          constraints={{ facingMode: "environment" }}
+          onResult={(result, error) => {
+            if (!!result) {
+              setResult(result.getText());
+            }
+          }}
+          videoStyle={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+          }}
+      }
+ />
+      </div>
+
+      <div
+        style={{
+          background: "#111",
+          padding: "20px",
+          borderRadius: "15px",
+          fontSize: "24px",
+        }}
+      >
+        {result}
+      </div>
+    </div>
+  );
+}

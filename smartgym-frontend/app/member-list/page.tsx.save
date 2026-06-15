@@ -1,0 +1,152 @@
+"use client";
+
+import { useEffect, useState } from "react";
+
+export default function MemberListPage() {
+  const [members, setMembers] = useState<any[]>([]);
+const [editingId, setEditingId] = useState<number | null>(null);
+const [editName, setEditName] = useState("");
+const [editPlan, setEditPlan] = useState("");
+const [editFee, setEditFee] = useState("");
+
+  useEffect(() => {
+    fetchMembers();
+  }, []);
+
+  const fetchMembers = async () => {
+    try {
+      const response = await fetch(
+        "https://api.smartgym.cloud/api/members"
+      );
+
+      const data = await response.json();
+
+      setMembers(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const deleteMember = async (id: number) => {
+    try {
+      await fetch(`https://api.smartgym.cloud/api/members/${id}`, {
+        method: "DELETE",
+      });
+
+      setMembers(members.filter((member) => member.id !== id));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  return (
+    <div
+      style={{
+        background: "#000",
+        minHeight: "100vh",
+        padding: "40px",
+        color: "white",
+      }}
+    >
+      <h1
+        style={{
+          fontSize: "60px",
+          fontWeight: "bold",
+          marginBottom: "40px",
+        }}
+      >
+        👥 Members CRM
+      </h1>
+
+      <div
+        style={{
+          background: "#111",
+          borderRadius: "20px",
+          overflow: "hidden",
+          border: "1px solid #222",
+        }}
+      >
+        <table
+          style={{
+            width: "100%",
+            borderCollapse: "collapse",
+          }}
+        >
+          <thead>
+            <tr
+              style={{
+                background: "#0a0a0a",
+              }}
+            >
+              <th style={thStyle}>Name</th>
+              <th style={thStyle}>Plan</th>
+              <th style={thStyle}>Fee</th>
+              <th style={thStyle}>Status</th>
+              <th style={thStyle}>Action</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {members.map((member) => (
+              <tr
+                key={member.id}
+                style={{
+                  borderTop: "1px solid #222",
+                }}
+              >
+                <td style={tdStyle}>{member.name}</td>
+
+                <td style={tdStyle}>{member.plan}</td>
+
+                <td style={tdStyle}>₹{member.fee}</td>
+
+                <td style={tdStyle}>
+                  <span
+                    style={{
+                      background: "#00d84a",
+                      padding: "10px 20px",
+                      borderRadius: "30px",
+                      fontWeight: "bold",
+                      color: "white",
+                    }}
+                  >
+                    Active
+                  </span>
+                </td>
+
+                <td style={tdStyle}>
+                  <button
+                    onClick={() => deleteMember(member.id)}
+                    style={{
+                      background: "#ff1744",
+                      border: "none",
+                      padding: "14px 24px",
+                      borderRadius: "12px",
+                      color: "white",
+                      fontWeight: "bold",
+                      cursor: "pointer",
+                    }}
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+const thStyle = {
+  padding: "24px",
+  textAlign: "left" as const,
+  fontSize: "28px",
+  fontWeight: "bold",
+};
+
+const tdStyle = {
+  padding: "24px",
+  fontSize: "24px",
+};

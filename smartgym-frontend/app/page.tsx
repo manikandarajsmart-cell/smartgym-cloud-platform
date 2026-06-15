@@ -1,8 +1,11 @@
-
 "use client";
 
 import { useState } from "react";
-import axios from "axios";
+import api from "../services/api";
+
+import Button from "../components/Button";
+import Input from "../components/Input";
+import AuthCard from "../components/AuthCard";
 
 export default function Home() {
   const [isLogin, setIsLogin] = useState(false);
@@ -16,14 +19,14 @@ export default function Home() {
   const handleSubmit = async () => {
     try {
       const url = isLogin
-        ? "https://api.smartgym.cloud/api/auth/login"
-        : "https://api.smartgym.cloud/api/auth/register";
+  ? "/login"
+  : "/register";
 
       const payload = isLogin
         ? { email, password }
         : { name, email, password };
 
-      const res = await axios.post(url, payload);
+      const res = await api.post(url, payload);
 
       if (res.data.token) {
         localStorage.setItem("token", res.data.token);
@@ -54,47 +57,35 @@ export default function Home() {
         color: "white",
       }}
     >
-      <div
-        style={{
-          width: "400px",
-          padding: "30px",
-          border: "1px solid #333",
-          borderRadius: "15px",
-          background: "#111",
-        }}
-      >
-        <h1>🏋️ Smart Gym Cloud</h1>
+      <AuthCard>
+
+        <h1>🔥 Smart Gym Cloud</h1>
 
         {!isLogin && (
-          <input
+          <Input
             placeholder="Name"
             value={name}
-            onChange={(e) => setName(e.target.value)}
-            style={inputStyle}
+            onChange={(e: any) => setName(e.target.value)}
           />
         )}
 
-        <input
+        <Input
           placeholder="Email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          style={inputStyle}
+          onChange={(e: any) => setEmail(e.target.value)}
         />
 
-        <input
+        <Input
           placeholder="Password"
           type="password"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          style={inputStyle}
+          onChange={(e: any) => setPassword(e.target.value)}
         />
 
-        <button
+        <Button
+          text={isLogin ? "Login" : "Register"}
           onClick={handleSubmit}
-          style={buttonStyle}
-        >
-          {isLogin ? "Login" : "Register"}
-        </button>
+        />
 
         <p style={{ marginTop: "15px" }}>
           {isLogin
@@ -118,29 +109,8 @@ export default function Home() {
             {message}
           </p>
         )}
-      </div>
+
+      </AuthCard>
     </div>
   );
 }
-
-const inputStyle = {
-  width: "100%",
-  padding: "12px",
-  marginTop: "15px",
-  background: "#222",
-  border: "1px solid #333",
-  borderRadius: "8px",
-  color: "white",
-};
-
-const buttonStyle = {
-  width: "100%",
-  padding: "12px",
-  marginTop: "20px",
-  background: "#00cc66",
-  border: "none",
-  borderRadius: "8px",
-  color: "white",
-  fontWeight: "bold",
-  cursor: "pointer",
-};

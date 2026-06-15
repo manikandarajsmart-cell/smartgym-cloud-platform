@@ -1,121 +1,215 @@
 "use client";
 
-export default function Dashboard() {
-  const logout = () => {
-    localStorage.removeItem("token");
-    window.location.href = "/";
+import { useEffect, useState } from "react";
+import Sidebar from "../../components/Sidebar";
+import { useRouter } from "next/navigation";
+
+export default function DashboardPage() {
+  const router = useRouter();
+
+  const [stats, setStats] = useState({
+    totalMembers: 12,
+    activeTrainers: 3,
+    monthlyRevenue: 25000,
+    growthRate: "18%",
+  });
+
+  useEffect(() => {
+    const auth = localStorage.getItem("smartgym-auth");
+
+    if (!auth) {
+      router.push("/login");
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("smartgym-auth");
+    router.push("/login");
   };
 
   return (
     <div
       style={{
+        display: "flex",
         background: "#000",
         minHeight: "100vh",
         color: "white",
-        padding: "20px",
-        fontFamily: "Arial",
       }}
     >
-      <h1 style={{ marginBottom: "30px" }}>
-        🏋️ Smart Gym Dashboard
-      </h1>
+      <Sidebar />
 
-      {/* Stats Cards */}
       <div
         style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-          gap: "20px",
+          flex: 1,
+          padding: "40px",
+          marginLeft: "250px",
+          width: "100%",
         }}
       >
-        <div style={cardStyle}>
-          <h2>👥 Members</h2>
-          <p style={numberStyle}>120</p>
-        </div>
-
-        <div style={cardStyle}>
-          <h2>💰 Revenue</h2>
-          <p style={numberStyle}>₹48,000</p>
-        </div>
-
-        <div style={cardStyle}>
-          <h2>🔥 Active Plans</h2>
-          <p style={numberStyle}>86</p>
-        </div>
-
-        <div style={cardStyle}>
-          <h2>📅 Attendance</h2>
-          <p style={numberStyle}>92%</p>
-        </div>
-      </div>
-
-      {/* Quick Actions */}
-      <div
-        style={{
-          marginTop: "40px",
-          padding: "20px",
-          border: "1px solid #333",
-          borderRadius: "12px",
-          background: "#111",
-        }}
-      >
-        <h2>⚡ Quick Actions</h2>
-
+        {/* TOP BAR */}
         <div
           style={{
             display: "flex",
-            gap: "15px",
-            marginTop: "20px",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: "40px",
             flexWrap: "wrap",
+            gap: "20px",
           }}
         >
-          <button style={buttonStyle}>➕ Add Member</button>
-          <button style={buttonStyle}>📋 View Plans</button>
-          <button style={buttonStyle}>💳 Payments</button>
-          <button style={buttonStyle}>🤖 AI Trainer</button>
+          <h1
+            style={{
+              fontSize: "60px",
+              fontWeight: "bold",
+            }}
+          >
+            🚀 Smart Gym Dashboard
+          </h1>
+
+          <button
+            onClick={handleLogout}
+            style={{
+              background: "#ff1744",
+              color: "white",
+              border: "none",
+              padding: "16px 30px",
+              borderRadius: "14px",
+              cursor: "pointer",
+              fontSize: "18px",
+              fontWeight: "bold",
+            }}
+          >
+            Logout
+          </button>
+        </div>
+
+        {/* STATS GRID */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns:
+              "repeat(auto-fit, minmax(280px, 1fr))",
+            gap: "25px",
+          }}
+        >
+          {/* CARD 1 */}
+          <div
+            style={{
+              background: "#111",
+              padding: "35px",
+              borderRadius: "20px",
+              border: "1px solid #222",
+            }}
+          >
+            <h3
+              style={{
+                color: "#aaa",
+                marginBottom: "20px",
+                fontSize: "20px",
+              }}
+            >
+              Total Members
+            </h3>
+
+            <h1
+              style={{
+                fontSize: "65px",
+                fontWeight: "bold",
+              }}
+            >
+              {stats.totalMembers}
+            </h1>
+          </div>
+
+          {/* CARD 2 */}
+          <div
+            style={{
+              background: "#111",
+              padding: "35px",
+              borderRadius: "20px",
+              border: "1px solid #222",
+            }}
+          >
+            <h3
+              style={{
+                color: "#aaa",
+                marginBottom: "20px",
+                fontSize: "20px",
+              }}
+            >
+              Active Trainers
+            </h3>
+
+            <h1
+              style={{
+                fontSize: "65px",
+                fontWeight: "bold",
+              }}
+            >
+              {stats.activeTrainers}
+            </h1>
+          </div>
+
+          {/* CARD 3 */}
+          <div
+            style={{
+              background: "#111",
+              padding: "35px",
+              borderRadius: "20px",
+              border: "1px solid #222",
+            }}
+          >
+            <h3
+              style={{
+                color: "#aaa",
+                marginBottom: "20px",
+                fontSize: "20px",
+              }}
+            >
+              Monthly Revenue
+            </h3>
+
+            <h1
+              style={{
+                fontSize: "65px",
+                fontWeight: "bold",
+              }}
+            >
+              ₹{stats.monthlyRevenue}
+            </h1>
+          </div>
+
+          {/* CARD 4 */}
+          <div
+            style={{
+              background: "#111",
+              padding: "35px",
+              borderRadius: "20px",
+              border: "1px solid #222",
+            }}
+          >
+            <h3
+              style={{
+                color: "#aaa",
+                marginBottom: "20px",
+                fontSize: "20px",
+              }}
+            >
+              Growth Rate
+            </h3>
+
+            <h1
+              style={{
+                fontSize: "65px",
+                fontWeight: "bold",
+                color: "#00ff88",
+              }}
+            >
+              {stats.growthRate}
+            </h1>
+          </div>
         </div>
       </div>
-
-      {/* Logout */}
-      <button
-        onClick={logout}
-        style={{
-          marginTop: "40px",
-          background: "red",
-          border: "none",
-          padding: "12px 20px",
-          borderRadius: "10px",
-          color: "white",
-          cursor: "pointer",
-          fontWeight: "bold",
-        }}
-      >
-        Logout
-      </button>
     </div>
   );
 }
-
-const cardStyle = {
-  background: "#111",
-  padding: "25px",
-  borderRadius: "15px",
-  border: "1px solid #333",
-};
-
-const numberStyle = {
-  fontSize: "32px",
-  fontWeight: "bold",
-  marginTop: "10px",
-  color: "#00ff99",
-};
-
-const buttonStyle = {
-  background: "#00cc66",
-  border: "none",
-  padding: "12px 20px",
-  borderRadius: "10px",
-  color: "white",
-  cursor: "pointer",
-  fontWeight: "bold",
-};

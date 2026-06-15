@@ -1,0 +1,81 @@
+const express = require("express");
+const cors = require("cors");
+
+const app = express();
+
+app.use(cors());
+app.use(express.json());
+
+app.get("/", (req, res) => {
+  res.send("Smart Gym Backend Running");
+});
+
+/* LOGIN */
+app.post("/api/login", (req, res) => {
+  const { email, password } = req.body;
+
+  if (
+    email === "manikandarajsmart@gmail.com" &&
+    password === "123456"
+  ) {
+    return res.json({
+      success: true,
+      token: "smartgymtoken",
+      user: {
+        name: "Manikandaraj",
+        role: "Admin",
+      },
+    });
+  }
+
+  return res.status(401).json({
+    success: false,
+    message: "Invalid credentials",
+  });
+});
+
+/* MEMBERS */
+app.get("/api/members", (req, res) => {
+  res.json([
+    {
+      id: 1,
+      name: "Arun",
+      plan: "Premium",
+      fee: 2500,
+    },
+    {
+      id: 2,
+      name: "Rahul",
+      plan: "Basic",
+      fee: 1500,
+    },
+  ]);
+});
+
+/* TRAINERS */
+app.get("/api/trainers", (req, res) => {
+  res.json([
+    {
+      id: 1,
+      name: "Arun",
+      specialization: "Weight Loss",
+      salary: 30000,
+    },
+  ]);
+});
+
+/* DASHBOARD */
+app.get("/api/dashboard", (req, res) => {
+  res.json({
+    totalMembers: 12,
+    activeTrainers: 3,
+    monthlyRevenue: 25000,
+    growthRate: "18%",
+  });
+});
+
+const PORT = 5000;
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
