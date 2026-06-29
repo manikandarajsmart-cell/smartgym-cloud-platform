@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import StatusBadge from "@/components/ui/StatusBadge";
 import { useRouter } from "next/navigation";
 import Sidebar from "../../components/Sidebar";
 import ActionButton from "@/components/ui/ActionButton";
@@ -275,17 +276,9 @@ useEffect(() => {
 
               <p>
                 <b>Status:</b>{" "}
-                <span
-                  style={{
-                    color:
-                      status === "Active"
-                        ? "#00e676"
-                        : "#ff5252",
-                    fontWeight: "bold",
-                  }}
-                >
-                  {status}
-                </span>
+              
+               <StatusBadge status={status} />
+
               </p>
             </div>
               <div
