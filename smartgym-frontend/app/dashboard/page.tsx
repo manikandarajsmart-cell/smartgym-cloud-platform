@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar";
+import SectionTitle from "@/components/ui/SectionTitle";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 
@@ -236,14 +237,11 @@ newestMember:
     marginBottom: "40px",
   }}
 >
-  <h1
-    style={{
-      fontSize: "55px",
-      margin: 0,
-    }}
-  >
-    🚀 Smart Gym Dashboard
-  </h1>
+
+  <SectionTitle
+  title="Smart Gym Dashboard"
+  subtitle="Welcome back! Here's what's happening today."
+/>
 
   <div
     style={{
