@@ -1,9 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import StatusBadge from "@/components/ui/StatusBadge";
 import { useRouter } from "next/navigation";
+
 import Sidebar from "../../components/Sidebar";
+
+import MemberSummaryCards from "./components/MemberSummaryCards";
+import PaymentHistory from "./components/PaymentHistory";
+import AttendanceHistory from "./components/AttendanceHistory";
+import WorkoutHistory from "./components/WorkoutHistory";
+import DietHistory from "./components/DietHistory";
+
+import StatusBadge from "@/components/ui/StatusBadge";
 import ActionButton from "@/components/ui/ActionButton";
 
 export default function MemberProfilePage() {
@@ -331,25 +339,10 @@ useEffect(() => {
     </h2>
   </div>
 
-  <div
-    style={{
-      background: "#111",
-      padding: "20px",
-      borderRadius: "12px",
-      textAlign: "center",
-    }}
-  >
-    <h3>🏋 Workouts</h3>
-    <h2>
-      {
-        workouts.filter(
-          (w) =>
-            w.memberName?.toLowerCase() ===
-            member.name?.toLowerCase()
-        ).length
-      }
-    </h2>
-  </div>
+<WorkoutHistory
+  member={member}
+  workouts={workouts}
+/>
 
   <div
     style={{
@@ -394,154 +387,17 @@ useEffect(() => {
             marginTop: "30px",
           }}
         >
-          <div
-            style={{
-              background: "#111",
-              padding: "25px",
-              borderRadius: "15px",
-            }}
-          >
+  
+   <PaymentHistory
+  member={member}
+  payments={payments}
+/>
 
-          <h2 style={{ marginBottom: "15px" }}>💳 Payment History</h2>
 
-<table
-  style={{
-    width: "100%",
-    borderCollapse: "collapse",
-    color: "white",
-  }}
->
-  <thead>
-    <tr style={{ borderBottom: "1px solid #333" }}>
-      <th style={{ textAlign: "left", padding: "8px" }}>Date / Month</th>
-      <th style={{ textAlign: "left", padding: "8px" }}>Amount</th>
-      <th style={{ textAlign: "left", padding: "8px" }}>Status</th>
-    </tr>
-  </thead>
-
-  <tbody>
-    {payments
-      .filter(
-        (payment) =>
-          payment.memberName?.toLowerCase() ===
-          member.name?.toLowerCase()
-      )
-      .map((payment) => (
-        <tr key={payment._id}>
-          <td style={{ padding: "8px" }}>
-            {payment.date || payment.month || "-"}
-          </td>
-
-          <td style={{ padding: "8px" }}>
-            ₹{payment.amount}
-          </td>
-
-          <td
-            style={{
-              padding: "8px",
-              color:
-                payment.status === "Paid"
-                  ? "#00e676"
-                  : "#ff5252",
-            }}
-          >
-            {payment.status || "Paid"}
-          </td>
-        </tr>
-      ))}
-
-    {payments.filter(
-      (payment) =>
-        payment.memberName?.toLowerCase() ===
-        member.name?.toLowerCase()
-    ).length === 0 && (
-      <tr>
-        <td
-          colSpan={3}
-          style={{
-            textAlign: "center",
-            padding: "20px",
-          }}
-        >
-          No payment history found.
-        </td>
-      </tr>
-    )}
-  </tbody>
-</table>
-
-          </div>
-
-          <div
-            style={{
-              background: "#111",
-              padding: "25px",
-              borderRadius: "15px",
-            }}
-          >
-
-         <h2 style={{ marginBottom: "15px" }}>📅 Attendance History</h2>
-
-<table
-  style={{
-    width: "100%",
-    borderCollapse: "collapse",
-    color: "white",
-  }}
->
-  <thead>
-    <tr style={{ borderBottom: "1px solid #333" }}>
-      <th style={{ textAlign: "left", padding: "8px" }}>Date</th>
-      <th style={{ textAlign: "left", padding: "8px" }}>Status</th>
-    </tr>
-  </thead>
-
-  <tbody>
-    {attendance
-      .filter(
-        (item) =>
-          item.memberName?.toLowerCase() ===
-          member.name?.toLowerCase()
-      )
-      .map((item) => (
-        <tr key={item._id}>
-          <td style={{ padding: "8px" }}>
-            {item.date}
-          </td>
-
-          <td
-            style={{
-              padding: "8px",
-              color: "#00e676",
-              fontWeight: "bold",
-            }}
-          >
-            Present
-          </td>
-        </tr>
-      ))}
-
-    {attendance.filter(
-      (item) =>
-        item.memberName?.toLowerCase() ===
-        member.name?.toLowerCase()
-    ).length === 0 && (
-      <tr>
-        <td
-          colSpan={2}
-          style={{
-            textAlign: "center",
-            padding: "20px",
-          }}
-        >
-          No attendance history found.
-        </td>
-      </tr>
-    )}
-  </tbody>
-</table>
-
-          </div>
+   <AttendanceHistory
+  member={member}
+  attendance={attendance}
+/>
 
           <div
             style={{
@@ -607,56 +463,13 @@ useEffect(() => {
 
           </div>
 
-          <div
-            style={{
-              background: "#111",
-              padding: "25px",
-              borderRadius: "15px",
-            }}
-          >
+   <DietHistory
+  member={member}
+  dietPlans={dietPlans}
+/>
 
-         <h2 style={{ marginBottom: "15px" }}>🥗 Diet Plans</h2>
-
-{dietPlans
-  .filter(
-    (diet) =>
-      diet.memberName?.toLowerCase() ===
-      member.name?.toLowerCase()
-  )
-  .map((diet) => (
-    <div key={diet._id}>
-      <table
-        style={{
-          width: "100%",
-          color: "white",
-          borderCollapse: "collapse",
-        }}
-      >
-        <tbody>
-          <tr><td><b>Breakfast</b></td><td>{diet.breakfast}</td></tr>
-          <tr><td><b>Lunch</b></td><td>{diet.lunch}</td></tr>
-          <tr><td><b>Snacks</b></td><td>{diet.snacks}</td></tr>
-          <tr><td><b>Dinner</b></td><td>{diet.dinner}</td></tr>
-          <tr><td><b>Calories</b></td><td>{diet.calories} kcal</td></tr>
-          <tr><td><b>Protein</b></td><td>{diet.protein} g</td></tr>
-          <tr><td><b>Carbs</b></td><td>{diet.carbs} g</td></tr>
-          <tr><td><b>Fat</b></td><td>{diet.fat} g</td></tr>
-          <tr><td><b>Water</b></td><td>{diet.water} L</td></tr>
-        </tbody>
-      </table>
     </div>
-  ))}
 
-{dietPlans.filter(
-  (diet) =>
-    diet.memberName?.toLowerCase() ===
-    member.name?.toLowerCase()
-).length === 0 && (
-  <p>No diet plan found.</p>
-)}
-          </div>
-        </div>
-      </div>
     </div>
   );
 }
