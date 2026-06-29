@@ -1,12 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { storage } from "../../lib/firebase";
-import {
-  ref,
-  uploadBytes,
-  getDownloadURL,
-} from "firebase/storage";
 
 export default function MembersPage() {
 
@@ -16,39 +10,6 @@ const [plan, setPlan] = useState("");
 const [fee, setFee] = useState("");
 const [photo, setPhoto] = useState("");
 const [paymentStatus, setPaymentStatus] = useState("Paid");
-const [uploading, setUploading] = useState(false);
-
-const handlePhotoUpload = async (
-  e: React.ChangeEvent<HTMLInputElement>
-) => {
-  const file = e.target.files?.[0];
-
-  if (!file) return;
-
-  try {
-    setUploading(true);
-
-    const storageRef = ref(
-      storage,
-      `members/${Date.now()}-${file.name}`
-    );
-
-    await uploadBytes(storageRef, file);
-
-    const downloadURL = await getDownloadURL(storageRef);
-
-    setPhoto(downloadURL);
-
-    alert("✅ Photo Uploaded");
-
-  } catch (error: any) {
-  console.log("FIREBASE ERROR:", error);
-  alert("❌ Upload Failed: " + error.message);
-}
- finally {
-    setUploading(false);
-  }
-};
 
   const handleAddMember = async () => {
     try {
@@ -142,11 +103,11 @@ setPhoto("");
 />
 
 <br />
-
-  <input
-  type="file"
-  accept="image/*"
-  onChange={handlePhotoUpload}
+    <input
+  type="text"
+  placeholder="Photo URL"
+  value={photo}
+  onChange={(e) => setPhoto(e.target.value)}
   style={{
     width: "100%",
     maxWidth: "500px",
@@ -159,28 +120,6 @@ setPhoto("");
     fontSize: "18px",
   }}
 />
-
-{uploading && (
-  <p style={{ color: "#00e676" }}>
-    Uploading photo...
-  </p>
-)}
-
-{photo && (
-  <img
-    src={photo}
-    alt="Preview"
-    style={{
-      width: "120px",
-      height: "120px",
-      borderRadius: "50%",
-      objectFit: "cover",
-      marginBottom: "20px",
-      border: "3px solid #00e676",
-    }}
-  />
-)}
-
 <select
   value={paymentStatus}
   onChange={(e) => setPaymentStatus(e.target.value)}

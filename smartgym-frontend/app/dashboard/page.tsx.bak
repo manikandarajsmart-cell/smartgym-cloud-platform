@@ -410,17 +410,10 @@ newestMember:
   <h1>{stats.expiredMembers}</h1>
 </div>
 
-<div
-  style={{
-    ...cardStyle,
-    cursor: "pointer",
-  }}
-  onClick={() => router.push("/needs-attention")}
->
+<div style={cardStyle}>
   <h3>🚨 Needs Attention</h3>
   <h1>{stats.expiringSoon + stats.expiredMembers}</h1>
 </div>
-
 </div>
         <div
           style={{

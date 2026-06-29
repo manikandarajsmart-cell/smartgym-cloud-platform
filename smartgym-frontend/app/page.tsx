@@ -28,11 +28,11 @@ export default function Home() {
 
       const res = await api.post(url, payload);
 
-      if (res.data.token) {
-        localStorage.setItem("token", res.data.token);
-        window.location.href = "/dashboard";
-      }
-
+if (isLogin && res.data.success) {
+  localStorage.setItem("user", JSON.stringify(res.data.user));
+  window.location.href = "/dashboard";
+  return;
+}
       setMessage(
         isLogin
           ? "✅ Login Successful"

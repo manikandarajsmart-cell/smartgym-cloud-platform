@@ -19,7 +19,7 @@ export default function TrainersPage() {
   const fetchTrainers = async () => {
     try {
       const res = await axios.get(
-        "https://api.smartgym.cloud/api/trainers"
+        `${process.env.NEXT_PUBLIC_API_URL}/trainers`
       );
 
       setTrainers(res.data);
@@ -31,7 +31,7 @@ export default function TrainersPage() {
   const addTrainer = async () => {
     try {
       await axios.post(
-        "https://api.smartgym.cloud/api/trainers",
+        `${process.env.NEXT_PUBLIC_API_URL}/trainers`,
         {
           name,
           specialization,
@@ -51,6 +51,27 @@ export default function TrainersPage() {
     } catch (error) {
       console.log(error);
       alert("❌ Failed to add trainer");
+    }
+  };
+
+  const deleteTrainer = async (id: string) => {
+    const confirmDelete = window.confirm(
+      "Delete this trainer?"
+    );
+
+    if (!confirmDelete) return;
+
+    try {
+      await axios.delete(
+        `${process.env.NEXT_PUBLIC_API_URL}/trainers/${id}`
+      );
+
+      alert("🗑 Trainer Deleted");
+
+      fetchTrainers();
+    } catch (error) {
+      console.log(error);
+      alert("❌ Delete Failed");
     }
   };
 
@@ -109,7 +130,7 @@ export default function TrainersPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {trainers.map((trainer) => (
             <div
-              key={trainer.id}
+              key={trainer._id}
               className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6"
             >
               <h2 className="text-2xl font-bold mb-4">
@@ -127,6 +148,13 @@ export default function TrainersPage() {
               <p className="text-green-400 font-bold text-xl mt-4">
                 ₹{trainer.salary}
               </p>
+
+              <button
+                onClick={() => deleteTrainer(trainer._id)}
+                className="bg-red-600 hover:bg-red-700 mt-4 px-4 py-2 rounded-lg font-bold"
+              >
+                Delete Trainer
+              </button>
             </div>
           ))}
         </div>

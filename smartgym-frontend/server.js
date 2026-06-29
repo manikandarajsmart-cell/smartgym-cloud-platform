@@ -6,6 +6,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+/* TEST */
+
 app.get("/", (req, res) => {
   res.send("Smart Gym Backend Running");
 });
@@ -29,6 +31,39 @@ app.post("/api/login", (req, res) => {
     success: false,
     message: "Invalid email or password",
   });
+});
+
+/* MEMBERS API */
+
+let members = [];
+
+app.get("/api/members", (req, res) => {
+  res.json(members);
+});
+
+app.post("/api/members", (req, res) => {
+  try {
+    const member = {
+      id: Date.now(),
+      name: req.body.name,
+      plan: req.body.plan,
+      fee: req.body.fee,
+    };
+
+    members.push(member);
+
+    res.json({
+      success: true,
+      member,
+    });
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+    });
+  }
 });
 
 /* PAYMENTS API */

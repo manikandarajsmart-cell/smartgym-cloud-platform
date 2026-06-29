@@ -1,0 +1,367 @@
+"use client";
+
+import { useEffect, useState } from "react";
+
+export default function MemberListPage() {
+const [members, setMembers] = useState<any[]>([]);
+const [editingMember, setEditingMember] = useState<any>(null);
+const [search, setSearch] = useState("");
+
+  useEffect(() => {
+    fetchMembers();
+  }, []);
+
+  const fetchMembers = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/members`
+      );
+
+      const data = await response.json();
+      setMembers(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+const renewMember = async (id: string) => {
+  try {
+    await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/members/${id}/renew`,
+      {
+        method: "PUT",
+      }
+    );
+
+    alert("✅ Membership Renewed");
+
+    fetchMembers();
+  } catch (error) {
+    console.log(error);
+    alert("❌ Renewal Failed");
+  }
+};
+
+const updateMember = async () => {
+  try {
+    await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/members/${editingMember._id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(editingMember),
+      }
+    );
+
+    alert("✅ Member Updated");
+
+    setEditingMember(null);
+    fetchMembers();
+  } catch (error) {
+    console.log(error);
+    alert("❌ Update Failed");
+  }
+};
+
+const getMemberStatus = (expiryDate: string) => {
+  if (!expiryDate) return "Active";
+
+  const today = new Date();
+  const expiry = new Date(expiryDate);
+
+  const diffDays = Math.ceil(
+    (expiry.getTime() - today.getTime()) /
+      (1000 * 60 * 60 * 24)
+  );
+
+  if (diffDays < 0) return "Expired";
+  if (diffDays <= 7) return "Expiring Soon";
+
+  return "Active";
+};
+
+  const deleteMember = async (id: string) => {
+    if (!window.confirm("Delete this member?")) return;
+
+    try {
+      await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/members/${id}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      fetchMembers();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const expiredCount = members.filter(
+  (m) => getMemberStatus(m.expiryDate) === "Expired"
+).length;
+
+const expiringSoonCount = members.filter(
+  (m) => getMemberStatus(m.expiryDate) === "Expiring Soon"
+).length;
+
+const activeCount = members.filter(
+  (m) => getMemberStatus(m.expiryDate) === "Active"
+).length;
+
+  return (
+    <div
+      style={{
+        background: "#000",
+        minHeight: "100vh",
+        color: "white",
+        padding: "40px",
+      }}
+    >
+      <h1 style={{ fontSize: "50px", marginBottom: "30px" }}>
+        👥 Members CRM
+      </h1>
+{editingMember && (
+  <div
+    style={{
+      background: "#222",
+      padding: "20px",
+      marginBottom: "20px",
+      borderRadius: "10px",
+    }}
+  >
+    <h2>Edit Member</h2>
+
+    <input
+      value={editingMember.name || ""}
+      onChange={(e) =>
+        setEditingMember({
+          ...editingMember,
+          name: e.target.value,
+        })
+      }
+      placeholder="Name"
+      style={{ marginRight: "10px", padding: "8px" }}
+    />
+
+    <input
+      value={editingMember.plan || ""}
+      onChange={(e) =>
+        setEditingMember({
+          ...editingMember,
+          plan: e.target.value,
+        })
+      }
+      placeholder="Plan"
+      style={{ marginRight: "10px", padding: "8px" }}
+    />
+
+    <input
+      value={editingMember.fee || ""}
+      onChange={(e) =>
+        setEditingMember({
+          ...editingMember,
+          fee: e.target.value,
+        })
+      }
+      placeholder="Fee"
+      style={{ marginRight: "10px", padding: "8px" }}
+    />
+<input
+  type="date"
+  value={editingMember.expiryDate || ""}
+  onChange={(e) =>
+    setEditingMember({
+      ...editingMember,
+      expiryDate: e.target.value,
+    })
+  }
+  style={{ marginRight: "10px", padding: "8px" }}
+/>
+    <button
+      onClick={updateMember}
+      style={{
+        background: "#00c853",
+        color: "white",
+        border: "none",
+        padding: "8px 12px",
+        borderRadius: "8px",
+        marginRight: "10px",
+      }}
+    >
+      Save
+    </button>
+
+    <button
+      onClick={() => setEditingMember(null)}
+      style={{
+        background: "#ff1744",
+        color: "white",
+        border: "none",
+        padding: "8px 12px",
+        borderRadius: "8px",
+      }}
+    >
+      Cancel
+    </button>
+  </div>
+)}
+
+    🔴 Expired: {expiredCount}
+  </div>
+</div>
+  placeholder="🔍 Search Member..."
+  value={search}
+  onChange={(e) => setSearch(e.target.value)}
+  style={{
+    width: "100%",
+    padding: "12px",
+    marginBottom: "20px",
+    borderRadius: "8px",
+    border: "none",
+    fontSize: "16px",
+  }}
+/>  
+    <table
+        style={{
+          width: "100%",
+          background: "#111",
+        }}
+      >
+        <thead>
+          <tr>
+            <th>Name</th>
+<th>Phone</th>
+<th>Plan</th>
+<th>Fee</th>  
+            <th>Join Date</th>
+            <th>Expiry Date</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+{members
+  .filter((member) =>
+    member.name?.toLowerCase().includes(search.toLowerCase())
+  )
+  .map((member) => (
+            <tr key={member._id}>
+              <td>{member.name}</td>
+<td>{member.phone || "-"}</td>
+<td>{member.plan}</td>
+<td>₹{member.fee}</td>
+
+              <td>{member.joinDate || "-"}</td>
+              <td>{member.expiryDate || "-"}</td>
+<td
+  style={{
+    color:
+      getMemberStatus(member.expiryDate) === "Expired"
+        ? "red"
+        : getMemberStatus(member.expiryDate) === "Expiring Soon"
+        ? "orange"
+        : "#00e676",
+    fontWeight: "bold",
+  }}
+>
+  {getMemberStatus(member.expiryDate)}
+</td>
+            <td>
+  <button
+    onClick={() => renewMember(member._id)}
+    style={{
+      marginRight: "10px",
+      background: "#00c853",
+      color: "white",
+      border: "none",
+      padding: "8px 12px",
+      borderRadius: "8px",
+      cursor: "pointer",
+    }}
+  >
+    Renew
+  </button>
+
+  <button
+onClick={() =>
+  setEditingMember({
+    ...member,
+    expiryDate: member.expiryDate
+      ? new Date(member.expiryDate).toISOString().split("T")[0]
+      : "",
+  })
+}
+    style={{
+      marginRight: "10px",
+      background: "#2196f3",
+      color: "white",
+      border: "none",
+      padding: "8px 12px",
+      borderRadius: "8px",
+      cursor: "pointer",
+    }}
+  >
+    Edit
+  </button>
+
+  <button
+    onClick={() => deleteMember(member._id)}
+    style={{
+      background: "#ff1744",
+      color: "white",
+      border: "none",
+      padding: "8px 12px",
+      borderRadius: "8px",
+      cursor: "pointer",
+    }}
+  >
+    Delete
+  </button>
+<button
+  onClick={() => {
+    const message = encodeURIComponent(
+      `Hi ${member.name},
+
+Your Smart Gym membership is due for renewal.
+
+Please contact us to renew your membership.
+
+- Smart Gym`
+    );
+
+    if (!member.phone) {
+  alert("Phone number not available");
+  return;
+}
+
+window.open(
+  `https://wa.me/${member.phone}?text=${message}`,
+  "_blank"
+);
+
+  }}
+  style={{
+    marginLeft: "10px",
+    background: "#25D366",
+    color: "white",
+    border: "none",
+    padding: "8px 12px",
+    borderRadius: "8px",
+    cursor: "pointer",
+  }}
+>
+  WhatsApp
+</button>
+</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+

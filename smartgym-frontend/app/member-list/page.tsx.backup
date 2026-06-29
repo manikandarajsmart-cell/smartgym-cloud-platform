@@ -1,0 +1,137 @@
+"use client";
+
+import { useEffect, useState } from "react";
+
+export default function MemberListPage() {
+  const [members, setMembers] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetchMembers();
+  }, []);
+
+  const fetchMembers = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/members`
+      );
+
+      const data = await response.json();
+      setMembers(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+const renewMember = async (id: string) => {
+  try {
+    await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/members/${id}/renew`,
+      {
+        method: "PUT",
+      }
+    );
+
+    alert("✅ Membership Renewed");
+
+    fetchMembers();
+  } catch (error) {
+    console.log(error);
+    alert("❌ Renewal Failed");
+  }
+};
+
+  const deleteMember = async (id: string) => {
+    if (!window.confirm("Delete this member?")) return;
+
+    try {
+      await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/members/${id}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      fetchMembers();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  return (
+    <div
+      style={{
+        background: "#000",
+        minHeight: "100vh",
+        color: "white",
+        padding: "40px",
+      }}
+    >
+      <h1 style={{ fontSize: "50px", marginBottom: "30px" }}>
+        👥 Members CRM
+      </h1>
+
+      <table
+        style={{
+          width: "100%",
+          background: "#111",
+        }}
+      >
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Plan</th>
+            <th>Fee</th>
+            <th>Join Date</th>
+            <th>Expiry Date</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {members.map((member) => (
+            <tr key={member._id}>
+              <td>{member.name}</td>
+              <td>{member.plan}</td>
+              <td>₹{member.fee}</td>
+              <td>{member.joinDate || "-"}</td>
+              <td>{member.expiryDate || "-"}</td>
+              <td>{member.status || "Active"}</td>
+              <td>
+  <button
+    onClick={() => renewMember(member._id)}
+    style={{
+      marginRight: "10px",
+      background: "#00c853",
+      color: "white",
+      border: "none",
+      padding: "8px 12px",
+      borderRadius: "8px",
+      cursor: "pointer",
+    }}
+  >
+    Renew
+  </button>
+
+  <button
+    onClick={() => deleteMember(member._id)}
+    style={{
+      background: "#ff1744",
+      color: "white",
+      border: "none",
+      padding: "8px 12px",
+      borderRadius: "8px",
+      cursor: "pointer",
+    }}
+  >
+    Delete
+  </button>
+</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+

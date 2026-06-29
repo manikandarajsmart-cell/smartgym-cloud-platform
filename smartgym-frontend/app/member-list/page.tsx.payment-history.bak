@@ -1,35 +1,22 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 
 export default function MemberListPage() {
-const router = useRouter();
-
 const [members, setMembers] = useState<any[]>([]);
-
 const [editingMember, setEditingMember] = useState<any>(null);
 const [search, setSearch] = useState("");
 const [statusFilter, setStatusFilter] = useState("All");
 const [paymentFilter, setPaymentFilter] = useState("All");
 const [selectedMember, setSelectedMember] = useState<any>(null);
-const [payments, setPayments] = useState<any[]>([]);
-const [attendance, setAttendance] = useState<any[]>([]);
 
 const viewMember = (member: any) => {
-  localStorage.setItem(
-    "selectedMember",
-    JSON.stringify(member)
-  );
-
-  router.push("/member-profile");
+  setSelectedMember(member);
 };
 
-   useEffect(() => {
-  fetchMembers();
-  fetchPayments();
-  fetchAttendance();
-}, []);
+  useEffect(() => {
+    fetchMembers();
+  }, []);
 
   const fetchMembers = async () => {
     try {
@@ -43,38 +30,6 @@ const viewMember = (member: any) => {
       console.log(error);
     }
   };
-
-  const fetchPayments = async () => {
-  try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/payments`
-    );
-
-    const data = await response.json();
-
-    if (data.success) {
-      setPayments(data.payments);
-    }
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-const fetchAttendance = async () => {
-  try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/attendance`
-    );
-
-    const data = await response.json();
-
-    if (data.success) {
-      setAttendance(data.attendance);
-    }
-  } catch (error) {
-    console.log(error);
-  }
-};
 
 const exportMembersCSV = () => {
   const headers = [
@@ -273,115 +228,6 @@ const activeCount = members.filter(
         <b>Status:</b>{" "}
         {getMemberStatus(selectedMember.expiryDate)}
       </p>
-     
-           <hr style={{ margin: "15px 0", borderColor: "#333" }} />
-
-      <h3>💰 Payment History</h3>
-
-      {payments
-        .filter(
-          (payment) =>
-            payment.memberName === selectedMember.name
-        )
-        .slice(0, 5)
-        .map((payment) => (
-          <p key={payment._id}>
-            ₹{payment.amount} - {payment.month}
-          </p>
-        ))}
-
-      {payments.filter(
-        (payment) =>
-          payment.memberName === selectedMember.name
-      ).length === 0 && (
-        <p>No payment history found</p>
-      )}
-     
-      <hr style={{ margin: "15px 0", borderColor: "#333" }} />
-
-<h3>📅 Attendance History</h3>
-<p>
-  DEBUG:
-  {selectedMember.name} |
-  {attendance.length}
-</p>
-
-{attendance
-  .filter(
-    (record) =>
-      record.memberName === selectedMember.name
-  )
-  .slice(0, 10)
-  .map((record) => (
-    <p key={record._id}>
-      ✅ {record.date}
-    </p>
-  ))}
-
-{attendance.filter(
-  (record) =>
-    record.memberName === selectedMember.name
-).length === 0 && (
-  <p>No attendance history found</p>
-)}
-
-<p>
-  <b>Total Attendance:</b>{" "}
-  {
-    attendance.filter(
-      (record) =>
-        record.memberName === selectedMember.name
-    ).length
-  }
-</p>
-   <div
-  style={{
-    display: "grid",
-    gridTemplateColumns: "1fr 1fr",
-    gap: "10px",
-    marginTop: "20px",
-    marginBottom: "20px",
-  }}
->
-    <button
-  onClick={() =>
-    window.open(
-      `/workout-plans?member=${encodeURIComponent(selectedMember.name)}`,
-      "_blank"
-    )
-  }
-  style={quickButtonStyle}
->
-  🏋️ Workout Plans
-</button>
-
-  <button
-    onClick={() =>
-      window.open("/diet-plans", "_blank")
-    }
-    style={quickButtonStyle}
-  >
-    🥗 Diet Plans
-  </button>
-
-  <button
-    onClick={() =>
-      window.open("/payments", "_blank")
-    }
-    style={quickButtonStyle}
-  >
-    💳 Payments
-  </button>
-
-  <button
-    onClick={() =>
-      window.open("/attendance", "_blank")
-    }
-    style={quickButtonStyle}
-  >
-    📅 Attendance
-  </button>
-</div>
 
       <button
         onClick={() => setSelectedMember(null)}
@@ -700,7 +546,6 @@ Smart Gym`
         <thead>
           <tr>
 
-<th>Member ID</th>
 <th>Name</th>
 <th>Phone</th>
 <th>Payment</th>
@@ -742,17 +587,7 @@ return (
   .map((member) => (
             <tr key={member._id}>
 
-<td
-  style={{
-    fontWeight: "bold",
-    color: "#00e5ff",
-  }}
->
-  {member.memberId || "-"}
-</td>
-
 <td>{member.name}</td>
-
 <td>{member.phone || "-"}</td>
 
 <td>
@@ -889,13 +724,3 @@ window.open(
   );
 }
 
-   const quickButtonStyle = {
-  background: "#00c853",
-  color: "white",
-  border: "none",
-  padding: "12px",
-  borderRadius: "8px",
-  cursor: "pointer",
-  fontWeight: "bold",
-};
-   

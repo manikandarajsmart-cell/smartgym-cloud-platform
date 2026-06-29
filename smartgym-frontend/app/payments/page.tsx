@@ -7,10 +7,21 @@ export default function PaymentsPage() {
   const [memberName, setMemberName] = useState("");
   const [amount, setAmount] = useState("");
   const [month, setMonth] = useState("");
-
+  
   const [payments, setPayments] = useState<any[]>([]);
+  const [members, setMembers] = useState<any[]>([]);
   const [editingId, setEditingId] = useState("");
   const [editAmount, setEditAmount] = useState("");
+  const totalRevenue = payments.reduce(
+  (sum, p) => sum + Number(p.amount || 0),
+  0
+);
+
+const totalPayments = payments.length;
+
+const paidMembers = new Set(
+  payments.map((p) => p.memberName)
+).size;
 
   // FETCH PAYMENTS
   const fetchPayments = async () => {
@@ -28,11 +39,7 @@ export default function PaymentsPage() {
       console.log(error);
     }
   };
-
-  useEffect(() => {
-    fetchPayments();
-  }, []);
-
+  
   // ADD PAYMENT
   const addPayment = async () => {
     if (!memberName || !amount || !month) {
@@ -74,6 +81,24 @@ export default function PaymentsPage() {
       alert("Server Error");
     }
   };
+
+  const fetchMembers = async () => {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/members`
+    );
+
+    const data = await response.json();
+
+    setMembers(data);
+  } catch (error) {
+    console.log(error);
+  }
+};
+   useEffect(() => {
+  fetchPayments();
+  fetchMembers();
+}, []);
 
   // DELETE PAYMENT
   const deletePayment = async (id: string) => {
@@ -130,13 +155,23 @@ export default function PaymentsPage() {
         {/* ADD PAYMENT FORM */}
         <div className="bg-zinc-900 p-6 rounded-xl mb-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <input
-              type="text"
-              placeholder="Member Name"
-              value={memberName}
-              onChange={(e) => setMemberName(e.target.value)}
-              className="p-3 rounded bg-zinc-800 border border-zinc-700"
-            />
+          
+            <select
+  value={memberName}
+  onChange={(e) => setMemberName(e.target.value)}
+  className="p-3 rounded bg-zinc-800 border border-zinc-700"
+>
+  <option value="">Select Member</option>
+
+  {members.map((member: any) => (
+    <option
+      key={member._id}
+      value={member.name}
+    >
+      {member.name}
+    </option>
+  ))}
+</select>
 
             <input
               type="number"
@@ -162,7 +197,29 @@ export default function PaymentsPage() {
             Add Payment
           </button>
         </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+  <div className="bg-zinc-900 p-6 rounded-xl">
+    <h3 className="text-gray-400">💰 Total Revenue</h3>
+    <h1 className="text-3xl font-bold">
+      ₹{totalRevenue}
+    </h1>
+  </div>
 
+  <div className="bg-zinc-900 p-6 rounded-xl">
+    <h3 className="text-gray-400">🧾 Total Payments</h3>
+    <h1 className="text-3xl font-bold">
+      {totalPayments}
+    </h1>
+  </div>
+
+  <div className="bg-zinc-900 p-6 rounded-xl">
+    <h3 className="text-gray-400">👤 Paying Members</h3>
+    <h1 className="text-3xl font-bold">
+      {paidMembers}
+    </h1>
+  </div>
+</div>
+ 
         {/* PAYMENT TABLE */}
         <div className="overflow-auto bg-zinc-900 rounded-xl">
           <table className="w-full">

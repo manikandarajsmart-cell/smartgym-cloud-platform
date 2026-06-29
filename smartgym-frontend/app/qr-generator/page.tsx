@@ -4,23 +4,31 @@ import { useState } from "react";
 import axios from "axios";
 
 export default function QRGeneratorPage() {
-  const [memberName, setMemberName] = useState("");
+  const [memberId, setMemberId] = useState("");
   const [qrImage, setQrImage] = useState("");
 
   const generateQR = async () => {
+  console.log("Sending memberId:", memberId);
     try {
       const res = await axios.post(
         "https://smartgym.cloud/api/generate-qr",
-        {
-          memberName,
-        }
+       {
+  memberId,
+}
+
       );
 
       setQrImage(res.data.qrImage);
 
-    } catch (error) {
-      alert("QR Generation Failed");
-    }
+   } catch (error: any) {
+  console.log(error);
+
+  alert(
+    error?.response?.data?.error ||
+    error?.message ||
+    "QR Generation Failed"
+  );
+}
   };
 
   return (
@@ -36,19 +44,22 @@ export default function QRGeneratorPage() {
         🔥 QR Generator
       </h1>
 
-      <input
-        type="text"
-        placeholder="Enter Member Name"
-        value={memberName}
-        onChange={(e) => setMemberName(e.target.value)}
-        style={{
-          padding: "15px",
-          width: "300px",
-          borderRadius: "10px",
-          border: "none",
-          marginRight: "15px",
-        }}
-      />
+     <input
+  type="text"
+  placeholder="Enter Member ID (e.g. SG000021)"
+  value={memberId}
+  onChange={(e) => {
+  console.log("INPUT:", e.target.value);
+  setMemberId(e.target.value);
+}}
+  style={{
+    padding: "15px",
+    width: "300px",
+    borderRadius: "10px",
+    border: "none",
+    marginRight: "15px",
+  }}
+/>
 
       <button
         onClick={generateQR}
