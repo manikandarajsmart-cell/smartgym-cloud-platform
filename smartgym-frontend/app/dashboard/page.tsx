@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import DashboardHeader from "./components/DashboardHeader";
+import StatCard from "@/components/ui/StatCard";
 import Sidebar from "../../components/Sidebar";
 import SectionTitle from "@/components/ui/SectionTitle";
 import { useRouter } from "next/navigation";
@@ -227,106 +229,8 @@ newestMember:
         }}
       >
 
-      <div
-  style={{
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    flexWrap: "wrap",
-    gap: "20px",
-    marginBottom: "40px",
-  }}
->
+    <DashboardHeader />
 
-  <SectionTitle
-  title="Smart Gym Dashboard"
-  subtitle="Welcome back! Here's what's happening today."
-/>
-
-  <div
-    style={{
-      display: "flex",
-      gap: "12px",
-      flexWrap: "wrap",
-      alignItems: "center",
-    }}
-  >
-    <button
-      onClick={() => router.push("/members")}
-      style={{
-        background: "#00c853",
-        color: "white",
-        border: "none",
-        padding: "12px 20px",
-        borderRadius: "10px",
-        cursor: "pointer",
-        fontWeight: "bold",
-      }}
-    >
-      ➕ Add Member
-    </button>
-
-    <button
-      onClick={() => router.push("/payments")}
-      style={{
-        background: "#2962ff",
-        color: "white",
-        border: "none",
-        padding: "12px 20px",
-        borderRadius: "10px",
-        cursor: "pointer",
-        fontWeight: "bold",
-      }}
-    >
-      💳 Add Payment
-    </button>
-
-    <button
-      onClick={() => router.push("/attendance")}
-      style={{
-        background: "#ff9100",
-        color: "white",
-        border: "none",
-        padding: "12px 20px",
-        borderRadius: "10px",
-        cursor: "pointer",
-        fontWeight: "bold",
-      }}
-    >
-      📸 Attendance
-    </button>
-
-    <button
-      onClick={() => router.push("/member-list")}
-      style={{
-        background: "#aa00ff",
-        color: "white",
-        border: "none",
-        padding: "12px 20px",
-        borderRadius: "10px",
-        cursor: "pointer",
-        fontWeight: "bold",
-      }}
-    >
-      👥 Members List
-    </button>
-
-    <button
-      onClick={handleLogout}
-      style={{
-        background: "#ff1744",
-        color: "white",
-        border: "none",
-        padding: "12px 20px",
-        borderRadius: "10px",
-        cursor: "pointer",
-        fontWeight: "bold",
-      }}
-    >
-      Logout
-    </button>
-  </div>
-</div>
 <div
   style={{
     display: "grid",
@@ -335,31 +239,32 @@ newestMember:
     gap: "20px",
   }}
 >
-          <div style={cardStyle}>
-            <h3>Total Members</h3>
-            <h1>{stats.totalMembers}</h1>
-          </div>
-        <div style={cardStyle}>
-<h3>📅 This Month Revenue</h3>
-<h1>₹{stats.thisMonthRevenue}</h1>
-</div>
 
-<div style={cardStyle}>
-  <h3>💰 Average Payment</h3>
-  <h1>
-    ₹
-    {stats.totalPayments > 0
-    ? Math.round(
-    stats.totalRevenue / stats.totalPayments
-  ).toLocaleString("en-IN")    
-  : 0}
-  </h1>
-</div>
+   <StatCard
+  title="Total Members"
+  value={stats.totalMembers}
+/>
 
-<div style={cardStyle}>
-<h3>🏆 Top Paying Member</h3>
-<h1>{stats.topPayingMember}</h1>
-</div>
+<StatCard
+  title="This Month Revenue"
+  value={`₹${stats.thisMonthRevenue}`}
+/>
+
+<StatCard
+  title="Average Payment"
+  value={`₹${
+    stats.totalPayments > 0
+      ? Math.round(
+          stats.totalRevenue / stats.totalPayments
+        ).toLocaleString("en-IN")
+      : 0
+  }`}
+/>
+
+<StatCard
+  title="Top Paying Member"
+  value={stats.topPayingMember}
+/>
 
           <div style={cardStyle}>
             <h3>Active Trainers</h3>
