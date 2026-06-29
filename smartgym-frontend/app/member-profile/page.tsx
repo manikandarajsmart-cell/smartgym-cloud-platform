@@ -132,20 +132,49 @@ useEffect(() => {
               gap: "30px",
             }}
           >
-            <div
-              style={{
-                width: "180px",
-                height: "180px",
-                borderRadius: "50%",
-                background: "#333",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                fontSize: "70px",
-              }}
-            >
-              👤
-            </div>
+
+       <div
+  style={{
+    width: "180px",
+    height: "180px",
+    borderRadius: "50%",
+    background: "linear-gradient(135deg,#2962ff,#00c853)",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    fontSize: "56px",
+    fontWeight: "bold",
+    color: "#fff",
+    position: "relative",
+    boxShadow: "0 10px 30px rgba(0,0,0,.35)",
+  }}
+>
+  {member.name
+    ? member.name
+        .split(" ")
+        .map((n: string) => n[0])
+        .join("")
+        .substring(0, 2)
+        .toUpperCase()
+    : "👤"}
+
+  <div
+    style={{
+      position: "absolute",
+      bottom: "-10px",
+      padding: "6px 14px",
+      borderRadius: "20px",
+      background:
+        status === "Active" ? "#00c853" : "#ff1744",
+      color: "#fff",
+      fontSize: "14px",
+      fontWeight: "bold",
+      border: "2px solid #111",
+    }}
+  >
+    {status}
+  </div>
+</div>
 
             <div>
               <h2 style={{ fontSize: "34px" }}>
