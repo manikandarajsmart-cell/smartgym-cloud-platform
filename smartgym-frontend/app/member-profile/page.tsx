@@ -151,7 +151,80 @@ useEffect(() => {
               <h2 style={{ fontSize: "34px" }}>
                 {member.name}
               </h2>
+            <div
+  style={{
+    display: "flex",
+    gap: "12px",
+    flexWrap: "wrap",
+    marginTop: "20px",
+    marginBottom: "20px",
+  }}
+>
+  <button
+    onClick={() => router.push("/members")}
+    style={{
+      background: "#2962ff",
+      color: "#fff",
+      border: "none",
+      padding: "10px 18px",
+      borderRadius: "8px",
+      cursor: "pointer",
+      fontWeight: "bold",
+    }}
+  >
+    ✏️ Edit Member
+  </button>
 
+  <button
+    onClick={() => router.push("/payments")}
+    style={{
+      background: "#00c853",
+      color: "#fff",
+      border: "none",
+      padding: "10px 18px",
+      borderRadius: "8px",
+      cursor: "pointer",
+      fontWeight: "bold",
+    }}
+  >
+    💳 Add Payment
+  </button>
+
+  <button
+    onClick={() => router.push("/attendance")}
+    style={{
+      background: "#ff9100",
+      color: "#fff",
+      border: "none",
+      padding: "10px 18px",
+      borderRadius: "8px",
+      cursor: "pointer",
+      fontWeight: "bold",
+    }}
+  >
+    📸 Attendance
+  </button>
+
+  <button
+    onClick={() =>
+      window.open(
+        `https://wa.me/91${member.phone || ""}`,
+        "_blank"
+      )
+    }
+    style={{
+      background: "#25D366",
+      color: "#fff",
+      border: "none",
+      padding: "10px 18px",
+      borderRadius: "8px",
+      cursor: "pointer",
+      fontWeight: "bold",
+    }}
+  >
+    💬 WhatsApp
+  </button>
+</div>   
               <hr
                 style={{
                   margin: "20px 0",
