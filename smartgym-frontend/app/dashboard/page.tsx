@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import DashboardStats from "./components/DashboardStats";
 import DashboardHeader from "./components/DashboardHeader";
 import StatCard from "@/components/ui/StatCard";
 import Sidebar from "../../components/Sidebar";
@@ -230,6 +231,8 @@ newestMember:
       >
 
     <DashboardHeader />
+
+   <DashboardStats stats={stats} />
 
 <div
   style={{
