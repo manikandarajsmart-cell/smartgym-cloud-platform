@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Sidebar from "../../components/Sidebar";
+import ActionButton from "@/components/ui/ActionButton";
 
 export default function MemberProfilePage() {
   const router = useRouter();
@@ -94,20 +95,13 @@ useEffect(() => {
           padding: "40px",
         }}
       >
-        <button
-          onClick={() => router.push("/member-list")}
-          style={{
-            background: "#00c853",
-            color: "#fff",
-            border: "none",
-            padding: "10px 18px",
-            borderRadius: "8px",
-            cursor: "pointer",
-            marginBottom: "25px",
-          }}
-        >
-          ← Back to Members List
-        </button>
+
+       <ActionButton
+  variant="success"
+  onClick={() => router.push("/member-list")}
+>
+  ← Back to Members List
+</ActionButton>
 
         <h1
           style={{
@@ -219,20 +213,20 @@ useEffect(() => {
     💳 Add Payment
   </button>
 
-  <button
-    onClick={() => router.push("/attendance")}
-    style={{
-      background: "#ff9100",
-      color: "#fff",
-      border: "none",
-      padding: "10px 18px",
-      borderRadius: "8px",
-      cursor: "pointer",
-      fontWeight: "bold",
-    }}
-  >
-    📸 Attendance
-  </button>
+   <button
+  onClick={() => router.push("/attendance")}
+  style={{
+    background: "#ff9100",
+    color: "#fff",
+    border: "none",
+    padding: "10px 18px",
+    borderRadius: "8px",
+    cursor: "pointer",
+    fontWeight: "bold",
+  }}
+>
+  📸 Attendance
+</button>
 
   <button
     onClick={() =>
