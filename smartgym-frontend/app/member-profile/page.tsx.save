@@ -1,0 +1,404 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+
+import Sidebar from "../../components/Sidebar";
+
+import MemberSummaryCards from "./components/MemberSummaryCards";
+import PaymentHistory from "./components/PaymentHistory";
+import AttendanceHistory from "./components/AttendanceHistory";
+import WorkoutHistory from "./components/WorkoutHistory";
+import DietHistory from "./components/DietHistory";
+
+import StatusBadge from "@/components/ui/StatusBadge";
+import ActionButton from "@/components/ui/ActionButton";
+
+export default function MemberProfilePage() {
+  const router = useRouter();
+  const [member, setMember] = useState<any>(null);
+  const [payments, setPayments] = useState<any[]>([]);
+  const [attendance, setAttendance] = useState<any[]>([]);
+  const [workouts, setWorkouts] = useState<any[]>([]);
+  const [dietPlans, setDietPlans] = useState<any[]>([]);
+
+useEffect(() => {
+  const stored = localStorage.getItem("selectedMember");
+
+  if (stored) {
+    setMember(JSON.parse(stored));
+  }
+
+  fetch(`${process.env.NEXT_PUBLIC_API_URL}/payments`)
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.success) {
+        setPayments(data.payments);
+      }
+    })
+    .catch((err) => console.log(err));
+  fetch(`${process.env.NEXT_PUBLIC_API_URL}/attendance`)
+  .then((res) => res.json())
+  .then((data) => {
+    if (data.success) {
+      setAttendance(data.attendance);
+    }
+  })
+  .catch((err) => console.log(err)); 
+  fetch(`${process.env.NEXT_PUBLIC_API_URL}/workout-plans`)
+  .then((res) => res.json())
+  .then((data) => {
+    if (data.success) {
+      setWorkouts(data.plans);
+    }
+  })
+  .catch((err) => console.log(err));
+  fetch(`${process.env.NEXT_PUBLIC_API_URL}/diet-plans`)
+  .then((res) => res.json())
+  .then((data) => {
+    if (data.success) {
+      setDietPlans(data.plans);
+    }
+  })
+  .catch((err) => console.log(err));
+}, []);
+
+  if (!member) {
+    return (
+      <div
+        style={{
+          background: "#000",
+          color: "white",
+          minHeight: "100vh",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          fontSize: "22px",
+        }}
+      >
+        Loading Member...
+      </div>
+    );
+  }
+
+  const status =
+    new Date(member.expiryDate) < new Date()
+      ? "Expired"
+      : "Active";
+
+  return (
+    <div
+      style={{
+        display: "flex",
+        background: "#000",
+        color: "white",
+        minHeight: "100vh",
+      }}
+    >
+      <Sidebar />
+
+      <div
+        style={{
+          flex: 1,
+          marginLeft: "250px",
+          padding: "40px",
+        }}
+      >
+
+       <ActionButton
+  variant="success"
+  onClick={() => router.push("/member-list")}
+>
+  ← Back to Members List
+</ActionButton>
+
+        <h1
+          style={{
+            fontSize: "42px",
+            marginBottom: "30px",
+          }}
+        >
+          👤 Member Profile
+        </h1>
+
+        <div
+          style={{
+            background: "#111",
+            borderRadius: "15px",
+            padding: "30px",
+          }}
+        >
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "200px 1fr",
+              gap: "30px",
+            }}
+          >
+
+       <div
+  style={{
+    width: "180px",
+    height: "180px",
+    borderRadius: "50%",
+    background: "linear-gradient(135deg,#2962ff,#00c853)",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    fontSize: "56px",
+    fontWeight: "bold",
+    color: "#fff",
+    position: "relative",
+    boxShadow: "0 10px 30px rgba(0,0,0,.35)",
+  }}
+>
+  {member.name
+    ? member.name
+        .split(" ")
+        .map((n: string) => n[0])
+        .join("")
+        .substring(0, 2)
+        .toUpperCase()
+    : "👤"}
+
+  <div
+    style={{
+      position: "absolute",
+      bottom: "-10px",
+      padding: "6px 14px",
+      borderRadius: "20px",
+      background:
+        status === "Active" ? "#00c853" : "#ff1744",
+      color: "#fff",
+      fontSize: "14px",
+      fontWeight: "bold",
+      border: "2px solid #111",
+    }}
+  >
+    {status}
+  </div>
+</div>
+
+            <div>
+              <h2 style={{ fontSize: "34px" }}>
+                {member.name}
+              </h2>
+            <div
+  style={{
+    display: "flex",
+    gap: "12px",
+    flexWrap: "wrap",
+    marginTop: "20px",
+    marginBottom: "20px",
+  }}
+>
+  <button
+    onClick={() => router.push("/members")}
+    style={{
+      background: "#2962ff",
+      color: "#fff",
+      border: "none",
+      padding: "10px 18px",
+      borderRadius: "8px",
+      cursor: "pointer",
+      fontWeight: "bold",
+    }}
+  >
+    ✏️ Edit Member
+  </button>
+
+  <button
+    onClick={() => router.push("/payments")}
+    style={{
+      background: "#00c853",
+      color: "#fff",
+      border: "none",
+      padding: "10px 18px",
+      borderRadius: "8px",
+      cursor: "pointer",
+      fontWeight: "bold",
+    }}
+  >
+    💳 Add Payment
+  </button>
+
+   <button
+  onClick={() => router.push("/attendance")}
+  style={{
+    background: "#ff9100",
+    color: "#fff",
+    border: "none",
+    padding: "10px 18px",
+    borderRadius: "8px",
+    cursor: "pointer",
+    fontWeight: "bold",
+  }}
+>
+  📸 Attendance
+</button>
+
+  <button
+    onClick={() =>
+      window.open(
+        `https://wa.me/91${member.phone || ""}`,
+        "_blank"
+      )
+    }
+    style={{
+      background: "#25D366",
+      color: "#fff",
+      border: "none",
+      padding: "10px 18px",
+      borderRadius: "8px",
+      cursor: "pointer",
+      fontWeight: "bold",
+    }}
+  >
+    💬 WhatsApp
+  </button>
+</div>   
+              <hr
+                style={{
+                  margin: "20px 0",
+                  borderColor: "#333",
+                }}
+              />
+
+              <p><b>Phone:</b> {member.phone || "-"}</p>
+
+              <p><b>Email:</b> {member.email || "-"}</p>
+
+              <p><b>Age:</b> {member.age || "-"}</p>
+
+              <p><b>Gender:</b> {member.gender || "-"}</p>
+
+              <p><b>Address:</b> {member.address || "-"}</p>
+
+              <p><b>Membership Plan:</b> {member.plan}</p>
+
+              <p><b>Fee:</b> ₹{member.fee}</p>
+
+              <p><b>Join Date:</b> {member.joinDate}</p>
+
+              <p><b>Expiry Date:</b> {member.expiryDate}</p>
+
+              <p>
+                <b>Status:</b>{" "}
+              
+               <StatusBadge status={status} />
+
+              </p>
+            </div>
+              <div
+  style={{
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+    gap: "15px",
+    marginTop: "25px",
+    marginBottom: "30px",
+  }}
+>
+  <div
+    style={{
+      background: "#111",
+      padding: "20px",
+      borderRadius: "12px",
+      textAlign: "center",
+    }}
+  >
+    <h3>💰 Payments</h3>
+    <h2>
+      ₹
+      {payments
+        .filter(
+          (p) =>
+            p.memberName?.toLowerCase() ===
+            member.name?.toLowerCase()
+        )
+        .reduce((sum, p) => sum + Number(p.amount || 0), 0)}
+    </h2>
+  </div>
+
+  <div
+    style={{
+      background: "#111",
+      padding: "20px",
+      borderRadius: "12px",
+      textAlign: "center",
+    }}
+  >
+    <h3>📅 Attendance</h3>
+    <h2>
+      {
+        attendance.filter(
+          (a) =>
+            a.memberName?.toLowerCase() ===
+            member.name?.toLowerCase()
+        ).length
+      }
+    </h2>
+  </div>
+
+  <div
+    style={{
+      background: "#111",
+      padding: "20px",
+      borderRadius: "12px",
+      textAlign: "center",
+    }}
+  >
+    <h3>⭐ Status</h3>
+    <h2 style={{ color: "#00e676" }}>{status}</h2>
+  </div>
+</div>
+          </div>
+        </div>
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(2,1fr)",
+            gap: "20px",
+            marginTop: "30px",
+          }}
+        >
+  
+   <PaymentHistory
+  member={member}
+  payments={payments}
+/>
+
+
+   <AttendanceHistory
+  member={member}
+  attendance={attendance}
+/>
+
+
+    ).length === 0 && (
+      <tr>
+        <td
+          colSpan={4}
+          style={{
+            textAlign: "center",
+            padding: "20px",
+          }}
+        >
+          No workout plan found.
+        </td>
+      </tr>
+    )}
+  </tbody>
+</table>
+
+          </div>
+
+   <DietHistory
+  member={member}
+  dietPlans={dietPlans}
+/>
+
+    </div>
+    </div>
+  );
+}
