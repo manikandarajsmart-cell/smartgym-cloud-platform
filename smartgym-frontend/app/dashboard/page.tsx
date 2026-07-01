@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar";
 import { useRouter } from "next/navigation";
 
+import DashboardHeader from "./components/DashboardHeader";
+
 export default function DashboardPage() {
   const router = useRouter();
 
@@ -46,43 +48,32 @@ export default function DashboardPage() {
           width: "100%",
         }}
       >
-        {/* TOP BAR */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: "40px",
-            flexWrap: "wrap",
-            gap: "20px",
-          }}
-        >
-          <h1
-            style={{
-              fontSize: "60px",
-              fontWeight: "bold",
-            }}
-          >
-            🚀 Smart Gym Dashboard
-          </h1>
 
-          <button
-            onClick={handleLogout}
-            style={{
-              background: "#ff1744",
-              color: "white",
-              border: "none",
-              padding: "16px 30px",
-              borderRadius: "14px",
-              cursor: "pointer",
-              fontSize: "18px",
-              fontWeight: "bold",
-            }}
-          >
-            Logout
-          </button>
-        </div>
+    <DashboardHeader />
 
+<div
+  style={{
+    display: "flex",
+    justifyContent: "flex-end",
+    marginBottom: "30px",
+  }}
+>
+  <button
+    onClick={handleLogout}
+    style={{
+      background: "#ff1744",
+      color: "#fff",
+      border: "none",
+      padding: "16px 30px",
+      borderRadius: "14px",
+      cursor: "pointer",
+      fontSize: "18px",
+      fontWeight: "bold",
+    }}
+  >
+    Logout
+  </button>
+</div>
         {/* STATS GRID */}
         <div
           style={{
