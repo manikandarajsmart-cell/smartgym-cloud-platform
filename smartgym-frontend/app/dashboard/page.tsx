@@ -5,6 +5,7 @@ import Sidebar from "../../components/Sidebar";
 import { useRouter } from "next/navigation";
 
 import DashboardHeader from "./components/DashboardHeader";
+import DashboardStats from "./components/DashboardStats";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -74,132 +75,51 @@ export default function DashboardPage() {
     Logout
   </button>
 </div>
-        {/* STATS GRID */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns:
-              "repeat(auto-fit, minmax(280px, 1fr))",
-            gap: "25px",
-          }}
-        >
-          {/* CARD 1 */}
-          <div
-            style={{
-              background: "#111",
-              padding: "35px",
-              borderRadius: "20px",
-              border: "1px solid #222",
-            }}
-          >
-            <h3
-              style={{
-                color: "#aaa",
-                marginBottom: "20px",
-                fontSize: "20px",
-              }}
-            >
-              Total Members
-            </h3>
+     
+    <DashboardHeader />
 
-            <h1
-              style={{
-                fontSize: "65px",
-                fontWeight: "bold",
-              }}
-            >
-              {stats.totalMembers}
-            </h1>
-          </div>
+<div
+  style={{
+    display: "flex",
+    justifyContent: "flex-end",
+    marginBottom: "30px",
+  }}
+>
 
-          {/* CARD 2 */}
-          <div
-            style={{
-              background: "#111",
-              padding: "35px",
-              borderRadius: "20px",
-              border: "1px solid #222",
-            }}
-          >
-            <h3
-              style={{
-                color: "#aaa",
-                marginBottom: "20px",
-                fontSize: "20px",
-              }}
-            >
-              Active Trainers
-            </h3>
+<button
+  onClick={handleLogout}
+  style={{
+    background: "#ff1744",
+    color: "white",
+    border: "none",
+    padding: "16px 30px",
+    borderRadius: "14px",
+    cursor: "pointer",
+    fontSize: "18px",
+    fontWeight: "bold",
+  }}
+>
+    Logout
+  </button>
+</div>
 
-            <h1
-              style={{
-                fontSize: "65px",
-                fontWeight: "bold",
-              }}
-            >
-              {stats.activeTrainers}
-            </h1>
-          </div>
+<DashboardStats
+  stats={{
+    totalMembers: stats.totalMembers,
+    thisMonthRevenue: stats.monthlyRevenue,
+    totalRevenue: stats.monthlyRevenue,
+    totalPayments: 0,
+    topPayingMember: "-",
+    activeTrainers: stats.activeTrainers,
+    attendanceCount: 0,
+    activeMembers: stats.totalMembers,
+    paidMembers: 0,
+    pendingMembers: 0,
+    expiringSoon: 0,
+    expiredMembers: 0,
+  }}
+/>
 
-          {/* CARD 3 */}
-          <div
-            style={{
-              background: "#111",
-              padding: "35px",
-              borderRadius: "20px",
-              border: "1px solid #222",
-            }}
-          >
-            <h3
-              style={{
-                color: "#aaa",
-                marginBottom: "20px",
-                fontSize: "20px",
-              }}
-            >
-              Monthly Revenue
-            </h3>
-
-            <h1
-              style={{
-                fontSize: "65px",
-                fontWeight: "bold",
-              }}
-            >
-              ₹{stats.monthlyRevenue}
-            </h1>
-          </div>
-
-          {/* CARD 4 */}
-          <div
-            style={{
-              background: "#111",
-              padding: "35px",
-              borderRadius: "20px",
-              border: "1px solid #222",
-            }}
-          >
-            <h3
-              style={{
-                color: "#aaa",
-                marginBottom: "20px",
-                fontSize: "20px",
-              }}
-            >
-              Growth Rate
-            </h3>
-
-            <h1
-              style={{
-                fontSize: "65px",
-                fontWeight: "bold",
-                color: "#00ff88",
-              }}
-            >
-              {stats.growthRate}
-            </h1>
-          </div>
-        </div>
       </div>
     </div>
   );
