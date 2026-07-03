@@ -1,6 +1,9 @@
 "use client";
 
 import Sidebar from "../../components/Sidebar";
+import ClassCard from "./components/ClassCard";
+import ClassForm from "./components/ClassForm";
+import ClassTable from "./components/ClassTable";
 
 export default function ClassesPage() {
   return (
@@ -8,13 +11,13 @@ export default function ClassesPage() {
       style={{
         display: "flex",
         background: "#000",
-        color: "white",
+        color: "#fff",
         minHeight: "100vh",
       }}
     >
       <Sidebar />
 
-      <div
+      <main
         style={{
           flex: 1,
           marginLeft: "250px",
@@ -23,40 +26,32 @@ export default function ClassesPage() {
       >
         <h1
           style={{
-            fontSize: "42px",
-            marginBottom: "20px",
+            fontSize: "40px",
+            marginBottom: "10px",
           }}
         >
-          📚 Classes
+          📚 Classes Management
         </h1>
 
-        <p>
-          Manage Gym, Yoga, Zumba, CrossFit and all fitness classes from one place.
+        <p
+          style={{
+            color: "#aaa",
+            marginBottom: "30px",
+          }}
+        >
+          Manage Gym, Yoga, Zumba, CrossFit and all fitness classes.
         </p>
-    
-    <div
-  style={{
-    marginTop: "40px",
-    background: "#111",
-    border: "1px solid #222",
-    borderRadius: "20px",
-    padding: "40px",
-    textAlign: "center",
-  }}
->
-  <h2>🚧 Classes Module</h2>
 
-  <p
-    style={{
-      color: "#888",
-      marginTop: "15px",
-    }}
-  >
-    Coming Soon...
-  </p>
-</div>
+        <ClassCard />
 
-      </div>
+        <div style={{ marginTop: "30px" }}>
+          <ClassForm />
+        </div>
+
+        <div style={{ marginTop: "30px" }}>
+          <ClassTable />
+        </div>
+      </main>
     </div>
   );
 }
