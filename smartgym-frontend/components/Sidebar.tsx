@@ -4,62 +4,54 @@ import Link from "next/link";
 
 export default function Sidebar() {
   return (
-    <div className="w-full h-full bg-black text-white p-6">
-      <h1 className="text-2xl font-bold text-green-400 mb-8">
+    <aside
+      style={{
+        width: "250px",
+        minWidth: "250px",
+        height: "100vh",
+        background: "#000",
+        color: "#fff",
+        padding: "30px",
+        position: "fixed",
+        left: 0,
+        top: 0,
+        overflowY: "auto",
+        borderRight: "1px solid #222",
+      }}
+    >
+      <h1
+        style={{
+          color: "#00ff88",
+          fontSize: "36px",
+          fontWeight: "bold",
+          marginBottom: "40px",
+        }}
+      >
         Smart Gym
       </h1>
 
-      <nav className="flex flex-col gap-4">
-
-        <Link href="/dashboard" className="hover:text-green-400">
-          Dashboard
-        </Link>
-
-        <Link href="/members" className="hover:text-green-400">
-          Add Member
-        </Link>
-
-        <Link href="/member-list" className="hover:text-green-400">
-          Members List
-        </Link>
-
-        <Link href="/attendance" className="hover:text-green-400">
-          Attendance
-        </Link>
-
-        <Link href="/attendance-records" className="hover:text-green-400">
-          Attendance Records
-        </Link>
-
-        <Link href="/payments" className="hover:text-green-400">
-          Payments
-        </Link>
-
-        <Link href="/trainers" className="hover:text-green-400">
-          Trainers
-        </Link>
-
-        <Link href="/diet-plans" className="hover:text-green-400">
-          Diet Plans
-        </Link>
-
-        <Link href="/workout-plans" className="hover:text-green-400">
-          Workout Plans
-        </Link>
-
-        <Link href="/needs-attention" className="hover:text-green-400">
-          Needs Attention
-        </Link>
-
-        <Link href="/qr-generator" className="hover:text-green-400">
-          QR Generator
-        </Link>
-
-        <Link href="/scan" className="hover:text-green-400">
-          QR Scanner
-        </Link>
-
+      <nav
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "18px",
+          fontSize: "22px",
+        }}
+      >
+        <Link href="/dashboard">Dashboard</Link>
+        <Link href="/members">Add Member</Link>
+        <Link href="/member-list">Members List</Link>
+        <Link href="/attendance">Attendance</Link>
+        <Link href="/attendance-records">Attendance Records</Link>
+        <Link href="/payments">Payments</Link>
+        <Link href="/trainers">Trainers</Link>
+        <Link href="/diet-plans">Diet Plans</Link>
+        <Link href="/workout-plans">Workout Plans</Link>
+        <Link href="/classes">Classes</Link>
+        <Link href="/needs-attention">Needs Attention</Link>
+        <Link href="/qr-generator">QR Generator</Link>
+        <Link href="/scan">QR Scanner</Link>
       </nav>
-    </div>
+    </aside>
   );
 }
