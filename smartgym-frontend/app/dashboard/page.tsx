@@ -18,6 +18,32 @@ export default function DashboardPage() {
     growthRate: "18%",
   });
 
+const [members, setMembers] = useState<any[]>([]);
+const [payments, setPayments] = useState<any[]>([]);
+const [attendance, setAttendance] = useState<any[]>([]);
+
+const totalRevenue = payments.reduce(
+  (sum, payment) => sum + Number(payment.amount || 0),
+  0
+);
+
+const activeMembers = members.filter(
+  (member) => member.status === "Active"
+).length;
+
+const expiredMembers = members.filter(
+  (member) => member.status === "Expired"
+).length;
+
+const expiringSoon = members.filter((member) => {
+  const daysLeft = Number(member.daysLeft);
+  return daysLeft >= 0 && daysLeft <= 7;
+}).length;
+
+const totalPayments = payments.length;
+
+const attendanceCount = attendance.length;
+
 const chartData = [
   { name: "Jan", amount: 12000 },
   { name: "Feb", amount: 18000 },
@@ -32,6 +58,31 @@ const chartData = [
       router.push("/login");
     }
   }, []);
+
+fetch(`${process.env.NEXT_PUBLIC_API_URL}/members`)
+  .then((res) => res.json())
+  .then((data) => {
+    setMembers(data);
+  })
+  .catch(console.error);
+
+fetch(`${process.env.NEXT_PUBLIC_API_URL}/payments`)
+  .then((res) => res.json())
+  .then((data) => {
+    if (data.success) {
+      setPayments(data.payments);
+    }
+  })
+  .catch(console.error);
+
+fetch(`${process.env.NEXT_PUBLIC_API_URL}/attendance`)
+  .then((res) => res.json())
+  .then((data) => {
+    if (data.success) {
+      setAttendance(data.attendance);
+    }
+  })
+  .catch(console.error);
 
   const handleLogout = () => {
     localStorage.removeItem("smartgym-auth");
@@ -113,25 +164,28 @@ const chartData = [
 
 <DashboardStats
   stats={{
-    totalMembers: stats.totalMembers,
-    thisMonthRevenue: stats.monthlyRevenue,
-    totalRevenue: stats.monthlyRevenue,
-    totalPayments: 0,
+    totalMembers: members.length,
+    thisMonthRevenue: totalRevenue,
+    totalRevenue: totalRevenue,
+    totalPayments: totalPayments,
     topPayingMember: "-",
     activeTrainers: stats.activeTrainers,
-    attendanceCount: 0,
-    activeMembers: stats.totalMembers,
-    paidMembers: 0,
-    pendingMembers: 0,
-    expiringSoon: 0,
-    expiredMembers: 0,
+    attendanceCount: attendanceCount,
+    activeMembers: activeMembers,
+    paidMembers: totalPayments,
+    pendingMembers: Math.max(
+      members.length - totalPayments,
+      0
+    ),
+    expiringSoon: expiringSoon,
+    expiredMembers: expiredMembers,
   }}
 />
 
-    <RevenueAnalytics
+<RevenueAnalytics
   stats={{
-    totalRevenue: stats.monthlyRevenue,
-    totalPayments: 0,
+    totalRevenue: totalRevenue,
+    totalPayments: totalPayments,
     topPayingMember: "-",
   }}
   chartData={chartData}
