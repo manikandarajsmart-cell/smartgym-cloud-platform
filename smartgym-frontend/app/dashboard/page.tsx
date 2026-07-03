@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 
 import DashboardHeader from "./components/DashboardHeader";
 import DashboardStats from "./components/DashboardStats";
+import RevenueAnalytics from "./components/RevenueAnalytics";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -16,6 +17,13 @@ export default function DashboardPage() {
     monthlyRevenue: 25000,
     growthRate: "18%",
   });
+
+const chartData = [
+  { name: "Jan", amount: 12000 },
+  { name: "Feb", amount: 18000 },
+  { name: "Mar", amount: 22000 },
+  { name: "Apr", amount: 25000 },
+];
 
   useEffect(() => {
     const auth = localStorage.getItem("smartgym-auth");
@@ -118,6 +126,15 @@ export default function DashboardPage() {
     expiringSoon: 0,
     expiredMembers: 0,
   }}
+/>
+
+    <RevenueAnalytics
+  stats={{
+    totalRevenue: stats.monthlyRevenue,
+    totalPayments: 0,
+    topPayingMember: "-",
+  }}
+  chartData={chartData}
 />
 
       </div>
