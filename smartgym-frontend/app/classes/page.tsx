@@ -1,11 +1,26 @@
 "use client";
 
+import { useEffect, useState } from "react";
+
 import Sidebar from "../../components/Sidebar";
 import ClassCard from "./components/ClassCard";
 import ClassForm from "./components/ClassForm";
 import ClassTable from "./components/ClassTable";
 
 export default function ClassesPage() {
+  const [classes, setClasses] = useState([]);
+
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/classes`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+          setClasses(data.classes);
+        }
+      })
+      .catch(console.error);
+  }, []);
+
   return (
     <div
       style={{
@@ -42,14 +57,14 @@ export default function ClassesPage() {
           Manage Gym, Yoga, Zumba, CrossFit and all fitness classes.
         </p>
 
-        <ClassCard />
+        <ClassCard totalClasses={classes.length} />
 
         <div style={{ marginTop: "30px" }}>
           <ClassForm />
         </div>
 
         <div style={{ marginTop: "30px" }}>
-          <ClassTable />
+          <ClassTable classes={classes} />
         </div>
       </main>
     </div>

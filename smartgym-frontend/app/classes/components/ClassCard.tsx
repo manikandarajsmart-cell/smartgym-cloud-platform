@@ -1,4 +1,8 @@
-export default function ClassCard() {
+type Props = {
+  totalClasses: number;
+};
+
+export default function ClassCard({ totalClasses }: Props) {
   return (
     <div
       style={{
@@ -9,7 +13,19 @@ export default function ClassCard() {
       }}
     >
       <h2>📚 Classes Overview</h2>
-      <p>Total Classes: 0</p>
+
+      <p
+        style={{
+          fontSize: 24,
+          fontWeight: "bold",
+          color: "#22c55e",
+          marginTop: 10,
+        }}
+      >
+        {totalClasses}
+      </p>
+
+      <p>Total Classes</p>
     </div>
   );
 }
