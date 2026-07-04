@@ -51,38 +51,40 @@ const chartData = [
   { name: "Apr", amount: 25000 },
 ];
 
-  useEffect(() => {
-    const auth = localStorage.getItem("smartgym-auth");
+   useEffect(() => {
+  const auth = localStorage.getItem("smartgym-auth");
 
-    if (!auth) {
-      router.push("/login");
-    }
-  }, []);
+  if (!auth) {
+    router.push("/login");
+    return;
+  }
 
-fetch(`${process.env.NEXT_PUBLIC_API_URL}/members`)
-  .then((res) => res.json())
-  .then((data) => {
-    setMembers(data);
-  })
-  .catch(console.error);
+  fetch(`${process.env.NEXT_PUBLIC_API_URL}/members`)
+    .then((res) => res.json())
+    .then((data) => {
+      setMembers(data);
+    })
+    .catch(console.error);
 
-fetch(`${process.env.NEXT_PUBLIC_API_URL}/payments`)
-  .then((res) => res.json())
-  .then((data) => {
-    if (data.success) {
-      setPayments(data.payments);
-    }
-  })
-  .catch(console.error);
+  fetch(`${process.env.NEXT_PUBLIC_API_URL}/payments`)
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.success) {
+        setPayments(data.payments);
+      }
+    })
+    .catch(console.error);
 
-fetch(`${process.env.NEXT_PUBLIC_API_URL}/attendance`)
-  .then((res) => res.json())
-  .then((data) => {
-    if (data.success) {
-      setAttendance(data.attendance);
-    }
-  })
-  .catch(console.error);
+  fetch(`${process.env.NEXT_PUBLIC_API_URL}/attendance`)
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.success) {
+        setAttendance(data.attendance);
+      }
+    })
+    .catch(console.error);
+
+}, [router]);
 
   const handleLogout = () => {
     localStorage.removeItem("smartgym-auth");
@@ -135,53 +137,6 @@ fetch(`${process.env.NEXT_PUBLIC_API_URL}/attendance`)
   </button>
 </div>
      
-    <DashboardHeader />
-
-<div
-  style={{
-    display: "flex",
-    justifyContent: "flex-end",
-    marginBottom: "30px",
-  }}
->
-
-<button
-  onClick={handleLogout}
-  style={{
-    background: "#ff1744",
-    color: "white",
-    border: "none",
-    padding: "16px 30px",
-    borderRadius: "14px",
-    cursor: "pointer",
-    fontSize: "18px",
-    fontWeight: "bold",
-  }}
->
-    Logout
-  </button>
-</div>
-
-<DashboardStats
-  stats={{
-    totalMembers: members.length,
-    thisMonthRevenue: totalRevenue,
-    totalRevenue: totalRevenue,
-    totalPayments: totalPayments,
-    topPayingMember: "-",
-    activeTrainers: stats.activeTrainers,
-    attendanceCount: attendanceCount,
-    activeMembers: activeMembers,
-    paidMembers: totalPayments,
-    pendingMembers: Math.max(
-      members.length - totalPayments,
-      0
-    ),
-    expiringSoon: expiringSoon,
-    expiredMembers: expiredMembers,
-  }}
-/>
-
 <RevenueAnalytics
   stats={{
     totalRevenue: totalRevenue,
