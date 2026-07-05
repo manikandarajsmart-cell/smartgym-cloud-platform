@@ -1,3 +1,5 @@
+"use client";
+
 type ClassItem = {
   _id?: string;
   className: string;
@@ -12,6 +14,35 @@ type Props = {
 };
 
 export default function ClassTable({ classes }: Props) {
+  const handleDelete = async (id?: string) => {
+    if (!id) return;
+
+    const ok = confirm("Delete this class?");
+
+    if (!ok) return;
+
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/classes/${id}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      const data = await res.json();
+
+      if (data.success) {
+        alert("Class Deleted Successfully!");
+        window.location.reload();
+      } else {
+        alert("Delete Failed");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Server Error");
+    }
+  };
+
   return (
     <div
       style={{
@@ -39,6 +70,7 @@ export default function ClassTable({ classes }: Props) {
               <th align="left">Schedule</th>
               <th align="left">Duration</th>
               <th align="left">Capacity</th>
+              <th align="left">Actions</th>
             </tr>
           </thead>
 
@@ -50,6 +82,22 @@ export default function ClassTable({ classes }: Props) {
                 <td>{item.schedule}</td>
                 <td>{item.duration}</td>
                 <td>{item.capacity}</td>
+
+                <td>
+                  <button
+                    onClick={() => handleDelete(item._id)}
+                    style={{
+                      background: "#dc2626",
+                      color: "#fff",
+                      border: "none",
+                      padding: "8px 14px",
+                      borderRadius: 6,
+                      cursor: "pointer",
+                    }}
+                  >
+                    Delete
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
