@@ -2,7 +2,12 @@
 
 import { useState } from "react";
 
-export default function ClassForm() {
+type Props = {
+  onSuccess?: () => void;
+};
+
+export default function ClassForm({ onSuccess }: Props) {
+
   const [className, setClassName] = useState("");
   const [trainer, setTrainer] = useState("");
   const [schedule, setSchedule] = useState("");
@@ -30,19 +35,23 @@ export default function ClassForm() {
 
       const data = await res.json();
 
-      if (data.success) {
-        alert("Class Added Successfully!");
+  if (data.success) {
+  alert("Class Added Successfully!");
 
-        setClassName("");
-        setTrainer("");
-        setSchedule("");
-        setDuration("");
-        setCapacity("");
+  setClassName("");
+  setTrainer("");
+  setSchedule("");
+  setDuration("");
+  setCapacity("");
 
-        window.location.reload();
-      } else {
-        alert("Failed to add class.");
-      }
+  if (onSuccess) {
+    onSuccess();
+  }
+
+} else {
+  alert("Failed to add class.");
+}
+
     } catch (error) {
       console.error(error);
       alert("Server Error");
