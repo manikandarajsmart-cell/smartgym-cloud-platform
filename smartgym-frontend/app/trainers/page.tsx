@@ -2,19 +2,14 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
+
 import Sidebar from "../../components/Sidebar";
+import TrainerForm from "./components/TrainerForm";
+import TrainerTable from "./components/TrainerTable";
+import TrainerStats from "./components/TrainerStats";
 
 export default function TrainersPage() {
   const [trainers, setTrainers] = useState<any[]>([]);
-
-  const [name, setName] = useState("");
-  const [specialization, setSpecialization] = useState("");
-  const [salary, setSalary] = useState("");
-  const [experience, setExperience] = useState("");
-
-  useEffect(() => {
-    fetchTrainers();
-  }, []);
 
   const fetchTrainers = async () => {
     try {
@@ -24,56 +19,13 @@ export default function TrainersPage() {
 
       setTrainers(res.data);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
-  const addTrainer = async () => {
-    try {
-      await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/trainers`,
-        {
-          name,
-          specialization,
-          salary,
-          experience,
-        }
-      );
-
-      alert("💪 Trainer Added Successfully");
-
-      setName("");
-      setSpecialization("");
-      setSalary("");
-      setExperience("");
-
-      fetchTrainers();
-    } catch (error) {
-      console.log(error);
-      alert("❌ Failed to add trainer");
-    }
-  };
-
-  const deleteTrainer = async (id: string) => {
-    const confirmDelete = window.confirm(
-      "Delete this trainer?"
-    );
-
-    if (!confirmDelete) return;
-
-    try {
-      await axios.delete(
-        `${process.env.NEXT_PUBLIC_API_URL}/trainers/${id}`
-      );
-
-      alert("🗑 Trainer Deleted");
-
-      fetchTrainers();
-    } catch (error) {
-      console.log(error);
-      alert("❌ Delete Failed");
-    }
-  };
+  useEffect(() => {
+    fetchTrainers();
+  }, []);
 
   return (
     <div className="bg-black text-white min-h-screen flex">
@@ -84,80 +36,14 @@ export default function TrainersPage() {
           💪 Trainers Management
         </h1>
 
-        <div className="bg-zinc-900 p-8 rounded-2xl border border-zinc-800 max-w-2xl mb-10">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            <input
-              type="text"
-              placeholder="Trainer Name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="bg-black border border-zinc-700 p-4 rounded-lg outline-none"
-            />
+        <TrainerStats totalTrainers={trainers.length} />
 
-            <input
-              type="text"
-              placeholder="Specialization"
-              value={specialization}
-              onChange={(e) => setSpecialization(e.target.value)}
-              className="bg-black border border-zinc-700 p-4 rounded-lg outline-none"
-            />
+        <TrainerForm onSuccess={fetchTrainers} />
 
-            <input
-              type="number"
-              placeholder="Salary"
-              value={salary}
-              onChange={(e) => setSalary(e.target.value)}
-              className="bg-black border border-zinc-700 p-4 rounded-lg outline-none"
-            />
-
-            <input
-              type="text"
-              placeholder="Experience"
-              value={experience}
-              onChange={(e) => setExperience(e.target.value)}
-              className="bg-black border border-zinc-700 p-4 rounded-lg outline-none"
-            />
-          </div>
-
-          <button
-            onClick={addTrainer}
-            className="bg-green-500 hover:bg-green-600 transition-all p-4 rounded-lg font-bold w-full mt-6"
-          >
-            Add Trainer
-          </button>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {trainers.map((trainer) => (
-            <div
-              key={trainer._id}
-              className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6"
-            >
-              <h2 className="text-2xl font-bold mb-4">
-                {trainer.name}
-              </h2>
-
-              <p className="text-gray-400 mb-2">
-                Specialization: {trainer.specialization}
-              </p>
-
-              <p className="text-gray-400 mb-2">
-                Experience: {trainer.experience}
-              </p>
-
-              <p className="text-green-400 font-bold text-xl mt-4">
-                ₹{trainer.salary}
-              </p>
-
-              <button
-                onClick={() => deleteTrainer(trainer._id)}
-                className="bg-red-600 hover:bg-red-700 mt-4 px-4 py-2 rounded-lg font-bold"
-              >
-                Delete Trainer
-              </button>
-            </div>
-          ))}
-        </div>
+        <TrainerTable
+          trainers={trainers}
+          onRefresh={fetchTrainers}
+        />
       </div>
     </div>
   );
