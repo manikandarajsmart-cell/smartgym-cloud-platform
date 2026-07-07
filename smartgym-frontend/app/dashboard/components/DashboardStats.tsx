@@ -18,28 +18,49 @@ export default function DashboardStats({
 }: {
   stats: Stats;
 }) {
-  const cards = [
-    {
-      title: "👥 Total Members",
-      value: stats.totalMembers,
-      color: "#2962ff",
-    },
-    {
-      title: "🏋 Active Trainers",
-      value: stats.activeTrainers,
-      color: "#00c853",
-    },
-    {
-      title: "💰 Monthly Revenue",
-      value: `₹${stats.thisMonthRevenue.toLocaleString("en-IN")}`,
-      color: "#ff9100",
-    },
-    {
-      title: "📈 Total Revenue",
-      value: `₹${stats.totalRevenue.toLocaleString("en-IN")}`,
-      color: "#9c27b0",
-    },
-  ];
+
+const cards = [
+  {
+    title: "👥 Total Members",
+    value: stats.totalMembers,
+    color: "#2962ff",
+  },
+  {
+    title: "🏋 Active Trainers",
+    value: stats.activeTrainers,
+    color: "#00c853",
+  },
+  {
+    title: "💰 Monthly Revenue",
+    value: `₹${stats.thisMonthRevenue.toLocaleString("en-IN")}`,
+    color: "#ff9100",
+  },
+  {
+    title: "📈 Total Revenue",
+    value: `₹${stats.totalRevenue.toLocaleString("en-IN")}`,
+    color: "#9c27b0",
+  },
+  {
+    title: "✅ Active Members",
+    value: stats.activeMembers,
+    color: "#00acc1",
+  },
+  {
+    title: "📅 Today's Attendance",
+    value: stats.attendanceCount,
+    color: "#ff6d00",
+  },
+  {
+    title: "⚠ Expiring Soon",
+    value: stats.expiringSoon,
+    color: "#ff1744",
+  },
+  {
+    title: "💳 Total Payments",
+    value: stats.totalPayments,
+    color: "#7b1fa2",
+  },
+];
 
   return (
     <div

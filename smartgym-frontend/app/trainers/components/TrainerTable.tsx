@@ -13,12 +13,15 @@ type Trainer = {
 type Props = {
   trainers: Trainer[];
   onRefresh?: () => void;
+  onEdit?: (trainer: Trainer) => void;
 };
 
 export default function TrainerTable({
   trainers,
   onRefresh,
+  onEdit,
 }: Props) {
+
   const handleDelete = async (id: string) => {
     const ok = confirm("Delete this trainer?");
 
@@ -64,11 +67,13 @@ export default function TrainerTable({
           </p>
 
           <div className="flex gap-3 mt-5">
-            <button
-              className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg font-bold"
-            >
-              Edit
-            </button>
+
+          <button
+  onClick={() => onEdit?.(trainer)}
+  className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg font-bold"
+>
+  Edit
+</button>
 
             <button
               onClick={() => handleDelete(trainer._id)}

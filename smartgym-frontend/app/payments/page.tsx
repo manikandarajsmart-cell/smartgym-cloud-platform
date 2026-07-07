@@ -145,6 +145,132 @@ const paidMembers = new Set(
     }
   };
 
+  const printReceipt = (payment: any) => {
+  const receipt = `
+Smart Gym
+-----------------------------
+Payment Receipt
+
+Member : ${payment.memberName}
+
+Amount : ₹${payment.amount}
+
+Month  : ${payment.month}
+
+Status : ${payment.status}
+
+Date   : ${new Date().toLocaleDateString()}
+
+-----------------------------
+Thank You!
+`;
+
+  const w = window.open("", "_blank");
+
+  if (!w) return;
+
+  w.document.write(`
+<html>
+<head>
+<title>Receipt</title>
+</head>
+
+<body style="font-family:Arial;padding:40px;text-align:center;background:#f5f5f5">
+
+<div style="
+background:white;
+max-width:700px;
+margin:auto;
+padding:40px;
+border-radius:15px;
+box-shadow:0 0 15px rgba(0,0,0,.15);
+">
+
+<img
+src="${window.location.origin}/logo.png"
+style="width:200px;margin-bottom:20px"
+/>
+
+<h2 style="margin:0;color:#00b050;">
+SMART GYM
+</h2>
+
+<h3 style="margin-top:10px;">
+PAYMENT RECEIPT
+</h3>
+
+<hr>
+
+<div style="font-size:20px;line-height:2;text-align:center">
+
+<div><b>Member:</b> ${payment.memberName}</div>
+
+<div><b>Month:</b> ${payment.month}</div>
+
+<div style="margin:25px 0;">
+  <div style="font-size:16px;color:#666;">
+    TOTAL PAID
+  </div>
+
+  <div style="
+      font-size:36px;
+      color:#00b050;
+      font-weight:bold;
+  ">
+    ₹${payment.amount}
+  </div>
+</div>
+
+<div>
+<b>Status:</b>
+<span style="color:green;font-weight:bold">
+${payment.status}
+</span>
+</div>
+
+<div style="margin-top:15px;">
+<b>Date:</b>
+${new Date().toLocaleDateString()}
+</div>
+
+<hr style="margin:30px 0">
+
+<div style="color:#666;">
+Thank you for choosing Smart Gym
+</div>
+
+</div>
+
+<script>
+const img = document.querySelector("img");
+
+function doPrint() {
+  setTimeout(() => {
+    window.print();
+    window.onafterprint = () => window.close();
+  }, 500);
+}
+
+if (img) {
+  if (img.complete) {
+    doPrint();
+  } else {
+    img.onload = doPrint;
+    img.onerror = doPrint;
+  }
+} else {
+  doPrint();
+}
+</script>
+
+</div>
+</body>
+</html>
+`);
+
+  w.document.close();
+};
+
   return (
     <>
       <Sidebar />
@@ -272,21 +398,31 @@ const paidMembers = new Set(
                         Delete
                       </button>
 
-                      {editingId === payment._id ? (
-                        <button
-                          onClick={() => saveEdit(payment._id)}
-                          className="bg-blue-600 px-4 py-2 rounded-xl ml-3"
-                        >
-                          Save
-                        </button>
-                      ) : (
-                        <button
-                          onClick={() => startEdit(payment)}
-                          className="bg-yellow-500 text-black px-4 py-2 rounded-xl ml-3"
-                        >
-                          Edit
-                        </button>
-                      )}
+
+              {editingId === payment._id ? (
+  <button
+    onClick={() => saveEdit(payment._id)}
+    className="bg-blue-600 px-4 py-2 rounded-xl ml-3"
+  >
+    Save
+  </button>
+) : (
+  <>
+    <button
+      onClick={() => startEdit(payment)}
+      className="bg-yellow-500 text-black px-4 py-2 rounded-xl ml-3"
+    >
+      Edit
+    </button>
+   <button
+  onClick={() => printReceipt(payment)}
+  className="bg-green-600 px-4 py-2 rounded-xl ml-3"
+>
+  Receipt
+</button>
+  </>
+)}
+         
                     </span>
                   </td>
                 </tr>

@@ -18,7 +18,6 @@ export default function ClassTable({
   classes,
   onEdit,
 }: Props) {
-
 console.log("Classes received:", classes);
   const handleDelete = async (id?: string) => {
     if (!id) return;
@@ -89,9 +88,8 @@ console.log("Classes received:", classes);
                 <td>{item.duration}</td>
                 <td>{item.capacity}</td>
 
-    <td>
+              <td>
   <button
-    onClick={() => onEdit(item)}
     style={{
       background: "#2563eb",
       color: "#fff",
@@ -119,7 +117,6 @@ console.log("Classes received:", classes);
     Delete
   </button>
 </td>
-
               </tr>
             ))}
           </tbody>

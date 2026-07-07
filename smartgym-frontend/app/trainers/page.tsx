@@ -10,6 +10,7 @@ import TrainerStats from "./components/TrainerStats";
 
 export default function TrainersPage() {
   const [trainers, setTrainers] = useState<any[]>([]);
+  const [editingTrainer, setEditingTrainer] = useState<any>(null);
 
   const fetchTrainers = async () => {
     try {
@@ -38,12 +39,20 @@ export default function TrainersPage() {
 
         <TrainerStats totalTrainers={trainers.length} />
 
-        <TrainerForm onSuccess={fetchTrainers} />
+        <TrainerForm
+  editingTrainer={editingTrainer}
+  onSuccess={() => {
+    fetchTrainers();
+    setEditingTrainer(null);
+  }}
+/>
 
-        <TrainerTable
-          trainers={trainers}
-          onRefresh={fetchTrainers}
-        />
+   <TrainerTable
+  trainers={trainers}
+  onRefresh={fetchTrainers}
+  onEdit={setEditingTrainer}
+/>
+
       </div>
     </div>
   );

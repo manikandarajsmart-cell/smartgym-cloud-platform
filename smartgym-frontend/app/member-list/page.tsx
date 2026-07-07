@@ -496,6 +496,22 @@ const activeCount = members.filter(
   }}
 >
 
+<button
+  onClick={exportMembersCSV}
+  style={{
+    background: "#00c853",
+    color: "#fff",
+    border: "none",
+    padding: "12px 18px",
+    borderRadius: "8px",
+    cursor: "pointer",
+    fontWeight: "bold",
+    marginBottom: "20px",
+  }}
+>
+  📊 Export Excel
+</button>
+
 <input
   type="text"
   placeholder="🔍 Search Name or Phone"

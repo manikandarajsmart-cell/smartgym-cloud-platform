@@ -1,45 +1,74 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 
+type Trainer = {
+  _id?: string;
+  name: string;
+  specialization: string;
+  salary: string;
+  experience: string;
+};
+
 type Props = {
+  editingTrainer?: Trainer | null;
   onSuccess?: () => void;
 };
 
-export default function TrainerForm({ onSuccess }: Props) {
+  export default function TrainerForm({
+  editingTrainer,
+  onSuccess,
+}: Props) {
+
   const [name, setName] = useState("");
   const [specialization, setSpecialization] = useState("");
   const [salary, setSalary] = useState("");
   const [experience, setExperience] = useState("");
 
-  const addTrainer = async () => {
-    try {
-      await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/trainers`,
-        {
-          name,
-          specialization,
-          salary,
-          experience,
-        }
-      );
+useEffect(() => {
+  if (editingTrainer) {
+    setName(editingTrainer.name);
+    setSpecialization(editingTrainer.specialization);
+    setSalary(editingTrainer.salary);
+    setExperience(editingTrainer.experience);
+  }
+}, [editingTrainer]);
 
-      alert("💪 Trainer Added Successfully");
+const saveTrainer = async () => {
+  try {
+    const isEditing = !!editingTrainer;
 
-      setName("");
-      setSpecialization("");
-      setSalary("");
-      setExperience("");
+    await axios({
+      method: isEditing ? "put" : "post",
+      url: isEditing
+        ? `${process.env.NEXT_PUBLIC_API_URL}/trainers/${editingTrainer?._id}`
+        : `${process.env.NEXT_PUBLIC_API_URL}/trainers`,
+      data: {
+        name,
+        specialization,
+        salary,
+        experience,
+      },
+    });
 
-      if (onSuccess) {
-        onSuccess();
-      }
-    } catch (error) {
-      console.error(error);
-      alert("❌ Failed to add trainer");
-    }
-  };
+    alert(
+      isEditing
+        ? "💪 Trainer Updated Successfully"
+        : "💪 Trainer Added Successfully"
+    );
+
+    setName("");
+    setSpecialization("");
+    setSalary("");
+    setExperience("");
+
+    onSuccess?.();
+  } catch (error) {
+    console.error(error);
+    alert("❌ Failed to save trainer");
+  }
+};
 
   return (
     <div className="bg-zinc-900 p-8 rounded-2xl border border-zinc-800 max-w-2xl mb-10">
@@ -78,10 +107,10 @@ export default function TrainerForm({ onSuccess }: Props) {
       </div>
 
       <button
-        onClick={addTrainer}
+        onClick={saveTrainer}
         className="bg-green-500 hover:bg-green-600 transition-all p-4 rounded-lg font-bold w-full mt-6"
       >
-        Add Trainer
+       {editingTrainer ? "Update Trainer" : "Add Trainer"}
       </button>
     </div>
   );

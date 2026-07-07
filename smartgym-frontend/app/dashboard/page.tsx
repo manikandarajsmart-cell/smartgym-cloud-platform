@@ -44,12 +44,22 @@ const totalPayments = payments.length;
 
 const attendanceCount = attendance.length;
 
-const chartData = [
-  { name: "Jan", amount: 12000 },
-  { name: "Feb", amount: 18000 },
-  { name: "Mar", amount: 22000 },
-  { name: "Apr", amount: 25000 },
-];
+  const monthMap: Record<string, number> = {};
+
+payments.forEach((payment) => {
+  const month = payment.month || "Unknown";
+
+  monthMap[month] =
+    (monthMap[month] || 0) +
+    Number(payment.amount || 0);
+});
+
+const chartData = Object.entries(monthMap).map(
+  ([name, amount]) => ({
+    name,
+    amount,
+  })
+);
 
    useEffect(() => {
   const auth = localStorage.getItem("smartgym-auth");
@@ -86,6 +96,18 @@ const chartData = [
 
 }, [router]);
 
+const quickButtonStyle = {
+  background: "#181818",
+  color: "#fff",
+  border: "1px solid #333",
+  borderRadius: "14px",
+  padding: "18px",
+  cursor: "pointer",
+  fontSize: "17px",
+  fontWeight: "bold",
+  transition: "0.2s",
+} as const;
+
   const handleLogout = () => {
     localStorage.removeItem("smartgym-auth");
     router.push("/login");
@@ -112,6 +134,25 @@ const chartData = [
       >
 
     <DashboardHeader />
+
+<DashboardStats
+  stats={{
+    totalMembers: members.length,
+    activeMembers,
+    expiredMembers,
+    expiringSoon,
+    totalRevenue,
+    totalPayments,
+    attendanceCount,
+
+    // Required by DashboardStats.tsx
+    thisMonthRevenue: totalRevenue,
+    topPayingMember: "-",
+    activeTrainers: 3,
+    paidMembers: activeMembers,
+    pendingMembers: expiredMembers,
+  }}
+/>
 
 <div
   style={{
@@ -145,6 +186,144 @@ const chartData = [
   }}
   chartData={chartData}
 />
+<div
+  style={{
+    marginTop: "40px",
+  }}
+>
+  <h2
+    style={{
+      marginBottom: "20px",
+      fontSize: "28px",
+      fontWeight: "bold",
+    }}
+  >
+    ⚡ Quick Actions
+  </h2>
+
+  <div
+    style={{
+      display: "grid",
+      gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))",
+      gap: "20px",
+    }}
+  >
+    <button
+      onClick={() => router.push("/members")}
+      style={quickButtonStyle}
+    >
+      ➕ Add Member
+    </button>
+
+    <button
+      onClick={() => router.push("/payments")}
+      style={quickButtonStyle}
+    >
+      💳 Payments
+    </button>
+
+    <button
+      onClick={() => router.push("/attendance")}
+      style={quickButtonStyle}
+    >
+      📅 Attendance
+    </button>
+
+    <button
+      onClick={() => router.push("/scan")}
+      style={quickButtonStyle}
+    >
+      📷 Scan QR
+    </button>
+
+    <button
+      onClick={() => router.push("/member-list")}
+      style={quickButtonStyle}
+    >
+      👥 Member List
+    </button>
+
+    <button
+      onClick={() => router.push("/needs-attention")}
+      style={quickButtonStyle}
+    >
+      🚨 Needs Attention
+    </button>
+  </div>
+</div>
+
+<div
+  style={{
+    marginTop: "50px",
+    background: "#151515",
+    borderRadius: "18px",
+    padding: "25px",
+  }}
+>
+  <h2
+    style={{
+      marginBottom: "20px",
+      fontSize: "26px",
+      fontWeight: "bold",
+    }}
+  >
+    💳 Recent Payments
+  </h2>
+
+  <table
+    style={{
+      width: "100%",
+      borderCollapse: "collapse",
+    }}
+  >
+    <thead>
+      <tr>
+        <th style={{ textAlign: "left", padding: "12px" }}>Member</th>
+        <th style={{ textAlign: "left", padding: "12px" }}>Month</th>
+        <th style={{ textAlign: "left", padding: "12px" }}>Amount</th>
+        <th style={{ textAlign: "left", padding: "12px" }}>Status</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {payments
+        .slice(-5)
+        .reverse()
+        .map((payment: any, index: number) => (
+          <tr key={index}>
+            <td style={{ padding: "14px" }}>{payment.memberName}</td>
+
+            <td style={{ padding: "14px" }}>
+              {payment.month}
+            </td>
+
+            <td
+              style={{
+                padding: "14px",
+                color: "#00e676",
+                fontWeight: "bold",
+              }}
+            >
+              ₹{payment.amount}
+            </td>
+
+            <td
+              style={{
+                padding: "14px",
+                color:
+                  payment.status === "Paid"
+                    ? "#00e676"
+                    : "#ff5252",
+                fontWeight: "bold",
+              }}
+            >
+              {payment.status}
+            </td>
+          </tr>
+        ))}
+    </tbody>
+  </table>
+</div>
 
       </div>
     </div>

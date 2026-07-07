@@ -1,12 +1,25 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+type ClassItem = {
+  _id?: string;
+  className: string;
+  trainer: string;
+  schedule: string;
+  duration: string;
+  capacity: number;
+};
 
 type Props = {
+  editingClass?: ClassItem | null;
   onSuccess?: () => void;
 };
 
-export default function ClassForm({ onSuccess }: Props) {
+export default function ClassForm({
+  editingClass,
+  onSuccess,
+}: Props) {
 
   const [className, setClassName] = useState("");
   const [trainer, setTrainer] = useState("");
@@ -14,12 +27,34 @@ export default function ClassForm({ onSuccess }: Props) {
   const [duration, setDuration] = useState("");
   const [capacity, setCapacity] = useState("");
 
+  useEffect(() => {
+  if (editingClass) {
+    setClassName(editingClass.className);
+    setTrainer(editingClass.trainer);
+    setSchedule(editingClass.schedule);
+    setDuration(editingClass.duration);
+    setCapacity(String(editingClass.capacity));
+  } else {
+    setClassName("");
+    setTrainer("");
+    setSchedule("");
+    setDuration("");
+    setCapacity("");
+  }
+}, [editingClass]);
+
   const handleSubmit = async () => {
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/classes`,
-        {
-          method: "POST",
+
+  const isEditing = !!editingClass;
+
+const res = await fetch(
+  isEditing
+    ? `${process.env.NEXT_PUBLIC_API_URL}/classes/${editingClass?._id}`
+    : `${process.env.NEXT_PUBLIC_API_URL}/classes`,
+  {
+    method: isEditing ? "PUT" : "POST",
+
           headers: {
             "Content-Type": "application/json",
           },
@@ -36,7 +71,12 @@ export default function ClassForm({ onSuccess }: Props) {
       const data = await res.json();
 
   if (data.success) {
-  alert("Class Added Successfully!");
+
+  alert(
+  isEditing
+    ? "Class Updated Successfully!"
+    : "Class Added Successfully!"
+);
 
   setClassName("");
   setTrainer("");
@@ -66,7 +106,7 @@ export default function ClassForm({ onSuccess }: Props) {
         padding: 20,
       }}
     >
-      <h2>Add Class</h2>
+   <h2>{editingClass ? "Edit Class" : "Add Class"}</h2>
 
       <input
         placeholder="Class Name"
@@ -117,8 +157,10 @@ export default function ClassForm({ onSuccess }: Props) {
           fontWeight: "bold",
         }}
       >
-        Save Class
+         {editingClass ? "Update Class" : "Save Class"}
+
       </button>
+
     </div>
   );
 }
