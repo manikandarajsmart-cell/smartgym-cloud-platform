@@ -9,17 +9,36 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = () => {
-    if (
-      email === "manikandarajsmart@gmail.com" &&
-      password === "123456"
-    ) {
-      localStorage.setItem("smartgym-auth", "true");
-      router.push("/dashboard");
-    } else {
-      alert("Invalid credentials");
+  const handleLogin = async () => {
+  try {
+    const response = await fetch("/api/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email,
+        password,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+      alert(data.message || "Invalid credentials");
+      return;
     }
-  };
+
+    localStorage.setItem("smartgym-auth", "true");
+    localStorage.setItem("smartgym-user", JSON.stringify(data.user));
+    localStorage.setItem("smartgym-role", data.user.role);
+
+    router.push("/dashboard");
+  } catch (error) {
+    console.error(error);
+    alert("Server Error");
+  }
+};
 
   return (
     <div

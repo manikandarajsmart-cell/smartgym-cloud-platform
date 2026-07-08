@@ -7,6 +7,7 @@ import Sidebar from "../../components/Sidebar";
 import TrainerForm from "./components/TrainerForm";
 import TrainerTable from "./components/TrainerTable";
 import TrainerStats from "./components/TrainerStats";
+import RoleGuard from "@/components/auth/RoleGuard";
 
 export default function TrainersPage() {
   const [trainers, setTrainers] = useState<any[]>([]);
@@ -28,8 +29,10 @@ export default function TrainersPage() {
     fetchTrainers();
   }, []);
 
-  return (
+return (
+  <RoleGuard allowedRoles={["admin"]}>
     <div className="bg-black text-white min-h-screen flex">
+
       <Sidebar />
 
       <div className="ml-64 p-10 w-full">
@@ -53,7 +56,8 @@ export default function TrainersPage() {
   onEdit={setEditingTrainer}
 />
 
-      </div>
     </div>
-  );
+    </div>
+  </RoleGuard>
+);
 }

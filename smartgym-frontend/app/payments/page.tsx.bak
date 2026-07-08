@@ -476,7 +476,6 @@ const exportPaymentsToExcel = () => {
           </table>
         </div>
       </main>
- 
-       </>
-);
+    </>
+  );
 }
