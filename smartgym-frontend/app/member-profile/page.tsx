@@ -6,6 +6,14 @@ import { useRouter } from "next/navigation";
 import Sidebar from "../../components/Sidebar";
 import ActionButton from "@/components/ui/ActionButton";
 
+import ProfileHeader from "./components/ProfileHeader";
+import MemberSummaryCards from "./components/MemberSummaryCards";
+import PaymentHistory from "./components/PaymentHistory";
+import AttendanceHistory from "./components/AttendanceHistory";
+import WorkoutHistory from "./components/WorkoutHistory";
+import DietHistory from "./components/DietHistory";
+import ProgressHistory from "./components/ProgressHistory";
+
 export default function MemberProfilePage() {
   const router = useRouter();
   const [member, setMember] = useState<any>(null);
@@ -13,6 +21,7 @@ export default function MemberProfilePage() {
   const [attendance, setAttendance] = useState<any[]>([]);
   const [workouts, setWorkouts] = useState<any[]>([]);
   const [dietPlans, setDietPlans] = useState<any[]>([]);
+  const [progress, setProgress] = useState<any[]>([]);
 
 useEffect(() => {
   const stored = localStorage.getItem("selectedMember");
@@ -28,7 +37,7 @@ useEffect(() => {
         setPayments(data.payments);
       }
     })
-    .catch((err) => console.log(err));
+      .catch((err) => console.log(err));
   fetch(`${process.env.NEXT_PUBLIC_API_URL}/attendance`)
   .then((res) => res.json())
   .then((data) => {
@@ -53,6 +62,15 @@ useEffect(() => {
     }
   })
   .catch((err) => console.log(err));
+  fetch(`${process.env.NEXT_PUBLIC_API_URL}/progress`)
+  .then((res) => res.json())
+  .then((data) => {
+    if (data.success) {
+      setProgress(data.progress);
+    }
+  })
+  .catch((err) => console.log(err));
+
 }, []);
 
   if (!member) {
@@ -175,6 +193,20 @@ useEffect(() => {
               <h2 style={{ fontSize: "34px" }}>
                 {member.name}
               </h2>
+  <div
+  style={{
+    color: "#999",
+    fontSize: "18px",
+    marginTop: "8px",
+    marginBottom: "20px",
+  }}
+>
+
+Member ID: <b>{member.memberId || "-"}</b> • Joined{" "}
+<b>{member.joinDate || "-"}</b>
+
+</div>
+
             <div
   style={{
     display: "flex",
@@ -281,110 +313,18 @@ useEffect(() => {
 
               </p>
             </div>
-              <div
-  style={{
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
-    gap: "15px",
-    marginTop: "25px",
-    marginBottom: "30px",
-  }}
->
-  <div
-    style={{
-      background: "#111",
-      padding: "20px",
-      borderRadius: "12px",
-      textAlign: "center",
-    }}
-  >
-    <h3>💰 Payments</h3>
-    <h2>
-      ₹
-      {payments
-        .filter(
-          (p) =>
-            p.memberName?.toLowerCase() ===
-            member.name?.toLowerCase()
-        )
-        .reduce((sum, p) => sum + Number(p.amount || 0), 0)}
-    </h2>
-  </div>
 
-  <div
-    style={{
-      background: "#111",
-      padding: "20px",
-      borderRadius: "12px",
-      textAlign: "center",
-    }}
-  >
-    <h3>📅 Attendance</h3>
-    <h2>
-      {
-        attendance.filter(
-          (a) =>
-            a.memberName?.toLowerCase() ===
-            member.name?.toLowerCase()
-        ).length
-      }
-    </h2>
-  </div>
-
-  <div
-    style={{
-      background: "#111",
-      padding: "20px",
-      borderRadius: "12px",
-      textAlign: "center",
-    }}
-  >
-    <h3>🏋 Workouts</h3>
-    <h2>
-      {
-        workouts.filter(
-          (w) =>
-            w.memberName?.toLowerCase() ===
-            member.name?.toLowerCase()
-        ).length
-      }
-    </h2>
-  </div>
-
-  <div
-    style={{
-      background: "#111",
-      padding: "20px",
-      borderRadius: "12px",
-      textAlign: "center",
-    }}
-  >
-    <h3>🥗 Diet</h3>
-    <h2>
-      {dietPlans.filter(
-        (d) =>
-          d.memberName?.toLowerCase() ===
-          member.name?.toLowerCase()
-      ).length > 0
-        ? "Active"
-        : "None"}
-    </h2>
-  </div>
-
-  <div
-    style={{
-      background: "#111",
-      padding: "20px",
-      borderRadius: "12px",
-      textAlign: "center",
-    }}
-  >
-    <h3>⭐ Status</h3>
-    <h2 style={{ color: "#00e676" }}>{status}</h2>
-  </div>
-</div>
           </div>
         </div>
+
+<MemberSummaryCards
+  member={member}
+  payments={payments}
+  attendance={attendance}
+  workouts={workouts}
+  dietPlans={dietPlans}
+  status={status}
+/>
 
         <div
           style={{
@@ -472,6 +412,11 @@ useEffect(() => {
 
           </div>
 
+
+
+
+
+
           <div
             style={{
               background: "#111",
@@ -551,59 +496,10 @@ useEffect(() => {
             }}
           >
 
-         <h2 style={{ marginBottom: "15px" }}>🏋 Workout Plans</h2>
-
-<table
-  style={{
-    width: "100%",
-    borderCollapse: "collapse",
-    color: "white",
-  }}
->
-  <thead>
-    <tr style={{ borderBottom: "1px solid #333" }}>
-      <th style={{ textAlign: "left", padding: "8px" }}>Day</th>
-      <th style={{ textAlign: "left", padding: "8px" }}>Exercise</th>
-      <th style={{ textAlign: "left", padding: "8px" }}>Sets</th>
-      <th style={{ textAlign: "left", padding: "8px" }}>Reps</th>
-    </tr>
-  </thead>
-
-  <tbody>
-    {workouts
-      .filter(
-        (workout) =>
-          workout.memberName?.toLowerCase() ===
-          member.name?.toLowerCase()
-      )
-      .map((workout) => (
-        <tr key={workout._id}>
-          <td style={{ padding: "8px" }}>{workout.day}</td>
-          <td style={{ padding: "8px" }}>{workout.exercise}</td>
-          <td style={{ padding: "8px" }}>{workout.sets}</td>
-          <td style={{ padding: "8px" }}>{workout.reps}</td>
-        </tr>
-      ))}
-
-    {workouts.filter(
-      (workout) =>
-        workout.memberName?.toLowerCase() ===
-        member.name?.toLowerCase()
-    ).length === 0 && (
-      <tr>
-        <td
-          colSpan={4}
-          style={{
-            textAlign: "center",
-            padding: "20px",
-          }}
-        >
-          No workout plan found.
-        </td>
-      </tr>
-    )}
-  </tbody>
-</table>
+   <WorkoutHistory
+  member={member}
+  workouts={workouts}
+/>
 
           </div>
 
@@ -615,45 +511,15 @@ useEffect(() => {
             }}
           >
 
-         <h2 style={{ marginBottom: "15px" }}>🥗 Diet Plans</h2>
+<DietHistory
+  member={member}
+  dietPlans={dietPlans}
+/>
+<ProgressHistory
+  member={member}
+  progress={progress}
+/>
 
-{dietPlans
-  .filter(
-    (diet) =>
-      diet.memberName?.toLowerCase() ===
-      member.name?.toLowerCase()
-  )
-  .map((diet) => (
-    <div key={diet._id}>
-      <table
-        style={{
-          width: "100%",
-          color: "white",
-          borderCollapse: "collapse",
-        }}
-      >
-        <tbody>
-          <tr><td><b>Breakfast</b></td><td>{diet.breakfast}</td></tr>
-          <tr><td><b>Lunch</b></td><td>{diet.lunch}</td></tr>
-          <tr><td><b>Snacks</b></td><td>{diet.snacks}</td></tr>
-          <tr><td><b>Dinner</b></td><td>{diet.dinner}</td></tr>
-          <tr><td><b>Calories</b></td><td>{diet.calories} kcal</td></tr>
-          <tr><td><b>Protein</b></td><td>{diet.protein} g</td></tr>
-          <tr><td><b>Carbs</b></td><td>{diet.carbs} g</td></tr>
-          <tr><td><b>Fat</b></td><td>{diet.fat} g</td></tr>
-          <tr><td><b>Water</b></td><td>{diet.water} L</td></tr>
-        </tbody>
-      </table>
-    </div>
-  ))}
-
-{dietPlans.filter(
-  (diet) =>
-    diet.memberName?.toLowerCase() ===
-    member.name?.toLowerCase()
-).length === 0 && (
-  <p>No diet plan found.</p>
-)}
           </div>
         </div>
       </div>

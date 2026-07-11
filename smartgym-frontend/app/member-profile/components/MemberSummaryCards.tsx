@@ -78,6 +78,19 @@ export default function MemberSummaryCards({
         value={status}
         color={status === "Active" ? "#00e676" : "#ff5252"}
       />
+   
+    <Card
+  title="⏳ Days Left"
+  value={member.daysLeft || 0}
+  color={
+    Number(member.daysLeft) <= 7
+      ? "#ff5252"
+      : Number(member.daysLeft) <= 30
+      ? "#ff9800"
+      : "#00e676"
+  }
+/>
+
     </div>
   );
 }
@@ -92,22 +105,39 @@ function Card({
   color?: string;
 }) {
   return (
-    <div
-      style={{
-        background: "#111",
-        padding: "20px",
-        borderRadius: "12px",
-        textAlign: "center",
-      }}
-    >
-      <h3>{title}</h3>
 
-      <h2
-        style={{
-          color,
-          marginTop: "10px",
-        }}
-      >
+  <div
+  style={{
+    background: "#161616",
+    padding: "24px",
+    borderRadius: "16px",
+    textAlign: "center",
+    border: `1px solid ${color}`,
+    boxShadow: "0 8px 24px rgba(0,0,0,0.25)",
+    transition: "all .25s ease",
+  }}
+>
+
+   <h3
+  style={{
+    color: "#aaa",
+    fontSize: "16px",
+    marginBottom: "12px",
+    fontWeight: 500,
+  }}
+>
+  {title}
+</h3>
+
+   <h2
+  style={{
+    color,
+    fontSize: "34px",
+    fontWeight: "bold",
+    margin: 0,
+  }}
+>
+
         {value}
       </h2>
     </div>
