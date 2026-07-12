@@ -412,11 +412,6 @@ Member ID: <b>{member.memberId || "-"}</b> • Joined{" "}
 
           </div>
 
-
-
-
-
-
           <div
             style={{
               background: "#111",
@@ -503,24 +498,33 @@ Member ID: <b>{member.memberId || "-"}</b> • Joined{" "}
 
           </div>
 
-          <div
-            style={{
-              background: "#111",
-              padding: "25px",
-              borderRadius: "15px",
-            }}
-          >
+<div
+  style={{
+    background: "#111",
+    padding: "25px",
+    borderRadius: "15px",
+  }}
+>
+  <DietHistory
+    member={member}
+    dietPlans={dietPlans}
+  />
+</div>
 
-<DietHistory
-  member={member}
-  dietPlans={dietPlans}
-/>
-<ProgressHistory
-  member={member}
-  progress={progress}
-/>
+<div
+  style={{
+    background: "#111",
+    padding: "25px",
+    borderRadius: "15px",
+    marginTop: "25px",
+  }}
+>
+  <ProgressHistory
+    member={member}
+    progress={progress}
+  />
+</div>
 
-          </div>
         </div>
       </div>
     </div>

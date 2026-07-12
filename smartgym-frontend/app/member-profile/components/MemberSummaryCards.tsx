@@ -21,9 +21,10 @@ export default function MemberSummaryCards({
     <div
       style={{
         display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
-        gap: "15px",
-        marginTop: "25px",
+      
+        gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",    
+        gap: "20px",       
+ marginTop: "25px",
         marginBottom: "30px",
       }}
     >
@@ -109,20 +110,26 @@ function Card({
   <div
   style={{
     background: "#161616",
-    padding: "24px",
-    borderRadius: "16px",
+    padding: "34px",
+    borderRadius: "22px",
     textAlign: "center",
     border: `1px solid ${color}`,
     boxShadow: "0 8px 24px rgba(0,0,0,0.25)",
     transition: "all .25s ease",
+
+    minHeight: "170px",
+display: "flex",
+flexDirection: "column",
+justifyContent: "center",
+
   }}
 >
 
    <h3
   style={{
     color: "#aaa",
-    fontSize: "16px",
-    marginBottom: "12px",
+    fontSize: "18px",
+    marginBottom: "18px",
     fontWeight: 500,
   }}
 >
@@ -132,7 +139,7 @@ function Card({
    <h2
   style={{
     color,
-    fontSize: "34px",
+    fontSize: "46px",
     fontWeight: "bold",
     margin: 0,
   }}

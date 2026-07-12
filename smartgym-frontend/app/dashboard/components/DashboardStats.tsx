@@ -6,6 +6,8 @@ type Stats = {
   topPayingMember: string;
   activeTrainers: number;
   attendanceCount: number;
+  todayRevenue: number;
+  todayMembers: number;
   activeMembers: number;
   paidMembers: number;
   pendingMembers: number;
@@ -51,6 +53,16 @@ const cards = [
     color: "#ff6d00",
   },
   {
+  title: "💰 Today's Revenue",
+  value: `₹${stats.todayRevenue.toLocaleString("en-IN")}`,
+  color: "#00e676",
+},
+{
+  title: "🆕 New Members Today",
+  value: stats.todayMembers,
+  color: "#03a9f4",
+},  
+{
     title: "⚠ Expiring Soon",
     value: stats.expiringSoon,
     color: "#ff1744",

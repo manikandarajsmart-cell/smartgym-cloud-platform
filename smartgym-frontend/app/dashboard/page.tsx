@@ -42,7 +42,19 @@ const expiringSoon = members.filter((member) => {
 
 const totalPayments = payments.length;
 
-const attendanceCount = attendance.length;
+const today = new Date().toLocaleDateString();
+
+const attendanceCount = attendance.filter(
+  (item) => item.date === today
+).length;
+
+const todayRevenue = payments
+  .filter((payment) => payment.date === today)
+  .reduce((sum, payment) => sum + Number(payment.amount || 0), 0);
+
+const todayMembers = members.filter(
+  (member) => member.joinDate === today
+).length;
 
   const monthMap: Record<string, number> = {};
 
@@ -144,6 +156,8 @@ const quickButtonStyle = {
     totalRevenue,
     totalPayments,
     attendanceCount,
+    todayRevenue,
+    todayMembers,
 
     // Required by DashboardStats.tsx
     thisMonthRevenue: totalRevenue,
@@ -324,7 +338,81 @@ const quickButtonStyle = {
     </tbody>
   </table>
 </div>
+<div
+  style={{
+    marginTop: "40px",
+    background: "#151515",
+    borderRadius: "18px",
+    padding: "25px",
+    border: "1px solid #2a2a2a",
+  }}
+>
+  <h2
+    style={{
+      fontSize: "28px",
+      marginBottom: "20px",
+      color: "#00ff66",
+    }}
+  >
 
+  <div
+  style={{
+    marginTop: "40px",
+    background: "#151515",
+    borderRadius: "18px",
+    padding: "25px",
+    border: "1px solid #2a2a2a",
+  }}
+>
+  <h2
+    style={{
+      color: "#00ff66",
+      marginBottom: "20px",
+      fontSize: "28px",
+    }}
+  >
+    📊 Today's Summary
+  </h2>
+
+  <div
+    style={{
+      display: "grid",
+      gridTemplateColumns: "repeat(4,1fr)",
+      gap: "20px",
+    }}
+  >
+    <div style={{ background:"#111",padding:"20px",borderRadius:"12px" }}>
+      <h3>👥 New Members</h3>
+      <h1>2</h1>
+    </div>
+
+    <div style={{ background:"#111",padding:"20px",borderRadius:"12px" }}>
+      <h3>📷 Attendance</h3>
+      <h1>{attendanceCount}</h1>
+    </div>
+
+    <div style={{ background:"#111",padding:"20px",borderRadius:"12px" }}>
+      <h3>💰 Revenue</h3>
+      <h1>₹4500</h1>
+    </div>
+
+    <div style={{ background:"#111",padding:"20px",borderRadius:"12px" }}>
+      <h3>⚠️ Expiring</h3>
+      <h1>{expiringSoon}</h1>
+    </div>
+  </div>
+</div>
+
+    🔥 Recent Activity
+  </h2>
+
+  <div style={{ lineHeight: "2.2", fontSize: "18px" }}>
+    <div>🟢 Premium Test checked in today</div>
+    <div>💳 Payment received from Premium Test</div>
+    <div>👤 New member registered</div>
+    <div>⚠️ 4 memberships expiring soon</div>
+  </div>
+</div>
       </div>
     </div>
   );
