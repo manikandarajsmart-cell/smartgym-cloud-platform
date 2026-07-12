@@ -344,74 +344,10 @@ Member ID: <b>{member.memberId || "-"}</b> • Joined{" "}
               borderRadius: "15px",
             }}
           >
-
-          <h2 style={{ marginBottom: "15px" }}>💳 Payment History</h2>
-
-<table
-  style={{
-    width: "100%",
-    borderCollapse: "collapse",
-    color: "white",
-  }}
->
-  <thead>
-    <tr style={{ borderBottom: "1px solid #333" }}>
-      <th style={{ textAlign: "left", padding: "8px" }}>Date / Month</th>
-      <th style={{ textAlign: "left", padding: "8px" }}>Amount</th>
-      <th style={{ textAlign: "left", padding: "8px" }}>Status</th>
-    </tr>
-  </thead>
-
-  <tbody>
-    {payments
-      .filter(
-        (payment) =>
-          payment.memberName?.toLowerCase() ===
-          member.name?.toLowerCase()
-      )
-      .map((payment) => (
-        <tr key={payment._id}>
-          <td style={{ padding: "8px" }}>
-            {payment.date || payment.month || "-"}
-          </td>
-
-          <td style={{ padding: "8px" }}>
-            ₹{payment.amount}
-          </td>
-
-          <td
-            style={{
-              padding: "8px",
-              color:
-                payment.status === "Paid"
-                  ? "#00e676"
-                  : "#ff5252",
-            }}
-          >
-            {payment.status || "Paid"}
-          </td>
-        </tr>
-      ))}
-
-    {payments.filter(
-      (payment) =>
-        payment.memberName?.toLowerCase() ===
-        member.name?.toLowerCase()
-    ).length === 0 && (
-      <tr>
-        <td
-          colSpan={3}
-          style={{
-            textAlign: "center",
-            padding: "20px",
-          }}
-        >
-          No payment history found.
-        </td>
-      </tr>
-    )}
-  </tbody>
-</table>
+         <PaymentHistory
+  member={member}
+  payments={payments}
+/>
 
           </div>
 
