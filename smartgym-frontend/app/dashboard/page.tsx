@@ -11,12 +11,13 @@ import RevenueAnalytics from "./components/RevenueAnalytics";
 export default function DashboardPage() {
   const router = useRouter();
 
-  const [stats, setStats] = useState({
-    totalMembers: 12,
-    activeTrainers: 3,
-    monthlyRevenue: 25000,
-    growthRate: "18%",
-  });
+const [stats, setStats] = useState({
+  totalMembers: 0,
+  activeMembers: 0,
+  expiredMembers: 0,
+  totalRevenue: 0,
+  todayAttendance: 0,
+});
 
 const [members, setMembers] = useState<any[]>([]);
 const [payments, setPayments] = useState<any[]>([]);
@@ -80,6 +81,15 @@ const chartData = Object.entries(monthMap).map(
     router.push("/login");
     return;
   }
+
+  fetch(`${process.env.NEXT_PUBLIC_API_URL}/dashboard/stats`)
+  .then((res) => res.json())
+  .then((data) => {
+    if (data.success) {
+      setStats(data.stats);
+    }
+  })
+  .catch(console.error);
 
   fetch(`${process.env.NEXT_PUBLIC_API_URL}/members`)
     .then((res) => res.json())
@@ -149,22 +159,21 @@ const quickButtonStyle = {
 
 <DashboardStats
   stats={{
-    totalMembers: members.length,
-    activeMembers,
-    expiredMembers,
+    totalMembers: stats.totalMembers,
+    activeMembers: stats.activeMembers,
+    expiredMembers: stats.expiredMembers,
     expiringSoon,
-    totalRevenue,
+    totalRevenue: stats.totalRevenue,
     totalPayments,
-    attendanceCount,
+    attendanceCount: stats.todayAttendance,
     todayRevenue,
     todayMembers,
 
-    // Required by DashboardStats.tsx
-    thisMonthRevenue: totalRevenue,
+    thisMonthRevenue: stats.totalRevenue,
     topPayingMember: "-",
     activeTrainers: 3,
-    paidMembers: activeMembers,
-    pendingMembers: expiredMembers,
+    paidMembers: stats.activeMembers,
+    pendingMembers: stats.expiredMembers,
   }}
 />
 
@@ -338,22 +347,6 @@ const quickButtonStyle = {
     </tbody>
   </table>
 </div>
-<div
-  style={{
-    marginTop: "40px",
-    background: "#151515",
-    borderRadius: "18px",
-    padding: "25px",
-    border: "1px solid #2a2a2a",
-  }}
->
-  <h2
-    style={{
-      fontSize: "28px",
-      marginBottom: "20px",
-      color: "#00ff66",
-    }}
-  >
 
   <div
   style={{
@@ -403,16 +396,23 @@ const quickButtonStyle = {
   </div>
 </div>
 
-    🔥 Recent Activity
-  </h2>
+<h2
+  style={{
+    color: "#00ff66",
+    marginBottom: "20px",
+    fontSize: "28px",
+  }}
+>
+  🔥 Recent Activity
+</h2>
 
-  <div style={{ lineHeight: "2.2", fontSize: "18px" }}>
+<div style={{ lineHeight: "2.2", fontSize: "18px" }}>
+
     <div>🟢 Premium Test checked in today</div>
     <div>💳 Payment received from Premium Test</div>
     <div>👤 New member registered</div>
     <div>⚠️ 4 memberships expiring soon</div>
   </div>
-</div>
       </div>
     </div>
   );
