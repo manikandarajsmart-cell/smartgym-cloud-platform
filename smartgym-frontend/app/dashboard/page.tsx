@@ -7,6 +7,9 @@ import { useRouter } from "next/navigation";
 import DashboardHeader from "./components/DashboardHeader";
 import DashboardStats from "./components/DashboardStats";
 import RevenueAnalytics from "./components/RevenueAnalytics";
+import RecentPayments from "./components/RecentPayments";
+import TodaySummary from "./components/TodaySummary";
+import RecentActivity from "./components/RecentActivity";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -275,144 +278,17 @@ const quickButtonStyle = {
   </div>
 </div>
 
-<div
-  style={{
-    marginTop: "50px",
-    background: "#151515",
-    borderRadius: "18px",
-    padding: "25px",
-  }}
->
-  <h2
-    style={{
-      marginBottom: "20px",
-      fontSize: "26px",
-      fontWeight: "bold",
-    }}
-  >
-    💳 Recent Payments
-  </h2>
+<RecentPayments payments={payments} />
 
-  <table
-    style={{
-      width: "100%",
-      borderCollapse: "collapse",
-    }}
-  >
-    <thead>
-      <tr>
-        <th style={{ textAlign: "left", padding: "12px" }}>Member</th>
-        <th style={{ textAlign: "left", padding: "12px" }}>Month</th>
-        <th style={{ textAlign: "left", padding: "12px" }}>Amount</th>
-        <th style={{ textAlign: "left", padding: "12px" }}>Status</th>
-      </tr>
-    </thead>
+<TodaySummary
+  attendanceCount={attendanceCount}
+  todayRevenue={todayRevenue}
+  todayMembers={todayMembers}
+  expiringSoon={expiringSoon}
+/>
 
-    <tbody>
-      {payments
-        .slice(-5)
-        .reverse()
-        .map((payment: any, index: number) => (
-          <tr key={index}>
-            <td style={{ padding: "14px" }}>{payment.memberName}</td>
+<RecentActivity />
 
-            <td style={{ padding: "14px" }}>
-              {payment.month}
-            </td>
-
-            <td
-              style={{
-                padding: "14px",
-                color: "#00e676",
-                fontWeight: "bold",
-              }}
-            >
-              ₹{payment.amount}
-            </td>
-
-            <td
-              style={{
-                padding: "14px",
-                color:
-                  payment.status === "Paid"
-                    ? "#00e676"
-                    : "#ff5252",
-                fontWeight: "bold",
-              }}
-            >
-              {payment.status}
-            </td>
-          </tr>
-        ))}
-    </tbody>
-  </table>
-</div>
-
-  <div
-  style={{
-    marginTop: "40px",
-    background: "#151515",
-    borderRadius: "18px",
-    padding: "25px",
-    border: "1px solid #2a2a2a",
-  }}
->
-  <h2
-    style={{
-      color: "#00ff66",
-      marginBottom: "20px",
-      fontSize: "28px",
-    }}
-  >
-    📊 Today's Summary
-  </h2>
-
-  <div
-    style={{
-      display: "grid",
-      gridTemplateColumns: "repeat(4,1fr)",
-      gap: "20px",
-    }}
-  >
-    <div style={{ background:"#111",padding:"20px",borderRadius:"12px" }}>
-      <h3>👥 New Members</h3>
-      <h1>2</h1>
-    </div>
-
-    <div style={{ background:"#111",padding:"20px",borderRadius:"12px" }}>
-      <h3>📷 Attendance</h3>
-      <h1>{attendanceCount}</h1>
-    </div>
-
-    <div style={{ background:"#111",padding:"20px",borderRadius:"12px" }}>
-      <h3>💰 Revenue</h3>
-      <h1>₹4500</h1>
-    </div>
-
-    <div style={{ background:"#111",padding:"20px",borderRadius:"12px" }}>
-      <h3>⚠️ Expiring</h3>
-      <h1>{expiringSoon}</h1>
-    </div>
-  </div>
-</div>
-
-<h2
-  style={{
-    color: "#00ff66",
-    marginBottom: "20px",
-    fontSize: "28px",
-  }}
->
-  🔥 Recent Activity
-</h2>
-
-<div style={{ lineHeight: "2.2", fontSize: "18px" }}>
-
-    <div>🟢 Premium Test checked in today</div>
-    <div>💳 Payment received from Premium Test</div>
-    <div>👤 New member registered</div>
-    <div>⚠️ 4 memberships expiring soon</div>
-  </div>
       </div>
     </div>
   );
