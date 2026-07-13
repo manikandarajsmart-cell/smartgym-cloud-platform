@@ -7,6 +7,7 @@ export default function ProgressPage() {
   const [members, setMembers] = useState<any[]>([]);
   const [progress, setProgress] = useState<any[]>([]);
   const [search, setSearch] = useState("");
+  const [editingId, setEditingId] = useState("");
 
 const [form, setForm] = useState({
   memberId: "",
@@ -53,39 +54,78 @@ const loadMembers = async () => {
   };
 
   const saveProgress = async () => {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/progress`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(form),
-      }
-    );
-
-    const data = await res.json();
-
-    if (data.success) {
-      alert("Progress Saved");
-
-     setForm({
-  memberId: "",
-  memberName: "",
-  weight: "",
-  bodyFat: "",
-  bmi: "",
-  chest: "",
-  waist: "",
-  arms: "",
-  thighs: "",
-  calves: "",
-  shoulders: "",
-  notes: "",
-});
-      loadProgress();
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/progress`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(form),
     }
-  };
+  );
+
+  const data = await res.json();
+
+  if (data.success) {
+    alert("Progress Saved");
+
+    setForm({
+      memberId: "",
+      memberName: "",
+      weight: "",
+      bodyFat: "",
+      bmi: "",
+      chest: "",
+      waist: "",
+      arms: "",
+      thighs: "",
+      calves: "",
+      shoulders: "",
+      notes: "",
+    });
+
+    loadProgress();
+  }
+};
+
+const updateProgress = async () => {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/progress/${editingId}`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(form),
+    }
+  );
+
+  const data = await res.json();
+
+  if (data.success) {
+    alert("Progress Updated");
+
+    setEditingId("");
+
+    setForm({
+      memberId: "",
+      memberName: "",
+      weight: "",
+      bodyFat: "",
+      bmi: "",
+      chest: "",
+      waist: "",
+      arms: "",
+      thighs: "",
+      calves: "",
+      shoulders: "",
+      notes: "",
+    });
+
+    loadProgress();
+  }
+};
 
   return (
     <div
@@ -267,20 +307,21 @@ const loadMembers = async () => {
             }
           />
 
-          <button
-            onClick={saveProgress}
-            style={{
-              background: "#00c853",
-              color: "#fff",
-              padding: 14,
-              border: "none",
-              borderRadius: 8,
-              cursor: "pointer",
-              fontWeight: "bold",
-            }}
-          >
-            Save Progress
-          </button>
+        <button
+  onClick={editingId ? updateProgress : saveProgress}
+  style={{
+    background: editingId ? "#ff9800" : "#00c853",
+    color: "#fff",
+    padding: 14,
+    border: "none",
+    borderRadius: 8,
+    cursor: "pointer",
+    fontWeight: "bold",
+  }}
+>
+  {editingId ? "Update Progress" : "Save Progress"}
+</button>
+ 
         </div>
 
         <input
@@ -344,19 +385,38 @@ const loadMembers = async () => {
 <td>{p.waist || "-"}</td>
 <td>{p.arms || "-"}</td>
 <td>
-  <button
-    style={{
-      background: "#2962ff",
-      color: "#fff",
-      border: "none",
-      padding: "6px 12px",
-      borderRadius: "6px",
-      marginRight: "8px",
-      cursor: "pointer",
-    }}
-  >
-    Edit
-  </button>
+ 
+<button
+  onClick={() => {
+    setEditingId(p._id);
+
+    setForm({
+      memberId: p.memberId || "",
+      memberName: p.memberName || "",
+      weight: String(p.weight || ""),
+      bodyFat: String(p.bodyFat || ""),
+      bmi: String(p.bmi || ""),
+      chest: String(p.chest || ""),
+      waist: String(p.waist || ""),
+      arms: String(p.arms || ""),
+      thighs: String(p.thighs || ""),
+      calves: String(p.calves || ""),
+      shoulders: String(p.shoulders || ""),
+      notes: p.notes || "",
+    });
+  }}
+  style={{
+    background: "#2962ff",
+    color: "#fff",
+    border: "none",
+    padding: "6px 12px",
+    borderRadius: "6px",
+    marginRight: "8px",
+    cursor: "pointer",
+  }}
+>
+  Edit
+</button>
 
 <button
   onClick={async () => {
