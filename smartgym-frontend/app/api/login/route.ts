@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server";
+import bcrypt from "bcryptjs";
+
 import connectDB from "@/lib/mongodb";
 import User from "@/models/User";
 
@@ -10,11 +12,25 @@ export async function POST(req: Request) {
 
     const user = await User.findOne({
       email,
-      password,
       active: true,
     });
 
     if (!user) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Invalid email or password",
+        },
+        { status: 401 }
+      );
+    }
+
+    const passwordMatch = await bcrypt.compare(
+      password,
+      user.password
+    );
+
+    if (!passwordMatch) {
       return NextResponse.json(
         {
           success: false,

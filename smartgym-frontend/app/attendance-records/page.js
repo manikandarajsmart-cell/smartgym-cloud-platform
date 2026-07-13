@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 export default function AttendanceRecordsPage() {
   const [records, setRecords] = useState([]);
   const [search, setSearch] = useState("");
+  const [todayCount, setTodayCount] = useState(0);
 
   const exportCSV = () => {
   const headers = ["Member Name", "Date", "Time"];
@@ -38,6 +39,13 @@ export default function AttendanceRecordsPage() {
       const data = await res.json();
 
       setRecords(data.attendance || []);
+  const today = new Date().toLocaleDateString();
+
+setTodayCount(
+  (data.attendance || []).filter(
+    (item) => item.date === today
+  ).length
+);
     } catch (error) {
       console.log(error);
     }

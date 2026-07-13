@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Scanner } from "@yudiel/react-qr-scanner";
+import Sidebar from "../../components/Sidebar";
 
 type Member = {
   name: string;
@@ -51,8 +52,12 @@ export default function ScanPage() {
     }
   };
 
-  return (
+return (
+  <>
+    <Sidebar />
+
     <div
+
       style={{
         minHeight: "100vh",
         background: "#000",
@@ -151,6 +156,8 @@ export default function ScanPage() {
           <div><strong>📅 Expiry:</strong> {memberInfo.expiryDate}</div>
         </div>
       )}
+
     </div>
+  </>
   );
 }

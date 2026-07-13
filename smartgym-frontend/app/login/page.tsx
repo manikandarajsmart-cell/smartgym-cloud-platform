@@ -24,10 +24,13 @@ export default function LoginPage() {
 
     const data = await response.json();
 
-    if (!response.ok || !data.success) {
-      alert(data.message || "Invalid credentials");
-      return;
-    }
+    console.log("Login response:", data);
+console.log("HTTP status:", response.status);
+
+if (!response.ok || !data.success) {
+  alert(JSON.stringify(data));
+  return;
+}
 
     localStorage.setItem("smartgym-auth", "true");
     localStorage.setItem("smartgym-user", JSON.stringify(data.user));
