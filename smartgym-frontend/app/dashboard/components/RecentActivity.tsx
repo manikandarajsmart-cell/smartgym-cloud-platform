@@ -1,4 +1,15 @@
-export default function RecentActivity() {
+type Activity = {
+  icon: string;
+  text: string;
+};
+
+type Props = {
+  activities: Activity[];
+};
+
+export default function RecentActivity({
+  activities,
+}: Props) {
   return (
     <div
       style={{
@@ -20,10 +31,17 @@ export default function RecentActivity() {
       </h2>
 
       <div style={{ lineHeight: "2.2", fontSize: "18px" }}>
-        <div>🟢 Premium Test checked in today</div>
-        <div>💳 Payment received from Premium Test</div>
-        <div>👤 New member registered</div>
-        <div>⚠️ 4 memberships expiring soon</div>
+        {activities.length === 0 ? (
+          <div style={{ color: "#888" }}>
+            No recent activity available.
+          </div>
+        ) : (
+          activities.map((activity, index) => (
+            <div key={index}>
+              {activity.icon} {activity.text}
+            </div>
+          ))
+        )}
       </div>
     </div>
   );

@@ -77,6 +77,32 @@ const chartData = Object.entries(monthMap).map(
   })
 );
 
+const recentActivity = [
+  ...attendance
+    .slice(-3)
+    .reverse()
+    .map((item: any) => ({
+      icon: "🟢",
+      text: `${item.memberName} checked in`,
+    })),
+
+  ...payments
+    .slice(-3)
+    .reverse()
+    .map((payment: any) => ({
+      icon: "💳",
+      text: `${payment.memberName} paid ₹${payment.amount}`,
+    })),
+
+  ...members
+    .slice(-3)
+    .reverse()
+    .map((member: any) => ({
+      icon: "👤",
+      text: `${member.name} joined SmartGym`,
+    })),
+].slice(0, 8);
+
    useEffect(() => {
   const auth = localStorage.getItem("smartgym-auth");
 
@@ -287,7 +313,7 @@ const quickButtonStyle = {
   expiringSoon={expiringSoon}
 />
 
-<RecentActivity />
+<RecentActivity activities={recentActivity} />
 
       </div>
     </div>

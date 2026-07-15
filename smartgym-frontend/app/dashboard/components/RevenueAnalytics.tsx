@@ -160,13 +160,16 @@ export default function RevenueAnalytics({
         </h3>
 
         <div
-          style={{
-            width: "100%",
-            height: "350px",
-          }}
-        >
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData}>
+  style={{
+    width: "100%",
+    height: 350,
+    minHeight: 350,
+    minWidth: 0,
+  }}
+>
+
+      <ResponsiveContainer width="100%" height={350}>       
+           <BarChart data={chartData}>
               <XAxis
                 dataKey="name"
                 stroke="#999"
