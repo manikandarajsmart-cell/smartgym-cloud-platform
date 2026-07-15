@@ -103,6 +103,21 @@ const recentActivity = [
     })),
 ].slice(0, 8);
 
+const memberTotals: Record<string, number> = {};
+
+payments.forEach((payment: any) => {
+  const name = payment.memberName || "Unknown";
+
+  memberTotals[name] =
+    (memberTotals[name] || 0) + Number(payment.amount || 0);
+});
+
+const topPayingMember =
+  Object.entries(memberTotals).sort(
+    (a, b) => b[1] - a[1]
+  )[0]?.[0] || "-";
+
+
    useEffect(() => {
   const auth = localStorage.getItem("smartgym-auth");
 
@@ -199,7 +214,7 @@ const quickButtonStyle = {
     todayMembers,
 
     thisMonthRevenue: stats.totalRevenue,
-    topPayingMember: "-",
+    topPayingMember,
     activeTrainers: 3,
     paidMembers: stats.activeMembers,
     pendingMembers: stats.expiredMembers,
@@ -234,7 +249,9 @@ const quickButtonStyle = {
   stats={{
     totalRevenue: totalRevenue,
     totalPayments: totalPayments,
-    topPayingMember: "-",
+
+topPayingMember,
+
   }}
   chartData={chartData}
 />
