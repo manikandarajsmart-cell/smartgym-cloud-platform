@@ -169,31 +169,57 @@ export default function RevenueAnalytics({
 >
 
       <ResponsiveContainer width="100%" height={350}>       
-           <BarChart data={chartData}>
-              <XAxis
-                dataKey="name"
-                stroke="#999"
-              />
 
-              <YAxis
-                stroke="#999"
-              />
+          <BarChart
+  data={chartData}
+  margin={{
+    top: 20,
+    right: 30,
+    left: 10,
+    bottom: 5,
+  }}
+>
+  <XAxis
+    dataKey="name"
+    stroke="#888"
+    tick={{ fill: "#ccc", fontSize: 12 }}
+    axisLine={{ stroke: "#333" }}
+    tickLine={false}
+  />
 
-              <Tooltip
-                contentStyle={{
-                  background: "#111",
-                  border: "1px solid #333",
-                  borderRadius: "10px",
-                  color: "#fff",
-                }}
-              />
+  <YAxis
+    stroke="#888"
+    tick={{ fill: "#ccc", fontSize: 12 }}
+    axisLine={{ stroke: "#333" }}
+    tickLine={false}
+    tickFormatter={(value) => `₹${value}`}
+  />
 
-              <Bar
-                dataKey="amount"
-                fill="#00e676"
-                radius={[10, 10, 0, 0]}
-              />
-            </BarChart>
+  <Tooltip
+    formatter={(value: any) => [
+      `₹${Number(value).toLocaleString("en-IN")}`,
+      "Revenue",
+    ]}
+    contentStyle={{
+      background: "#1a1a1a",
+      border: "1px solid #333",
+      borderRadius: "12px",
+      color: "#fff",
+    }}
+    labelStyle={{
+      color: "#00e676",
+      fontWeight: "bold",
+    }}
+  />
+
+  <Bar
+    dataKey="amount"
+    fill="#00e676"
+    radius={[12, 12, 0, 0]}
+    animationDuration={1200}
+  />
+</BarChart>
+
           </ResponsiveContainer>
         </div>
       </div>
