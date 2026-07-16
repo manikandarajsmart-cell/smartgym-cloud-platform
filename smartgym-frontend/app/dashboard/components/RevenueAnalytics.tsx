@@ -14,6 +14,48 @@ type Props = {
   chartData: any[];
 };
 
+function Card({
+  title,
+  value,
+  color = "#fff",
+}: {
+  title: string;
+  value: string | number;
+  color?: string;
+}) {
+
+return (
+  <div
+    style={{
+      background: "#181818",
+      padding: "20px",
+      borderRadius: "16px",
+      border: "1px solid #2a2a2a",
+    }}
+  >
+    <h4
+      style={{
+        color: "#aaa",
+        marginBottom: "10px",
+      }}
+    >
+      {title}
+    </h4>
+
+    <p
+      style={{
+        fontSize: "28px",
+        fontWeight: "bold",
+        margin: 0,
+        color,
+      }}
+    >
+      {value}
+    </p>
+  </div>
+);
+}
+
 export default function RevenueAnalytics({
   stats,
   chartData,
@@ -39,108 +81,66 @@ export default function RevenueAnalytics({
       </h2>
 
       {/* KPI Cards */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-          gap: "20px",
-          marginBottom: "35px",
-        }}
-      >
-        <div
-          style={{
-            background: "#181818",
-            padding: "20px",
-            borderRadius: "16px",
-            border: "1px solid #2a2a2a",
-          }}
-        >
-          <h4 style={{ color: "#aaa", marginBottom: "10px" }}>
-            💰 Total Revenue
-          </h4>
-          <p
-            style={{
-              fontSize: "28px",
-              fontWeight: "bold",
-              color: "#00e676",
-              margin: 0,
-            }}
-          >
-            ₹{stats.totalRevenue.toLocaleString("en-IN")}
-          </p>
-        </div>
 
-        <div
-          style={{
-            background: "#181818",
-            padding: "20px",
-            borderRadius: "16px",
-            border: "1px solid #2a2a2a",
-          }}
-        >
-          <h4 style={{ color: "#aaa", marginBottom: "10px" }}>
-            💳 Total Payments
-          </h4>
-          <p
-            style={{
-              fontSize: "28px",
-              fontWeight: "bold",
-              margin: 0,
-            }}
-          >
-            {stats.totalPayments}
-          </p>
-        </div>
+       <div
+  style={{
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+    gap: "20px",
+    marginBottom: "35px",
+  }}
+>
+  <Card
+    title="💰 Total Revenue"
+    value={`₹${stats.totalRevenue.toLocaleString("en-IN")}`}
+    color="#00e676"
+  />
 
-        <div
-          style={{
-            background: "#181818",
-            padding: "20px",
-            borderRadius: "16px",
-            border: "1px solid #2a2a2a",
-          }}
-        >
-          <h4 style={{ color: "#aaa", marginBottom: "10px" }}>
-            📈 Average Payment
-          </h4>
-          <p
-            style={{
-              fontSize: "28px",
-              fontWeight: "bold",
-              margin: 0,
-            }}
-          >
-            ₹
-            {stats.totalPayments > 0
-              ? Math.round(
-                  stats.totalRevenue / stats.totalPayments
-                ).toLocaleString("en-IN")
-              : 0}
-          </p>
-        </div>
+  <Card
+    title="💳 Total Payments"
+    value={stats.totalPayments}
+  />
 
-        <div
-          style={{
-            background: "#181818",
-            padding: "20px",
-            borderRadius: "16px",
-            border: "1px solid #2a2a2a",
-          }}
-        >
-          <h4 style={{ color: "#aaa", marginBottom: "10px" }}>
-            🏆 Top Paying Member
-          </h4>
-          <p
-            style={{
-              fontSize: "24px",
-              fontWeight: "bold",
-              margin: 0,
-            }}
-          >
-            {stats.topPayingMember}
-          </p>
-        </div>
-      </div>
+  <Card
+    title="📈 Average Payment"
+    value={`₹${
+      stats.totalPayments > 0
+        ? Math.round(
+            stats.totalRevenue / stats.totalPayments
+          ).toLocaleString("en-IN")
+        : 0
+    }`}
+  />
+
+  <Card
+    title="🏆 Top Paying Member"
+    value={stats.topPayingMember}
+  />
+
+  <Card
+    title="🟢 Active Membership"
+    value={`${stats.activeMembershipRate}%`}
+    color="#4caf50"
+  />
+
+  <Card
+    title="💵 Collection Rate"
+    value={`${stats.collectionRate}%`}
+    color="#29b6f6"
+  />
+
+  <Card
+    title="👤 Avg Revenue / Member"
+    value={`₹${stats.averageRevenuePerMember}`}
+    color="#ffb300"
+  />
+
+  <Card
+    title="📅 Attendance Rate"
+    value={`${stats.attendanceRate}%`}
+    color="#ab47bc"
+  />
+</div>
 
       {/* Revenue Chart */}
       <div

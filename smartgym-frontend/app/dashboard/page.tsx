@@ -60,22 +60,63 @@ const todayMembers = members.filter(
   (member) => member.joinDate === today
 ).length;
 
-  const monthMap: Record<string, number> = {};
+const activeMembershipRate =
+  members.length > 0
+    ? Math.round((activeMembers / members.length) * 100)
+    : 0;
 
-payments.forEach((payment) => {
-  const month = payment.month || "Unknown";
+const collectionRate =
+  members.length > 0
+    ? Math.round((totalPayments / members.length) * 100)
+    : 0;
+
+const averageRevenuePerMember =
+  members.length > 0
+    ? Math.round(totalRevenue / members.length)
+    : 0;
+
+const attendanceRate =
+  activeMembers > 0
+    ? Math.round((attendanceCount / activeMembers) * 100)
+    : 0;
+
+const monthMap: Record<string, number> = {};
+
+payments.forEach((payment: any) => {
+  const paymentDate = new Date(payment.date);
+
+  if (isNaN(paymentDate.getTime())) return;
+
+  const month = paymentDate.toLocaleString("en-IN", {
+    month: "short",
+  });
 
   monthMap[month] =
     (monthMap[month] || 0) +
     Number(payment.amount || 0);
 });
 
-const chartData = Object.entries(monthMap).map(
-  ([name, amount]) => ({
-    name,
-    amount,
-  })
-);
+const monthOrder = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
+
+const chartData = monthOrder
+  .filter((month) => monthMap[month])
+  .map((month) => ({
+    name: month,
+    amount: monthMap[month],
+  }));
 
 const recentActivity = [
   ...attendance
@@ -255,6 +296,21 @@ topPayingMember,
   }}
   chartData={chartData}
 />
+
+<RevenueAnalytics
+  stats={{
+    totalRevenue,
+    totalPayments,
+    topPayingMember,
+
+    activeMembershipRate,
+    collectionRate,
+    averageRevenuePerMember,
+    attendanceRate,
+  }}
+  chartData={chartData}
+/>
+
 <div
   style={{
     marginTop: "40px",
