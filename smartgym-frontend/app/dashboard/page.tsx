@@ -10,6 +10,7 @@ import RevenueAnalytics from "./components/RevenueAnalytics";
 import RecentPayments from "./components/RecentPayments";
 import TodaySummary from "./components/TodaySummary";
 import RecentActivity from "./components/RecentActivity";
+import AIInsights from "./components/AIInsights";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -257,6 +258,18 @@ const quickButtonStyle = {
     activeTrainers: 3,
     paidMembers: stats.activeMembers,
     pendingMembers: stats.expiredMembers,
+  }}
+/>
+
+<AIInsights
+  stats={{
+    totalMembers: stats.totalMembers,
+    activeMembers: stats.activeMembers,
+    expiredMembers: stats.expiredMembers,
+    expiringSoon,
+    todayRevenue,
+    todayMembers,
+    totalPayments,
   }}
 />
 
