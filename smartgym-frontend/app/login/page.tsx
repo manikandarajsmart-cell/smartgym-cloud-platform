@@ -36,7 +36,25 @@ if (!response.ok || !data.success) {
     localStorage.setItem("smartgym-user", JSON.stringify(data.user));
     localStorage.setItem("smartgym-role", data.user.role);
 
-    router.push("/dashboard");
+    if (data.user.role === "admin") {
+
+if (data.user.role === "admin") {
+  router.push("/dashboard");
+} else if (data.user.role === "trainer") {
+  router.push("/trainer/dashboard");
+} else if (data.user.role === "member") {
+  router.push("/member/dashboard");
+} else {
+  alert("Unknown user role");
+}
+} else if (data.user.role === "trainer") {
+  router.push("/trainer/dashboard");
+} else if (data.user.role === "member") {
+  router.push("/member/dashboard");
+} else {
+  alert("Unknown user role");
+}
+
   } catch (error) {
     console.error(error);
     alert("Server Error");

@@ -7,6 +7,10 @@ import {
   XAxis,
   YAxis,
   Tooltip,
+  PieChart,
+  Pie,
+  Cell,
+  Legend,
 } from "recharts";
 
 type Props = {
@@ -212,17 +216,75 @@ export default function RevenueAnalytics({
     }}
   />
 
-  <Bar
-    dataKey="amount"
-    fill="#00e676"
-    radius={[12, 12, 0, 0]}
-    animationDuration={1200}
-  />
+<Bar
+  dataKey="amount"
+  fill="#00e676"
+  radius={[12, 12, 0, 0]}
+  maxBarSize={80}
+  animationDuration={1200}
+/>
+
 </BarChart>
 
           </ResponsiveContainer>
         </div>
       </div>
+     <div
+  style={{
+    marginTop: "30px",
+    background: "#181818",
+    padding: "20px",
+    borderRadius: "16px",
+    border: "1px solid #2a2a2a",
+  }}
+>
+  <h3 style={{ marginBottom: "20px" }}>
+    👥 Membership Status
+  </h3>
+
+     <div
+  style={{
+    width: "100%",
+    height: 320,
+    minHeight: 320,
+    minWidth: 0,
+  }}
+>
+
+   <ResponsiveContainer width="100%" height={320}>
+      <PieChart>
+        <Pie
+          data={[
+            {
+              name: "Active",
+              value: stats.activeMembers,
+            },
+            {
+              name: "Expiring",
+              value: stats.expiringSoon,
+            },
+            {
+              name: "Expired",
+              value: stats.expiredMembers,
+            },
+          ]}
+          dataKey="value"
+          nameKey="name"
+          outerRadius={110}
+          label
+        >
+          <Cell fill="#00e676" />
+          <Cell fill="#ffb300" />
+          <Cell fill="#ff5252" />
+        </Pie>
+
+        <Tooltip />
+
+        <Legend />
+      </PieChart>
+    </ResponsiveContainer>
+  </div>
+</div>
     </div>
   );
 }

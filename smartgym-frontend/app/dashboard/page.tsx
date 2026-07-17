@@ -111,12 +111,10 @@ const monthOrder = [
   "Dec",
 ];
 
-const chartData = monthOrder
-  .filter((month) => monthMap[month])
-  .map((month) => ({
-    name: month,
-    amount: monthMap[month],
-  }));
+const chartData = monthOrder.map((month) => ({
+  name: month,
+  amount: monthMap[month] || 0,
+}));
 
 const recentActivity = [
   ...attendance
@@ -287,16 +285,22 @@ const quickButtonStyle = {
 </div>
      
 <RevenueAnalytics
-  stats={{
-    totalRevenue,
-    totalPayments,
-    topPayingMember,
 
-    activeMembershipRate,
-    collectionRate,
-    averageRevenuePerMember,
-    attendanceRate,
-  }}
+  stats={{
+  totalRevenue,
+  totalPayments,
+  topPayingMember,
+
+  activeMembershipRate,
+  collectionRate,
+  averageRevenuePerMember,
+  attendanceRate,
+
+  activeMembers,
+  expiredMembers,
+  expiringSoon,
+}}
+
   chartData={chartData}
 />
 
