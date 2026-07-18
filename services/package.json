@@ -1,5 +1,5 @@
 {
-  "name": "smartgym-api",
+  "name": "services",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -10,11 +10,9 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@supabase/supabase-js": "^2.105.0",
-    "axios": "^1.16.1",
     "cors": "^2.8.6",
-    "dotenv": "^17.4.2",
     "express": "^5.2.1",
-    "ws": "^8.20.1"
+    "mongoose": "^9.7.0",
+    "qrcode": "^1.5.4"
   }
 }

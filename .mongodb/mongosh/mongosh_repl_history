@@ -1,0 +1,37 @@
+exit
+grep -R "mongodb" -n .
+grep -n "MONGO" -A 3 .env
+).pretty()  }    weight: 1    memberId: 1,    memberName: 1,  {  {},db.progress.find(
+}).pretty()  weight: 1  memberId: 1,  memberName: 1,db.progress.find({}, {use smartgym
+exit
+).pretty()  { email: 1, password: 1, role: 1, _id: 0 }  { email: "manikandarajsmart@gmail.com" },db.users.find(
+)  }    }      password: "$2b$10$TPZevN8sl5xMaiLOdHdyteBJr6ixKh/Rtc24qp3I3HJiht.2KPo5y"    $set: {  {  { email: "manikandarajsmart@gmail.com" },db.users.updateOne(
+exit
+)  }    }      password: "PASTE_THE_HASH_HERE"    $set: {  {  { email: "manikandarajsmart@gmail.com" },db.users.updateOne(
+exit
+nano app/api/login/route.tscd ~/smartgym-frontend
+db.users.find().pretty()
+)  }    }      password: "$2b$10$DrUEFK7UIkl.Tc68Aj8pI.HEgFJPKgAHgwDfsDrXDkN.lktwFH.Zm"    $set: {  {  { email: "manikandarajsmart@gmail.com" },db.users.updateOne(
+use smartgym
+exit
+db.users.find().pretty()
+})  createdAt: new Date()  active: true,  role: "Super Admin",  password: "123456",  email: "manikandarajsmart@gmail.com",  name: "Manikandaraj",db.users.insertOne({
+db.users.find()
+show collections
+use smartgym
+show dbs
+exit
+db.members.find({ memberId: "SG000021" }).pretty()
+grep -n "member.name" -A 5 -B 5 app/member-list/page.tsxcd ~/smartgym-frontend
+).pretty()  { memberId: "SG000021" }db.members.find(use smartgym
+exit
+db.members.find().pretty()
+db.members.countDocuments()
+db.members.find().sort({_id:-1}).limit(1)
+use smartgym
+exit
+grep -n "const member = await Member.create" -A 10 -B 5 ~/services/index.js
+db.members.find().sort({_id:-1}).limit(1)
+use smartgym
+exit
+test> db.members.find().sort({_id:-1}).limit(1)------   2026-06-15T11:25:54.033+00:00: Access control is not enabled for the database. Read and write access to data and configuration is unrestricted   2026-06-15T11:25:51.242+00:00: Using the XFS filesystem is strongly recommended with the WiredTiger storage engine. See http://dochub.mongodb.org/core/prodnotes-filesystem   The server generated these startup warnings when booting------You can opt-out by running the disableTelemetry() command.To help improve our products, anonymous usage data is collected and sent to MongoDB periodically (https://www.mongodb.com/legal/privacy-policy).For mongosh info see: https://www.mongodb.com/docs/mongodb-shell/mongosh 2.9.0 is available for download: https://www.mongodb.com/try/download/shellUsing Mongosh:          2.8.3Using MongoDB:          7.0.34Connecting to:          mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.8.3Current Mongosh Log ID: 6a41441bb208d7968a9df8a2manikandarajsmart@smartgym-server:~/services$ mongosh└────┴────────────────────┴──────────┴──────┴───────────┴──────────┴──────────┘│ 1  │ smartgym-backend   │ fork     │ 43   │ online    │ 0%       │ 36.0mb   ││ 2  │ smart-gym-app      │ fork     │ 253  │ online    │ 0%       │ 54.3mb   │├────┼────────────────────┼──────────┼──────┼───────────┼──────────┼──────────┤│ id │ name               │ mode     │ ↺    │ status    │ cpu      │ memory   │┌────┬────────────────────┬──────────┬──────┬───────────┬──────────┬──────────┐[PM2] [smartgym-backend](1) ✓[PM2] Applying action restartProcessId on app [smartgym-backend](ids: [ 1 ])Use --update-env to update environment variablespm2 restart smartgym-backendmanikandarajsmart@smartgym-server:~/services$ cd ~/servicesmanikandarajsmart@smartgym-server:~/services$ nano ~/services/index.jsmanikandarajsmart@smartgym-server:~/services$ nano ~/services/index.js

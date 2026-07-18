@@ -1,6 +1,6 @@
 import Card from "@/app/components/ui/Card";
 
-export default function DietCard() {
+export default function ProgressCard() {
   return (
     <Card>
       <h2
@@ -10,7 +10,7 @@ export default function DietCard() {
           marginBottom: "20px",
         }}
       >
-        🥗 Today's Diet
+        📈 Progress
       </h2>
 
       <div
@@ -20,10 +20,10 @@ export default function DietCard() {
           fontSize: "16px",
         }}
       >
-        <p>🥣 Breakfast : Oats + Eggs</p>
-        <p>🍛 Lunch : Rice + Chicken</p>
-        <p>🍌 Snacks : Almonds + Banana</p>
-        <p>🥗 Dinner : Grilled Chicken + Salad</p>
+        <p>⚖️ Weight : 72.4 kg</p>
+        <p>🔥 Body Fat : 18%</p>
+        <p>💪 Muscle Mass : 36 kg</p>
+        <p>📅 Last Updated : Today</p>
       </div>
 
       <button
@@ -39,7 +39,7 @@ export default function DietCard() {
           fontSize: "16px",
         }}
       >
-        View Full Diet
+        View Progress
       </button>
     </Card>
   );

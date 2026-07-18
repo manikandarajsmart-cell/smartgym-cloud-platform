@@ -1,20 +1,20 @@
 [
   {
-    "name": "index",
+    "name": "smartgym-backend",
     "filter_env": [],
     "namespace": "default",
     "env": {
       "SHELL": "/bin/bash",
       "NVM_RC_VERSION": "",
-      "SSH_AUTH_SOCK": "/tmp/ssh-XXXXCXsAYg/agent.57282",
-      "PWD": "/home/manikandarajsmart",
+      "SSH_AUTH_SOCK": "/tmp/ssh-XXXXVkqPqh/agent.1985165",
+      "PWD": "/home/manikandarajsmart/services",
       "LOGNAME": "manikandarajsmart",
       "XDG_SESSION_TYPE": "tty",
       "MOTD_SHOWN": "pam",
       "HOME": "/home/manikandarajsmart",
       "LANG": "C.UTF-8",
       "LS_COLORS": "rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:",
-      "SSH_CONNECTION": "35.235.243.129 35689 10.160.0.2 22",
+      "SSH_CONNECTION": "35.235.243.129 34033 10.160.0.2 22",
       "NVM_DIR": "/home/manikandarajsmart/.nvm",
       "LESSCLOSE": "/usr/bin/lesspipe %s %s",
       "XDG_SESSION_CLASS": "user",
@@ -23,19 +23,19 @@
       "USER": "manikandarajsmart",
       "SHLVL": "1",
       "NVM_CD_FLAGS": "",
-      "XDG_SESSION_ID": "26",
+      "XDG_SESSION_ID": "716",
       "XDG_RUNTIME_DIR": "/run/user/1001",
-      "SSH_CLIENT": "35.235.243.129 35689 22",
+      "SSH_CLIENT": "35.235.243.129 34033 22",
       "XDG_DATA_DIRS": "/usr/local/share:/usr/share:/var/lib/snapd/desktop",
       "PATH": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin",
       "DBUS_SESSION_BUS_ADDRESS": "unix:path=/run/user/1001/bus",
       "SSH_TTY": "/dev/pts/0",
+      "OLDPWD": "/home/manikandarajsmart",
       "_": "/usr/bin/pm2",
       "PM2_USAGE": "CLI",
-      "PM2_INTERACTOR_PROCESSING": "true",
       "PM2_HOME": "/home/manikandarajsmart/.pm2",
-      "index": {},
-      "unique_id": "00341459-7ec9-437c-ad9f-3a36f74d62fe"
+      "smartgym-backend": {},
+      "unique_id": "7edf5ac2-8fac-4970-8126-1c5a025b4cf0"
     },
     "merge_logs": true,
     "vizion": true,
@@ -50,27 +50,27 @@
     "windowsHide": true,
     "kill_retry_time": 100,
     "node_args": [],
-    "pm_exec_path": "/home/manikandarajsmart/index.js",
-    "pm_cwd": "/home/manikandarajsmart",
+    "pm_exec_path": "/home/manikandarajsmart/services/index.js",
+    "pm_cwd": "/home/manikandarajsmart/services",
     "exec_interpreter": "node",
     "exec_mode": "fork_mode",
-    "pm_out_log_path": "/home/manikandarajsmart/.pm2/logs/index-out.log",
-    "pm_err_log_path": "/home/manikandarajsmart/.pm2/logs/index-error.log",
-    "pm_pid_path": "/home/manikandarajsmart/.pm2/pids/index-0.pid",
+    "pm_out_log_path": "/home/manikandarajsmart/.pm2/logs/smartgym-backend-out.log",
+    "pm_err_log_path": "/home/manikandarajsmart/.pm2/logs/smartgym-backend-error.log",
+    "pm_pid_path": "/home/manikandarajsmart/.pm2/pids/smartgym-backend-1.pid",
     "km_link": false,
     "vizion_running": false,
     "NODE_APP_INSTANCE": 0,
     "SHELL": "/bin/bash",
     "NVM_RC_VERSION": "",
-    "SSH_AUTH_SOCK": "/tmp/ssh-XXXXCXsAYg/agent.57282",
-    "PWD": "/home/manikandarajsmart",
+    "SSH_AUTH_SOCK": "/tmp/ssh-XXXXVkqPqh/agent.1985165",
+    "PWD": "/home/manikandarajsmart/services",
     "LOGNAME": "manikandarajsmart",
     "XDG_SESSION_TYPE": "tty",
     "MOTD_SHOWN": "pam",
     "HOME": "/home/manikandarajsmart",
     "LANG": "C.UTF-8",
     "LS_COLORS": "rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:",
-    "SSH_CONNECTION": "35.235.243.129 35689 10.160.0.2 22",
+    "SSH_CONNECTION": "35.235.243.129 34033 10.160.0.2 22",
     "NVM_DIR": "/home/manikandarajsmart/.nvm",
     "LESSCLOSE": "/usr/bin/lesspipe %s %s",
     "XDG_SESSION_CLASS": "user",
@@ -79,20 +79,20 @@
     "USER": "manikandarajsmart",
     "SHLVL": "1",
     "NVM_CD_FLAGS": "",
-    "XDG_SESSION_ID": "26",
+    "XDG_SESSION_ID": "716",
     "XDG_RUNTIME_DIR": "/run/user/1001",
-    "SSH_CLIENT": "35.235.243.129 35689 22",
+    "SSH_CLIENT": "35.235.243.129 34033 22",
     "XDG_DATA_DIRS": "/usr/local/share:/usr/share:/var/lib/snapd/desktop",
     "PATH": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin",
     "DBUS_SESSION_BUS_ADDRESS": "unix:path=/run/user/1001/bus",
     "SSH_TTY": "/dev/pts/0",
+    "OLDPWD": "/home/manikandarajsmart",
     "_": "/usr/bin/pm2",
     "PM2_USAGE": "CLI",
-    "PM2_INTERACTOR_PROCESSING": "true",
     "PM2_HOME": "/home/manikandarajsmart/.pm2",
-    "unique_id": "00341459-7ec9-437c-ad9f-3a36f74d62fe",
+    "unique_id": "7edf5ac2-8fac-4970-8126-1c5a025b4cf0",
     "status": "online",
-    "pm_uptime": 1779462320203,
+    "pm_uptime": 1781902299459,
     "axm_actions": [
       {
         "action_name": "km:heapdump",
@@ -125,19 +125,19 @@
         "historic": true,
         "unit": "MiB",
         "type": "internal/v8/heap/total",
-        "value": "12.64"
+        "value": "30.04"
       },
       "Heap Usage": {
         "historic": true,
         "unit": "%",
         "type": "internal/v8/heap/usage",
-        "value": 94.29
+        "value": 87.88
       },
       "Used Heap Size": {
         "historic": true,
         "unit": "MiB",
         "type": "internal/v8/heap/used",
-        "value": "11.92"
+        "value": "26.39"
       },
       "Active requests": {
         "historic": true,
@@ -147,19 +147,37 @@
       "Active handles": {
         "historic": true,
         "type": "internal/libuv/handles",
-        "value": 4
+        "value": 13
       },
       "Event Loop Latency": {
         "historic": true,
         "unit": "ms",
         "type": "internal/libuv/latency/p50",
-        "value": "0.59"
+        "value": "0.30"
       },
       "Event Loop Latency p95": {
         "historic": true,
         "unit": "ms",
         "type": "internal/libuv/latency/p95",
-        "value": "1.51"
+        "value": "1.13"
+      },
+      "HTTP Mean Latency": {
+        "historic": true,
+        "unit": "ms",
+        "type": "internal/http/builtin/latency/p50",
+        "value": 10
+      },
+      "HTTP P95 Latency": {
+        "historic": true,
+        "unit": "ms",
+        "type": "internal/http/builtin/latency/p95",
+        "value": 133.4999999999999
+      },
+      "HTTP": {
+        "historic": true,
+        "unit": "req/min",
+        "type": "internal/http/builtin/reqs",
+        "value": 0
       }
     },
     "axm_options": {
@@ -188,14 +206,226 @@
         "type": "node",
         "version": "8.0.0"
       },
-      "module_name": "index",
+      "module_name": "smartgym-backend",
       "module_version": "7.0.1"
     },
     "axm_dynamic": {},
-    "created_at": 1779462320203,
-    "restart_time": 0,
+    "created_at": 1781902299346,
+    "restart_time": 26,
     "unstable_restarts": 0,
     "version": "1.0.0",
-    "node_version": "20.20.2"
+    "node_version": "20.20.2",
+    "_tree_pids": [
+      332934
+    ],
+    "exit_code": 0
+  },
+  {
+    "name": "smart-gym-app",
+    "filter_env": [],
+    "namespace": "default",
+    "args": [
+      "start"
+    ],
+    "env": {
+      "SHELL": "/bin/bash",
+      "NVM_RC_VERSION": "",
+      "SSH_AUTH_SOCK": "/tmp/ssh-XXXXZToKZ0/agent.67651",
+      "PWD": "/home/manikandarajsmart/smartgym-frontend",
+      "LOGNAME": "manikandarajsmart",
+      "XDG_SESSION_TYPE": "tty",
+      "MOTD_SHOWN": "pam",
+      "HOME": "/home/manikandarajsmart",
+      "LANG": "C.UTF-8",
+      "LS_COLORS": "rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:",
+      "SSH_CONNECTION": "35.235.248.82 39675 10.160.0.2 22",
+      "NVM_DIR": "/home/manikandarajsmart/.nvm",
+      "LESSCLOSE": "/usr/bin/lesspipe %s %s",
+      "XDG_SESSION_CLASS": "user",
+      "TERM": "xterm-256color",
+      "LESSOPEN": "| /usr/bin/lesspipe %s",
+      "USER": "manikandarajsmart",
+      "SHLVL": "1",
+      "NVM_CD_FLAGS": "",
+      "XDG_SESSION_ID": "33",
+      "XDG_RUNTIME_DIR": "/run/user/1001",
+      "SSH_CLIENT": "35.235.248.82 39675 22",
+      "XDG_DATA_DIRS": "/usr/local/share:/usr/share:/var/lib/snapd/desktop",
+      "PATH": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin",
+      "DBUS_SESSION_BUS_ADDRESS": "unix:path=/run/user/1001/bus",
+      "SSH_TTY": "/dev/pts/0",
+      "_": "/usr/bin/pm2",
+      "OLDPWD": "/home/manikandarajsmart/smartgym-frontend",
+      "PM2_USAGE": "CLI",
+      "PM2_HOME": "/home/manikandarajsmart/.pm2",
+      "smart-gym-app": {},
+      "unique_id": "c9f088e5-5dd9-47bb-8345-2ec9ca2518ca"
+    },
+    "merge_logs": true,
+    "vizion": true,
+    "autostart": true,
+    "autorestart": true,
+    "watch": false,
+    "instance_var": "NODE_APP_INSTANCE",
+    "pmx": true,
+    "automation": true,
+    "treekill": true,
+    "username": "manikandarajsmart",
+    "windowsHide": true,
+    "kill_retry_time": 100,
+    "node_args": [],
+    "pm_exec_path": "/usr/bin/npm",
+    "pm_cwd": "/home/manikandarajsmart/smartgym-frontend",
+    "exec_interpreter": "/usr/bin/node",
+    "exec_mode": "fork_mode",
+    "pm_out_log_path": "/home/manikandarajsmart/.pm2/logs/smart-gym-app-out.log",
+    "pm_err_log_path": "/home/manikandarajsmart/.pm2/logs/smart-gym-app-error.log",
+    "pm_pid_path": "/home/manikandarajsmart/.pm2/pids/smart-gym-app-2.pid",
+    "km_link": false,
+    "vizion_running": false,
+    "NODE_APP_INSTANCE": 0,
+    "SHELL": "/bin/bash",
+    "NVM_RC_VERSION": "",
+    "SSH_AUTH_SOCK": "/tmp/ssh-XXXXZToKZ0/agent.67651",
+    "PWD": "/home/manikandarajsmart/smartgym-frontend",
+    "LOGNAME": "manikandarajsmart",
+    "XDG_SESSION_TYPE": "tty",
+    "MOTD_SHOWN": "pam",
+    "HOME": "/home/manikandarajsmart",
+    "LANG": "C.UTF-8",
+    "LS_COLORS": "rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:",
+    "SSH_CONNECTION": "35.235.248.82 39675 10.160.0.2 22",
+    "NVM_DIR": "/home/manikandarajsmart/.nvm",
+    "LESSCLOSE": "/usr/bin/lesspipe %s %s",
+    "XDG_SESSION_CLASS": "user",
+    "TERM": "xterm-256color",
+    "LESSOPEN": "| /usr/bin/lesspipe %s",
+    "USER": "manikandarajsmart",
+    "SHLVL": "1",
+    "NVM_CD_FLAGS": "",
+    "XDG_SESSION_ID": "33",
+    "XDG_RUNTIME_DIR": "/run/user/1001",
+    "SSH_CLIENT": "35.235.248.82 39675 22",
+    "XDG_DATA_DIRS": "/usr/local/share:/usr/share:/var/lib/snapd/desktop",
+    "PATH": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin",
+    "DBUS_SESSION_BUS_ADDRESS": "unix:path=/run/user/1001/bus",
+    "SSH_TTY": "/dev/pts/0",
+    "_": "/usr/bin/pm2",
+    "OLDPWD": "/home/manikandarajsmart/smartgym-frontend",
+    "PM2_USAGE": "CLI",
+    "PM2_HOME": "/home/manikandarajsmart/.pm2",
+    "unique_id": "c9f088e5-5dd9-47bb-8345-2ec9ca2518ca",
+    "status": "online",
+    "pm_uptime": 1781911964649,
+    "axm_actions": [
+      {
+        "action_name": "km:heapdump",
+        "action_type": "internal",
+        "arity": 2
+      },
+      {
+        "action_name": "km:cpu:profiling:start",
+        "action_type": "internal",
+        "arity": 2
+      },
+      {
+        "action_name": "km:cpu:profiling:stop",
+        "action_type": "internal",
+        "arity": 1
+      },
+      {
+        "action_name": "km:heap:sampling:start",
+        "action_type": "internal",
+        "arity": 2
+      },
+      {
+        "action_name": "km:heap:sampling:stop",
+        "action_type": "internal",
+        "arity": 1
+      }
+    ],
+    "axm_monitor": {
+      "Heap Size": {
+        "historic": true,
+        "unit": "MiB",
+        "type": "internal/v8/heap/total",
+        "value": "8.98"
+      },
+      "Heap Usage": {
+        "historic": true,
+        "unit": "%",
+        "type": "internal/v8/heap/usage",
+        "value": 91.24
+      },
+      "Used Heap Size": {
+        "historic": true,
+        "unit": "MiB",
+        "type": "internal/v8/heap/used",
+        "value": "8.19"
+      },
+      "Active requests": {
+        "historic": true,
+        "type": "internal/libuv/requests",
+        "value": 0
+      },
+      "Active handles": {
+        "historic": true,
+        "type": "internal/libuv/handles",
+        "value": 5
+      },
+      "Event Loop Latency": {
+        "historic": true,
+        "unit": "ms",
+        "type": "internal/libuv/latency/p50",
+        "value": "0.54"
+      },
+      "Event Loop Latency p95": {
+        "historic": true,
+        "unit": "ms",
+        "type": "internal/libuv/latency/p95",
+        "value": "1.42"
+      }
+    },
+    "axm_options": {
+      "error": true,
+      "heapdump": true,
+      "feature.profiler.heapsnapshot": false,
+      "feature.profiler.heapsampling": true,
+      "feature.profiler.cpu_js": true,
+      "latency": true,
+      "catchExceptions": true,
+      "profiling": true,
+      "metrics": {
+        "v8": true,
+        "network": false,
+        "eventLoop": true,
+        "runtime": true,
+        "http": true
+      },
+      "standalone": false,
+      "tracing": {
+        "enabled": false,
+        "outbound": false
+      },
+      "module_conf": {},
+      "apm": {
+        "type": "node",
+        "version": "8.0.0"
+      },
+      "module_name": "smart-gym-app",
+      "module_version": "7.0.1"
+    },
+    "axm_dynamic": {},
+    "created_at": 1781911964533,
+    "restart_time": 95,
+    "unstable_restarts": 0,
+    "version": "N/A",
+    "node_version": "20.20.2",
+    "_tree_pids": [
+      383369,
+      383368,
+      383357
+    ],
+    "exit_code": 0
   }
 ]

@@ -1,63 +1,28 @@
-global.WebSocket = require('ws');
 const express = require('express');
-const cors = require('cors');
-const { createClient } = require('@supabase/supabase-js');
-require('dotenv').config();
-
+const axios = require('axios');
 const app = express();
-app.use(cors());
+
 app.use(express.json());
 
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_KEY
-);
+app.post('/submit-form', async (req, res) => {
+    const name = req.body.name;
+    const phone = req.body.phone;
+    const goal = req.body.goal;
 
-// Premium Enquiry Endpoint - Form Data Pipeline
-app.post('/users', async (req, res) => {
-  const { fullName, mobileNumber, profession, packageInterest, goals } = req.body;
-  
-  // Validation Check
-  if (!fullName || !mobileNumber) {
-    return res.status(400).json({ error: 'Name and WhatsApp number are required' });
-  }
-
-  try {
-    // 1. Forwarding to Make.com Lead Automation Workflow
-    fetch('https://hook.eu1.make.com/jvo42bimjpf0ffg8p4641y43y4rgh4a8', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        name: fullName,
-        phone: mobileNumber,
-        profession: profession || 'Not Specified',
-        package: packageInterest || 'Not Specified',
-        goals: goals || 'Not Specified',
-        time: new Date().toLocaleString("en-US", {timeZone: "Asia/Kolkata"})
-      })
-    });
-
-    // 2. Inserting data into Supabase Master Layer
-    const { data, error } = await supabase
-      .from('users')
-      .insert([{ 
-        name: fullName, 
-        phone: mobileNumber,
-        profession: profession,
-        package: packageInterest,
-        goals: goals
-      }]);
-
-    if (error) throw error;
-
-    res.status(200).json({ message: 'Request submitted successfully!' });
-  } catch (error) {
-    console.error('Backend Pipeline Error:', error);
-    res.status(500).json({ error: 'Server error. Processing failed.' });
-  }
+    try {
+        await axios.post('https://hook.eu1.make.com/jvo42bimjpf0ffg0l45pky5ecz7p7xhf', {
+            name: name,
+            phone: phone,
+            goal: goal
+        });
+        console.log('Data successfully sent to Make.com');
+        res.status(200).send('Success: Data sent to Make.com');
+    } catch (error) {
+        console.error('Error sending data:', error.message);
+        res.status(500).send('Error: Failed to send data to Make.com');
+    }
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`SmartGym Premium API running on port ${PORT}`);
+app.listen(3000, () => {
+    console.log('SmartGym Premium API running on port 3000');
 });

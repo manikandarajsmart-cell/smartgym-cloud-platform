@@ -329,6 +329,87 @@ Member ID: <b>{member.memberId || "-"}</b> • Joined{" "}
   status={status}
 />
 
+<div
+  style={{
+    marginTop: "30px",
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))",
+    gap: "20px",
+  }}
+>
+  <div
+    style={{
+      background: "#111",
+      padding: "20px",
+      borderRadius: "15px",
+      border: "1px solid #222",
+    }}
+  >
+    <h3>💪 BMI</h3>
+    <h1 style={{ color: "#00e676" }}>
+      {member.height && member.weight
+        ? (
+            member.weight /
+            Math.pow(member.height / 100, 2)
+          ).toFixed(1)
+        : "--"}
+    </h1>
+  </div>
+
+  <div
+    style={{
+      background: "#111",
+      padding: "20px",
+      borderRadius: "15px",
+      border: "1px solid #222",
+    }}
+  >
+    <h3>❤️ Health Score</h3>
+    <h1 style={{ color: "#29b6f6" }}>92%</h1>
+  </div>
+
+  <div
+    style={{
+      background: "#111",
+      padding: "20px",
+      borderRadius: "15px",
+      border: "1px solid #222",
+    }}
+  >
+    <h3>📅 Days Left</h3>
+    <h1 style={{ color: "#ffb300" }}>
+      {Math.max(
+        0,
+        Math.ceil(
+          (new Date(member.expiryDate).getTime() -
+            Date.now()) /
+            (1000 * 60 * 60 * 24)
+        )
+      )}
+    </h1>
+  </div>
+
+  <div
+    style={{
+      background: "#111",
+      padding: "20px",
+      borderRadius: "15px",
+      border: "1px solid #222",
+    }}
+  >
+    <h3>🏋 Fitness Level</h3>
+    <h1 style={{ color: "#ab47bc" }}>
+      {attendance.filter(
+        (a) =>
+          a.memberName?.toLowerCase() ===
+          member.name?.toLowerCase()
+      ).length > 20
+        ? "Excellent"
+        : "Good"}
+    </h1>
+  </div>
+</div>
+
         <div
           style={{
             display: "grid",

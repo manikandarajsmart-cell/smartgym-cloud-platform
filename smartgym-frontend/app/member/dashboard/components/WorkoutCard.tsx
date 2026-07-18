@@ -1,37 +1,43 @@
+import Card from "@/app/components/ui/Card";
+import Button from "@/app/components/ui/Button";
+
 export default function WorkoutCard() {
   return (
-    <div
-      style={{
-        background: "#161b22",
-        color: "white",
-        padding: "25px",
-        borderRadius: "18px",
-        marginTop: "25px",
-        border: "1px solid #2d333b",
-      }}
-    >
-      <h2>🏋 Today's Workout</h2>
+    <Card>
+      <h2
+        style={{
+          color: "white",
+          fontSize: "24px",
+          marginBottom: "20px",
+        }}
+      >
+        🏋️ Today's Workout
+      </h2>
 
-      <p style={{ marginTop: "15px" }}>
+      <p
+        style={{
+          color: "#d1d5db",
+          marginBottom: "12px",
+          fontSize: "17px",
+        }}
+      >
         Chest • Shoulders • Triceps
       </p>
 
-      <p>Duration : 60 Minutes</p>
-
-      <button
+      <p
         style={{
-          marginTop: "20px",
-          background: "#00d84a",
-          color: "white",
-          border: "none",
-          padding: "12px 20px",
-          borderRadius: "10px",
-          cursor: "pointer",
-          fontWeight: "bold",
+          color: "#9ca3af",
+          marginBottom: "25px",
         }}
       >
-        ▶ Start Workout
-      </button>
-    </div>
+        Duration : 60 Minutes
+      </p>
+
+
+    <Button>
+  ▶ Start Workout
+</Button>
+ 
+    </Card>
   );
 }

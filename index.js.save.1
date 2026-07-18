@@ -1,0 +1,21 @@
+const axios = require('axios'); // Import axios library to handle HTTP requests
+
+// Route to receive and process data from the gym enquiry form
+app.post('/submit-form', async (req, res) => {
+  const formData = req.body; // Capture the data sent from the form
+  
+  try {
+    // Forward the captured data to the Make.com Webhook URL
+    // Replace the URL below with your actual Make.com Webhook address
+    const response = await axios.post('', formData);
+    
+    // Log success message to the server console for tracking
+    console.log('Data successfully sent to Make.com');
+    res.status(200).send('Success: Data sent to Make.com');
+    
+  } catch (error) {
+    // Log error details to the server console if the request fails
+    console.error('Error sending data:', error.message);
+    res.status(500).send('Error: Failed to send data to Make.com');
+  }
+});

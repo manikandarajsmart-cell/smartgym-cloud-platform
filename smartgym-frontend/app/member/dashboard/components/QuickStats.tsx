@@ -1,42 +1,38 @@
-export default function QuickStats() {
-  const cardStyle = {
-    background: "#161b22",
-    borderRadius: "18px",
-    padding: "20px",
-    color: "white",
-    flex: 1,
-    minWidth: "180px",
-    border: "1px solid #2d333b",
-  };
+import StatCard from "@/app/components/ui/StatCard";
 
+export default function QuickStats() {
   return (
     <div
       style={{
-        display: "flex",
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
         gap: "20px",
-        flexWrap: "wrap",
         marginTop: "25px",
       }}
     >
-      <div style={cardStyle}>
-        <h3>📅 Attendance</h3>
-        <h1>92%</h1>
-      </div>
+      <StatCard
+        icon="📅"
+        title="Attendance"
+        value="92%"
+      />
 
-      <div style={cardStyle}>
-        <h3>🏋 Workout</h3>
-        <h1>Today</h1>
-      </div>
+      <StatCard
+        icon="🏋️"
+        title="Workout"
+        value="Today"
+      />
 
-      <div style={cardStyle}>
-        <h3>🥗 Calories</h3>
-        <h1>2200</h1>
-      </div>
+      <StatCard
+        icon="🥗"
+        title="Calories"
+        value="2200"
+      />
 
-      <div style={cardStyle}>
-        <h3>⚖ Weight</h3>
-        <h1>72.4 kg</h1>
-      </div>
+      <StatCard
+        icon="⚖️"
+        title="Weight"
+        value="72.4 kg"
+      />
     </div>
   );
 }

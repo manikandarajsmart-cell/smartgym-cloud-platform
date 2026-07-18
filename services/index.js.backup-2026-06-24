@@ -1,0 +1,533 @@
+const express = require("express");
+const cors = require("cors");
+const mongoose = require("mongoose");
+
+const app = express();
+
+app.use(cors());
+app.use(express.json());
+
+/* =========================
+   MONGODB CONNECTION
+========================= */
+
+mongoose
+  .connect(
+"mongodb+srv://manikandarajsmart_db_user:a9eiByK1uz3rGuOS@cluster0.fc6rm2y.mongodb.net/smartgym?retryWrites=true&w=majority&appName=Cluster0"  )
+  .then(() => {
+    console.log("MongoDB Connected");
+  })
+  .catch((err) => {
+    console.log("MongoDB Error:", err);
+  });
+
+/* =========================
+   USER SCHEMA
+========================= */
+
+const UserSchema = new mongoose.Schema({
+  name: String,
+  email: String,
+  password: String,
+});
+
+const User = mongoose.model("User", UserSchema);
+
+/* =========================
+   REGISTER
+========================= */
+
+app.post("/register", async (req, res) => {
+  try {
+    const user = await User.create(req.body);
+
+    res.json({
+      success: true,
+      user,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+});
+
+/* =========================
+   LOGIN
+========================= */
+
+app.post("/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const user = await User.findOne({
+      email,
+      password,
+    });
+
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid credentials",
+      });
+    }
+
+    res.json({
+      success: true,
+      user,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+});
+
+/* =========================
+   MEMBER SCHEMA
+========================= */
+
+const MemberSchema = new mongoose.Schema({
+  name: String,
+
+  plan: String,
+
+  fee: Number,
+
+  phone: String,
+
+  photo: String,
+
+  paymentStatus: {
+  type: String,
+  default: "Paid",
+},
+
+paymentDate: {
+  type: String,
+  default: () => new Date().toLocaleDateString(),
+},
+
+  joinDate: {
+    type: String,
+    default: () => new Date().toLocaleDateString(),
+  },
+
+  expiryDate: String,
+
+  status: {
+    type: String,
+    default: "Active",
+  },
+});
+
+const Member = mongoose.model("Member", MemberSchema);
+
+/* =========================
+   PAYMENT SCHEMA
+========================= */
+
+const PaymentSchema = new mongoose.Schema({
+  memberName: String,
+  amount: Number,
+  month: String,
+  status: String,
+});
+
+const Payment = mongoose.model("Payment", PaymentSchema);
+
+/* =========================
+   PAYMENTS
+========================= */
+
+app.get("/payments", async (req, res) => {
+  try {
+    const payments = await Payment.find().sort({ _id: -1 });
+
+    res.json({
+      success: true,
+      payments,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+});
+
+app.post("/payments", async (req, res) => {
+  try {
+    const payment = await Payment.create({
+      memberName: req.body.memberName,
+      amount: Number(req.body.amount || 0),
+      month: new Date().toLocaleString("default", {
+        month: "long",
+        year: "numeric",
+      }),
+      status: "Paid",
+    });
+
+await Member.findOneAndUpdate(
+  { name: req.body.memberName },
+  {
+    paymentStatus: "Paid",
+    paymentDate: new Date().toLocaleDateString(),
+  }
+);
+
+    res.json({
+      success: true,
+      payment,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+});
+app.put("/payments/:id", async (req, res) => {
+  try {
+    await Payment.findByIdAndUpdate(
+      req.params.id,
+      req.body
+    );
+
+    res.json({
+      success: true,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+});
+
+app.delete("/payments/:id", async (req, res) => {
+  try {
+    await Payment.findByIdAndDelete(req.params.id);
+
+    res.json({
+      success: true,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+});
+
+/* =========================
+   MEMBERS
+========================= */
+
+app.get("/members", async (req, res) => {
+  try {
+    const members = await Member.find().sort({ _id: -1 });
+
+    const today = new Date();
+
+    const updatedMembers = members.map((member) => {
+      let diffDays = null;
+
+      if (member.expiryDate) {
+        const expiry = new Date(member.expiryDate);
+
+        diffDays = Math.ceil(
+          (expiry.getTime() - today.getTime()) /
+          (1000 * 60 * 60 * 24)
+        );
+
+        if (diffDays < 0) {
+          member.status = "Expired";
+        } else if (diffDays <= 7) {
+          member.status = "Expiring Soon";
+        } else {
+          member.status = "Active";
+        }
+      }
+
+      return {
+        ...member.toObject(),
+        daysLeft: diffDays,
+      };
+    });
+
+    res.json(updatedMembers);
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+});
+
+app.post("/members", async (req, res) => {
+  try {
+const today = new Date();
+
+const expiry = new Date(today);
+expiry.setMonth(expiry.getMonth() + 1);
+
+const member = await Member.create({
+  ...req.body,
+  joinDate: today.toLocaleDateString(),
+  expiryDate: expiry.toLocaleDateString(),
+  status: "Active",
+});
+    res.json({
+      success: true,
+      member,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+});
+app.put("/members/:id", async (req, res) => {
+  try {
+    const member = await Member.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
+
+    res.json({
+      success: true,
+      member,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+});
+
+app.put("/members/:id/renew", async (req, res) => {
+  try {
+    const member = await Member.findById(req.params.id);
+
+    if (!member) {
+      return res.status(404).json({
+        success: false,
+        message: "Member not found",
+      });
+    }
+
+    const currentExpiry = new Date();
+
+currentExpiry.setMonth(currentExpiry.getMonth() + 1);
+
+member.expiryDate = currentExpiry.toLocaleDateString();
+member.status = "Active";
+member.paymentStatus = "Paid";
+
+    member.expiryDate = currentExpiry.toLocaleDateString();
+    member.status = "Active";
+
+    await member.save();
+await Payment.create({
+  memberName: member.name,
+  amount: member.fee || 0,
+  month: new Date().toLocaleString("default", {
+    month: "long",
+    year: "numeric",
+  }),
+  status: "Paid",
+});
+    res.json({
+      success: true,
+      member,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+});
+
+app.delete("/members/:id", async (req, res) => {
+  try {
+    await Member.findByIdAndDelete(req.params.id);
+
+    res.json({
+      success: true,
+      message: "Member deleted",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+});
+
+/* =========================
+   TRAINER SCHEMA
+========================= */
+
+const TrainerSchema = new mongoose.Schema({
+  name: String,
+  specialization: String,
+  salary: Number,
+  experience: String,
+});
+
+const Trainer = mongoose.model("Trainer", TrainerSchema);
+
+/* =========================
+   TRAINERS
+========================= */
+
+app.get("/trainers", async (req, res) => {
+  try {
+    const trainers = await Trainer.find().sort({ _id: -1 });
+
+    res.json(trainers);
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+});
+
+app.post("/trainers", async (req, res) => {
+  try {
+    const trainer = await Trainer.create(req.body);
+
+    res.json({
+      success: true,
+      trainer,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+});
+
+app.delete("/trainers/:id", async (req, res) => {
+  try {
+    await Trainer.findByIdAndDelete(req.params.id);
+
+    res.json({
+      success: true,
+      message: "Trainer Deleted Successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+});
+
+/* =========================
+   ATTENDANCE SCHEMA
+========================= */
+
+const AttendanceSchema = new mongoose.Schema({
+  memberName: String,
+  date: {
+    type: String,
+    default: () => new Date().toLocaleString(),
+  },
+});
+
+const Attendance = mongoose.model(
+  "Attendance",
+  AttendanceSchema
+);
+
+/* =========================
+   ATTENDANCE
+========================= */
+
+app.get("/attendance", async (req, res) => {
+  try {
+    const attendance = await Attendance.find().sort({
+      _id: -1,
+    });
+
+    res.json({
+      success: true,
+      attendance,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+});
+
+app.post("/attendance", async (req, res) => {
+  try {
+    const attendance = await Attendance.create({
+      memberName: req.body.memberName,
+    });
+
+    res.json({
+      success: true,
+      attendance,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+});
+
+/* =========================
+   QR GENERATOR
+========================= */
+
+const QRCode = require("qrcode");
+
+app.post("/generate-qr", async (req, res) => {
+  try {
+    const { memberName } = req.body;
+
+    const qrImage = await QRCode.toDataURL(memberName);
+
+    res.json({
+      success: true,
+      qrImage,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+});
+
+/* =========================
+   ROOT
+========================= */
+
+app.get("/", (req, res) => {
+  res.send("Smart Gym Backend Running");
+});
+
+/* =========================
+   SERVER
+========================= */
+
+const PORT = 5000;
+
+app.listen(PORT, () => {
+  console.log(`Server Running on Port ${PORT}`);
+});
