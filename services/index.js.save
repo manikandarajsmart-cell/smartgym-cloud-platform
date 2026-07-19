@@ -125,13 +125,66 @@ app.get("/gyms", async (req, res) => {
    MEMBER SCHEMA
 ========================= */
 
+const MemberSchema = new mongoose.Schema({
+  memberId: {
+  type: String,
+  unique: true,
+},
+
+gymId: {
+  type: mongoose.Schema.Types.ObjectId,
+  ref: "Gym",
+  default: null,
+},
+
+  name: String,
+
+  plan: String,
+
+  fee: Number,
+
+  phone: String,
+
+  photo: String,
+
+  paymentStatus: {
+  type: String,
+  default: "Paid",
+},
+
+paymentDate: {
+  type: String,
+  default: () => new Date().toLocaleDateString(),
+},
+
+  joinDate: {
+    type: String,
+    default: () => new Date().toLocaleDateString(),
+  },
+
+  expiryDate: String,
+
+  status: {
+    type: String,
+    default: "Active",
+  },
+});
+
 const Member = require("./models/Member");
+
 
 /* =========================
    PAYMENT SCHEMA
 ========================= */
 
-const Payment = require("./models/Payment");
+const PaymentSchema = new mongoose.Schema({
+  memberName: String,
+  amount: Number,
+  month: String,
+  status: String,
+});
+
+const Payment = mongoose.model("Payment", PaymentSchema);
 
 /* =========================
    PAYMENTS
