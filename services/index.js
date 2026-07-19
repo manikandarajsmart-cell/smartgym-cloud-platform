@@ -1203,6 +1203,227 @@ app.get("/dashboard/stats", async (req, res) => {
     });
   }
 });
+app.get("/ai-summary", async (req, res) => {
+  try {
+    const totalMembers = await Member.countDocuments();
+
+    const activeMembers = await Member.countDocuments({
+      status: "Active",
+    });
+
+    const expiredMembers = await Member.countDocuments({
+      status: "Expired",
+    });
+
+    const totalRevenue = await Payment.aggregate([
+      {
+        $group: {
+          _id: null,
+          total: { $sum: "$amount" },
+        },
+      },
+    ]);
+
+    const todayAttendance = await Attendance.countDocuments({
+      date: new Date().toLocaleDateString("en-CA"),
+    });
+
+    res.json({
+      success: true,
+      stats: {
+        totalMembers,
+        activeMembers,
+        expiredMembers,
+        totalRevenue:
+          totalRevenue.length > 0 ? totalRevenue[0].total : 0,
+        todayAttendance,
+      },
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      success: false,
+      message: "AI summary failed",
+    });
+  }
+});
+
+app.get("/ai/renewal-center", async (req, res) => {
+  try {
+    const members = await Member.find();
+
+    const today = new Date();
+    const sevenDaysLater = new Date();
+    sevenDaysLater.setDate(today.getDate() + 7);
+
+    const expiringSoon = [];
+    const expired = [];
+    const pendingPayments = [];
+
+    members.forEach((member) => {
+      // Pending payments
+      if (member.paymentStatus !== "Paid") {
+        pendingPayments.push({
+          name: member.name,
+          paymentStatus: member.paymentStatus,
+        });
+      }
+
+      // Skip if no expiry date
+      if (!member.expiryDate) return;
+
+      // Expecting expiryDate in DD/MM/YYYY format
+      const [day, month, year] = member.expiryDate.split("/");
+      const expiry = new Date(`${year}-${month}-${day}`);
+
+      if (isNaN(expiry.getTime())) return;
+
+      if (expiry < today) {
+        expired.push({
+          name: member.name,
+          expiryDate: member.expiryDate,
+        });
+      } else if (expiry <= sevenDaysLater) {
+        expiringSoon.push({
+          name: member.name,
+          expiryDate: member.expiryDate,
+        });
+      }
+    });
+
+    res.json({
+      success: true,
+      summary: {
+        expiringSoon: expiringSoon.length,
+        expired: expired.length,
+        pendingPayments: pendingPayments.length,
+      },
+      expiringSoon,
+      expired,
+      pendingPayments,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+});
+
+app.get("/ai/revenue-forecast", async (req, res) => {
+  try {
+    const members = await Member.find();
+
+    const today = new Date();
+    const next30Days = new Date();
+    next30Days.setDate(today.getDate() + 30);
+
+    let expectedRevenue = 0;
+    let revenueAtRisk = 0;
+    let expectedRenewals = 0;
+
+    members.forEach((member) => {
+      if (!member.expiryDate || member.fee == null) return;
+
+      const [day, month, year] = member.expiryDate.split("/");
+      const expiry = new Date(`${year}-${month}-${day}`);
+
+      if (isNaN(expiry.getTime())) return;
+
+      if (expiry >= today && expiry <= next30Days) {
+        expectedRenewals++;
+        expectedRevenue += member.fee;
+      }
+
+      if (member.paymentStatus !== "Paid") {
+        revenueAtRisk += member.fee;
+      }
+    });
+
+    res.json({
+      success: true,
+      forecast: {
+        expectedRevenue,
+        expectedRenewals,
+        revenueAtRisk,
+        suggestion:
+          expectedRenewals > 0
+            ? "Contact members whose memberships expire in the next 30 days."
+            : "No renewals due in the next 30 days.",
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+});
+
+app.get("/ai/notifications", async (req, res) => {
+  try {
+    const notifications = [];
+
+    const today = new Date().toISOString().split("T")[0];
+
+    // Members expiring today
+    const expiringToday = await Member.find({
+      expiryDate: today,
+    });
+
+    expiringToday.forEach((member) => {
+      notifications.push({
+        type: "expiry",
+        message: `${member.name} expires today`,
+      });
+    });
+
+    // Pending payments
+    const pendingCount = await Member.countDocuments({
+      paymentStatus: { $ne: "Paid" },
+    });
+
+    if (pendingCount > 0) {
+      notifications.push({
+        type: "payment",
+        message: `${pendingCount} member(s) have pending payments`,
+      });
+    }
+
+    // Members joined today
+    const joinedToday = await Member.countDocuments({
+      joinDate: new Date().toLocaleDateString(),
+    });
+
+    if (joinedToday > 0) {
+      notifications.push({
+        type: "member",
+        message: `${joinedToday} new member(s) joined today`,
+      });
+    }
+
+    // Today's attendance
+    const attendanceToday = await Attendance.countDocuments({
+      date: today,
+    });
+
+    notifications.push({
+      type: "attendance",
+      message: `${attendanceToday} member(s) checked in today`,
+    });
+
+    res.json({
+      success: true,
+      count: notifications.length,
+      notifications,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+});
 
 /* =========================
    ROOT
