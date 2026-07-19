@@ -11,6 +11,7 @@ import RecentPayments from "./components/RecentPayments";
 import TodaySummary from "./components/TodaySummary";
 import RecentActivity from "./components/RecentActivity";
 import AIInsights from "./components/AIInsights";
+import AskSmartGymAI from "./components/AskSmartGymAI";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -26,6 +27,12 @@ const [stats, setStats] = useState({
 const [members, setMembers] = useState<any[]>([]);
 const [payments, setPayments] = useState<any[]>([]);
 const [attendance, setAttendance] = useState<any[]>([]);
+const [revenueForecast, setRevenueForecast] = useState({
+  expectedRevenue: 0,
+  expectedRenewals: 0,
+  revenueAtRisk: 0,
+  suggestion: "",
+});
 
 const totalRevenue = payments.reduce(
   (sum, payment) => sum + Number(payment.amount || 0),
@@ -199,7 +206,14 @@ const topPayingMember =
       }
     })
     .catch(console.error);
-
+fetch(`${process.env.NEXT_PUBLIC_API_URL}/ai/revenue-forecast`)
+  .then((res) => res.json())
+  .then((data) => {
+    if (data.success) {
+      setRevenueForecast(data.forecast);
+    }
+  })
+  .catch(console.error);
 }, [router]);
 
 const quickButtonStyle = {
@@ -273,6 +287,8 @@ const quickButtonStyle = {
   }}
 />
 
+<AskSmartGymAI />
+
 <div
   style={{
     display: "flex",
@@ -326,6 +342,32 @@ const quickButtonStyle = {
     padding: "30px",
   }}
 >
+<div
+  style={{
+    background: "#111",
+    border: "1px solid #333",
+    borderRadius: "12px",
+    padding: "20px",
+    marginBottom: "24px",
+  }}
+>
+  <h2
+    style={{
+      fontSize: "24px",
+      marginBottom: "16px",
+      color: "#facc15",
+    }}
+  >
+    🔔 AI Notification Center
+  </h2>
+
+  <div style={{ lineHeight: "2" }}>
+    <div>⚠️ MANI membership expires today</div>
+    <div>💰 10 members have pending payments</div>
+    <div>👥 0 members checked in today</div>
+  </div>
+</div>
+
   <h2
     style={{
       marginBottom: "20px",
@@ -344,11 +386,28 @@ const quickButtonStyle = {
       lineHeight: "1.7",
     }}
   >
-    <div>📈 Revenue this month: <strong>₹{totalRevenue.toLocaleString("en-IN")}</strong></div>
+
+    <div>
+  📈 Expected Renewal Revenue:
+  <strong> ₹{revenueForecast.expectedRevenue.toLocaleString("en-IN")}</strong>
+</div>
 
     <div>👥 Active Members: <strong>{activeMembers}</strong></div>
 
-    <div>⚠️ Members expiring within 7 days: <strong>{expiringSoon}</strong></div>
+    <div>
+  👥 Expected Renewals:
+  <strong> {revenueForecast.expectedRenewals}</strong>
+</div>
+
+<div>
+  💰 Revenue At Risk:
+  <strong> ₹{revenueForecast.revenueAtRisk.toLocaleString("en-IN")}</strong>
+</div>
+
+<div>
+  🤖 AI Suggestion:
+  <strong> {revenueForecast.suggestion}</strong>
+</div>
 
     <div>💳 Total Payments Received: <strong>{totalPayments}</strong></div>
 
