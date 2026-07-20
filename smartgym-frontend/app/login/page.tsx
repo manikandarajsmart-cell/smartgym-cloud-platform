@@ -32,9 +32,10 @@ if (!response.ok || !data.success) {
   return;
 }
 
-    localStorage.setItem("smartgym-auth", "true");
-    localStorage.setItem("smartgym-user", JSON.stringify(data.user));
-    localStorage.setItem("smartgym-role", data.user.role);
+localStorage.setItem("smartgym-auth", "true");
+localStorage.setItem("smartgym-token", data.token);
+localStorage.setItem("smartgym-user", JSON.stringify(data.user));
+localStorage.setItem("smartgym-role", data.user.role);
 
 console.log("ROLE =", data.user.role);
 

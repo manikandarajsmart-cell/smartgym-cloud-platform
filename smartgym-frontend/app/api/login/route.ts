@@ -33,10 +33,13 @@ export async function POST(req: Request) {
     }
 
     // Return backend user exactly as received
-    return NextResponse.json({
-      success: true,
-      user: data.user,
-    });
+
+return NextResponse.json({
+  success: true,
+  token: data.token,
+  user: data.user,
+});
+
   } catch (error: any) {
     console.error("LOGIN API ERROR:", error);
 
