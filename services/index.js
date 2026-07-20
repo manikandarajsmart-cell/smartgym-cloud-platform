@@ -1,6 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
+require("dotenv").config();
 
 const app = express();
 
@@ -12,8 +14,7 @@ app.use(express.json());
 ========================= */
 
 mongoose
-  .connect(
-"mongodb+srv://manikandarajsmart_db_user:a9eiByK1uz3rGuOS@cluster0.fc6rm2y.mongodb.net/smartgym?retryWrites=true&w=majority&appName=Cluster0"  )
+  .connect(process.env.MONGODB_URI)
   .then(() => {
     console.log("MongoDB Connected");
   })
@@ -39,7 +40,13 @@ const Gym = require("./models/Gym");
 
 app.post("/register", async (req, res) => {
   try {
-    const user = await User.create(req.body);
+
+const hashedPassword = await bcrypt.hash(req.body.password, 10);
+
+const user = await User.create({
+  ...req.body,
+  password: hashedPassword,
+});
 
     res.json({
       success: true,
@@ -67,22 +74,36 @@ const userByEmail = await User.findOne({ email });
 
 console.log("USER BY EMAIL:", userByEmail);
 
-const user = await User.findOne({
-  email,
-  password,
+const user = await User.findOne({ email });
+
+if (!user) {
+  return res.status(401).json({
+    success: false,
+    message: "Invalid credentials",
+  });
+}
+
+let passwordMatch = false;
+
+// Support both hashed and existing plain-text passwords
+if (user.password && user.password.startsWith("$2")) {
+  passwordMatch = await bcrypt.compare(password, user.password);
+} else {
+  passwordMatch = (password === user.password);
+}
+
+if (!passwordMatch) {
+  return res.status(401).json({
+    success: false,
+    message: "Invalid credentials",
+  });
+}
+
+res.json({
+  success: true,
+  user,
 });
 
-    if (!user) {
-      return res.status(401).json({
-        success: false,
-        message: "Invalid credentials",
-      });
-    }
-
-    res.json({
-      success: true,
-      user,
-    });
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -1437,7 +1458,7 @@ app.get("/", (req, res) => {
    SERVER
 ========================= */
 
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
   console.log(`Server Running on Port ${PORT}`);
