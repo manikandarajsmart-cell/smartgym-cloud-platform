@@ -27,6 +27,12 @@ const UserSchema = new Schema(
       type: Boolean,
       default: true,
     },
+
+    gymId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Gym",
+      default: null,
+    },
   },
   {
     timestamps: true,

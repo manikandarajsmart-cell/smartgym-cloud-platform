@@ -36,23 +36,18 @@ if (!response.ok || !data.success) {
     localStorage.setItem("smartgym-user", JSON.stringify(data.user));
     localStorage.setItem("smartgym-role", data.user.role);
 
-    if (data.user.role === "admin") {
+console.log("ROLE =", data.user.role);
 
-if (data.user.role === "admin") {
+const role = String(data.user.role).toLowerCase();
+
+if (role === "admin") {
   router.push("/dashboard");
-} else if (data.user.role === "trainer") {
+} else if (role === "trainer") {
   router.push("/trainer/dashboard");
-} else if (data.user.role === "member") {
+} else if (role === "member") {
   router.push("/member/dashboard");
 } else {
-  alert("Unknown user role");
-}
-} else if (data.user.role === "trainer") {
-  router.push("/trainer/dashboard");
-} else if (data.user.role === "member") {
-  router.push("/member/dashboard");
-} else {
-  alert("Unknown user role");
+  alert("Unknown user role: " + data.user.role);
 }
 
   } catch (error) {

@@ -1,56 +1,44 @@
 import { NextResponse } from "next/server";
-import bcrypt from "bcryptjs";
-
-import connectDB from "@/lib/mongodb";
-import User from "@/models/User";
 
 export async function POST(req: Request) {
   try {
-    await connectDB();
-
     const { email, password } = await req.json();
 
-    const user = await User.findOne({
-      email,
-      active: true,
-    });
-
-    if (!user) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Invalid email or password",
+    const backendResponse = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/login`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-        { status: 401 }
-      );
-    }
-
-    const passwordMatch = await bcrypt.compare(
-      password,
-      user.password
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      }
     );
 
-    if (!passwordMatch) {
+    const data = await backendResponse.json();
+
+    console.log("BACKEND LOGIN RESPONSE:", JSON.stringify(data, null, 2));
+
+    if (!backendResponse.ok || !data.success) {
       return NextResponse.json(
         {
           success: false,
-          message: "Invalid email or password",
+          message: data.message || "Invalid credentials",
         },
-        { status: 401 }
+        { status: backendResponse.status }
       );
     }
 
+    // Return backend user exactly as received
     return NextResponse.json({
       success: true,
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-      },
+      user: data.user,
     });
-  } catch (error) {
-    console.error(error);
+  } catch (error: any) {
+    console.error("LOGIN API ERROR:", error);
 
     return NextResponse.json(
       {

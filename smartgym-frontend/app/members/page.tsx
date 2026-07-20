@@ -52,6 +52,7 @@ const handlePhotoUpload = async (
 
   const handleAddMember = async () => {
     try {
+  const gymId = localStorage.getItem("gymId");
       const response = await fetch(
         "https://smartgym.cloud/api/members",
 
@@ -60,14 +61,17 @@ const handlePhotoUpload = async (
   headers: {
     "Content-Type": "application/json",
   },
+
   body: JSON.stringify({
-    name,
-    phone,
-    plan,
-    fee,
-    photo,
-    paymentStatus,
-  }),
+  gymId,
+  name,
+  phone,
+  plan,
+  fee,
+  photo,
+  paymentStatus,
+}),
+
 }
 );
         const data = await response.json();
