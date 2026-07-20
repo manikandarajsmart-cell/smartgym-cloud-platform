@@ -5,6 +5,11 @@ const UserSchema = new mongoose.Schema({
   email: String,
   password: String,
 
+  role: {
+    type: String,
+    default: "Member",
+  },
+
   gymId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Gym",

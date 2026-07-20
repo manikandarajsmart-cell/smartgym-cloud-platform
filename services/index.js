@@ -61,10 +61,16 @@ app.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const user = await User.findOne({
-      email,
-      password,
-    });
+console.log("LOGIN REQUEST:", { email, password });
+
+const userByEmail = await User.findOne({ email });
+
+console.log("USER BY EMAIL:", userByEmail);
+
+const user = await User.findOne({
+  email,
+  password,
+});
 
     if (!user) {
       return res.status(401).json({
