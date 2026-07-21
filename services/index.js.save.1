@@ -192,7 +192,7 @@ const Payment = require("./models/Payment");
    PAYMENTS
 ========================= */
 
-app.get("/payments", auth, async (req, res) => {
+app.get("/payments", async (req, res) => {
   try {
     const payments = await Payment.find().sort({ _id: -1 });
 
@@ -208,7 +208,7 @@ app.get("/payments", auth, async (req, res) => {
   }
 });
 
-app.post("/payments", auth, async (req, res) => {
+app.post("/payments", async (req, res) => {
   try {
     const payment = await Payment.create({
       memberName: req.body.memberName,
@@ -239,8 +239,7 @@ await Member.findOneAndUpdate(
     });
   }
 });
-
-app.put("/payments/:id", auth, async (req, res) => {
+app.put("/payments/:id", async (req, res) => {
   try {
     await Payment.findByIdAndUpdate(
       req.params.id,
@@ -258,7 +257,7 @@ app.put("/payments/:id", auth, async (req, res) => {
   }
 });
 
-app.delete("/payments/:id", auth, async (req, res) => {
+app.delete("/payments/:id", async (req, res) => {
   try {
     await Payment.findByIdAndDelete(req.params.id);
 
@@ -450,7 +449,7 @@ const Trainer = mongoose.model("Trainer", TrainerSchema);
    TRAINERS
 ========================= */
 
-app.get("/trainers", auth, async (req, res) => {
+app.get("/trainers", async (req, res) => {
   try {
     const trainers = await Trainer.find().sort({ _id: -1 });
 
@@ -463,7 +462,7 @@ app.get("/trainers", auth, async (req, res) => {
   }
 });
 
-app.post("/trainers", auth, async (req, res) => {
+app.post("/trainers", async (req, res) => {
   try {
     const trainer = await Trainer.create(req.body);
 
@@ -479,7 +478,7 @@ app.post("/trainers", auth, async (req, res) => {
   }
 });
 
-app.put("/trainers/:id", auth, async (req, res) => {
+app.put("/trainers/:id", async (req, res) => {
   try {
     const updatedTrainer = await Trainer.findByIdAndUpdate(
       req.params.id,
@@ -504,7 +503,7 @@ app.put("/trainers/:id", auth, async (req, res) => {
   }
 });
 
-app.delete("/trainers/:id", auth, async (req, res) => {
+app.delete("/trainers/:id", async (req, res) => {
   try {
     await Trainer.findByIdAndDelete(req.params.id);
 
@@ -571,7 +570,8 @@ app.get("/attendance", auth, async (req, res) => {
   }
 });
 
-app.post("/attendance", auth, async (req, res) => {
+app.post("/attendance", async (req, res) => {
+
 console.log("Attendance Request:", req.body);
   try {
     const { memberId } = req.body;
@@ -686,8 +686,7 @@ CLASSES
 */
 
 // Get all classes
-
-app.get("/classes", auth, async (req, res) => {
+app.get("/classes", async (req, res) => {
   try {
     const classes = await Class.find().sort({
       createdAt: -1,
@@ -706,8 +705,7 @@ app.get("/classes", auth, async (req, res) => {
 });
 
 // Add class
-
-app.post("/classes", auth, async (req, res) => {
+app.post("/classes", async (req, res) => {
   try {
     const newClass = await Class.create({
       className: req.body.className,
@@ -730,7 +728,7 @@ app.post("/classes", auth, async (req, res) => {
 });
 
 // Update class
-app.put("/classes/:id", auth, async (req, res) => {
+app.put("/classes/:id", async (req, res) => {
   try {
     const updatedClass = await Class.findByIdAndUpdate(
       req.params.id,
@@ -757,7 +755,7 @@ app.put("/classes/:id", auth, async (req, res) => {
 });
 
 // Delete class
-app.delete("/classes/:id", auth, async (req, res) => {
+app.delete("/classes/:id", async (req, res) => {
   try {
     await Class.findByIdAndDelete(req.params.id);
 
@@ -778,7 +776,7 @@ app.delete("/classes/:id", auth, async (req, res) => {
 ========================= */
 
 // Get all workout plans
-app.get("/workout-plans", auth, async (req, res) => {
+app.get("/workout-plans", async (req, res) => {
   try {
     const plans = await WorkoutPlan.find().sort({
       createdAt: -1,
@@ -797,8 +795,7 @@ app.get("/workout-plans", auth, async (req, res) => {
 });
 
 // Add workout plan
-
-app.post("/workout-plans", auth, async (req, res) => {
+app.post("/workout-plans", async (req, res) => {
   try {
     const plan = await WorkoutPlan.create({
       memberName: req.body.memberName,
@@ -822,7 +819,7 @@ app.post("/workout-plans", auth, async (req, res) => {
 });
 
 // Update workout plan
-app.put("/workout-plans/:id", auth, async (req, res) => {
+app.put("/workout-plans/:id", async (req, res) => {
   try {
     await WorkoutPlan.findByIdAndUpdate(
       req.params.id,
@@ -842,7 +839,7 @@ app.put("/workout-plans/:id", auth, async (req, res) => {
 });
 
 // Delete workout plan
-app.delete("/workout-plans/:id", auth, async (req, res) => {
+app.delete("/workout-plans/:id", async (req, res) => {
   try {
     await WorkoutPlan.findByIdAndDelete(req.params.id);
 
@@ -909,8 +906,7 @@ const TrainerNote = mongoose.model(
 ========================= */
 
 // Get all diet plans
-
-app.get("/diet-plans", auth, async (req, res) => {
+app.get("/diet-plans", async (req, res) => {
   try {
     const plans = await DietPlan.find().sort({
       createdAt: -1,
@@ -929,8 +925,7 @@ app.get("/diet-plans", auth, async (req, res) => {
 });
 
 // Add diet plan
-
-app.post("/diet-plans", auth, async (req, res) => {
+app.post("/diet-plans", async (req, res) => {
   try {
     const plan = await DietPlan.create({
       memberName: req.body.memberName,
@@ -958,7 +953,7 @@ app.post("/diet-plans", auth, async (req, res) => {
 });
 
 // Update diet plan
-app.put("/diet-plans/:id", auth, async (req, res) => {
+app.put("/diet-plans/:id", async (req, res) => {
   try {
     const plan = await DietPlan.findByIdAndUpdate(
       req.params.id,
@@ -990,7 +985,7 @@ app.put("/diet-plans/:id", auth, async (req, res) => {
 });
 
 // Delete diet plan
-app.delete("/diet-plans/:id", auth, async (req, res) => {
+app.delete("/diet-plans/:id", async (req, res) => {
   try {
     await DietPlan.findByIdAndDelete(req.params.id);
 
