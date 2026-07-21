@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const auth = require("./middleware/auth");
+const allowRoles = require("./middleware/allowRoles");
 require("dotenv").config();
 
 const app = express();
@@ -321,7 +322,7 @@ app.get("/members", auth, async (req, res) => {
   }
 });
 
-app.post("/members", auth, async (req, res) => {
+app.post("/members", auth, allowRoles("Admin"), async (req, res) => {
   try {
 const today = new Date();
 
@@ -353,7 +354,7 @@ const member = await Member.create({
   }
 });
 
-app.put("/members/:id", auth, async (req, res) => {
+app.put("/members/:id", auth, allowRoles("Admin"), async (req, res) => {
   try {
     const member = await Member.findByIdAndUpdate(
       req.params.id,
@@ -417,7 +418,7 @@ await Payment.create({
   }
 });
 
-app.delete("/members/:id", auth, async (req, res) => {
+app.delete("/members/:id", auth, allowRoles("Admin"), async (req, res) => {
   try {
     await Member.findByIdAndDelete(req.params.id);
 
@@ -450,7 +451,7 @@ const Trainer = mongoose.model("Trainer", TrainerSchema);
    TRAINERS
 ========================= */
 
-app.get("/trainers", auth, async (req, res) => {
+app.get("/trainers", auth, allowRoles("Admin"), async (req, res) => {
   try {
     const trainers = await Trainer.find().sort({ _id: -1 });
 
@@ -463,7 +464,7 @@ app.get("/trainers", auth, async (req, res) => {
   }
 });
 
-app.post("/trainers", auth, async (req, res) => {
+app.post("/trainers", auth, allowRoles("Admin"), async (req, res) => {
   try {
     const trainer = await Trainer.create(req.body);
 
@@ -479,7 +480,7 @@ app.post("/trainers", auth, async (req, res) => {
   }
 });
 
-app.put("/trainers/:id", auth, async (req, res) => {
+app.put("/trainers/:id", auth, allowRoles("Admin"), async (req, res) => {
   try {
     const updatedTrainer = await Trainer.findByIdAndUpdate(
       req.params.id,
@@ -504,7 +505,7 @@ app.put("/trainers/:id", auth, async (req, res) => {
   }
 });
 
-app.delete("/trainers/:id", auth, async (req, res) => {
+app.delete("/trainers/:id", auth, allowRoles("Admin"), async (req, res) => {
   try {
     await Trainer.findByIdAndDelete(req.params.id);
 
@@ -687,7 +688,7 @@ CLASSES
 
 // Get all classes
 
-app.get("/classes", auth, async (req, res) => {
+app.get("/classes", auth, allowRoles("Admin"), async (req, res) => {
   try {
     const classes = await Class.find().sort({
       createdAt: -1,
@@ -707,7 +708,7 @@ app.get("/classes", auth, async (req, res) => {
 
 // Add class
 
-app.post("/classes", auth, async (req, res) => {
+app.post("/classes", auth, allowRoles("Admin"), async (req, res) => {
   try {
     const newClass = await Class.create({
       className: req.body.className,
@@ -730,7 +731,8 @@ app.post("/classes", auth, async (req, res) => {
 });
 
 // Update class
-app.put("/classes/:id", auth, async (req, res) => {
+
+app.put("/classes/:id", auth, allowRoles("Admin"), async (req, res) => {
   try {
     const updatedClass = await Class.findByIdAndUpdate(
       req.params.id,
@@ -757,7 +759,8 @@ app.put("/classes/:id", auth, async (req, res) => {
 });
 
 // Delete class
-app.delete("/classes/:id", auth, async (req, res) => {
+
+app.delete("/classes/:id", auth, allowRoles("Admin"), async (req, res) => {
   try {
     await Class.findByIdAndDelete(req.params.id);
 
@@ -778,7 +781,8 @@ app.delete("/classes/:id", auth, async (req, res) => {
 ========================= */
 
 // Get all workout plans
-app.get("/workout-plans", auth, async (req, res) => {
+
+app.get("/workout-plans", auth, allowRoles("Admin"), async (req, res) => {
   try {
     const plans = await WorkoutPlan.find().sort({
       createdAt: -1,
@@ -798,7 +802,7 @@ app.get("/workout-plans", auth, async (req, res) => {
 
 // Add workout plan
 
-app.post("/workout-plans", auth, async (req, res) => {
+app.post("/workout-plans", auth, allowRoles("Admin"), async (req, res) => {
   try {
     const plan = await WorkoutPlan.create({
       memberName: req.body.memberName,
@@ -822,7 +826,8 @@ app.post("/workout-plans", auth, async (req, res) => {
 });
 
 // Update workout plan
-app.put("/workout-plans/:id", auth, async (req, res) => {
+
+app.put("/workout-plans/:id", auth, allowRoles("Admin"), async (req, res) => {
   try {
     await WorkoutPlan.findByIdAndUpdate(
       req.params.id,
@@ -842,7 +847,8 @@ app.put("/workout-plans/:id", auth, async (req, res) => {
 });
 
 // Delete workout plan
-app.delete("/workout-plans/:id", auth, async (req, res) => {
+
+app.delete("/workout-plans/:id", auth, allowRoles("Admin"), async (req, res) => {
   try {
     await WorkoutPlan.findByIdAndDelete(req.params.id);
 
@@ -910,7 +916,7 @@ const TrainerNote = mongoose.model(
 
 // Get all diet plans
 
-app.get("/diet-plans", auth, async (req, res) => {
+app.get("/diet-plans", auth, allowRoles("Admin"), async (req, res) => {
   try {
     const plans = await DietPlan.find().sort({
       createdAt: -1,
@@ -930,7 +936,7 @@ app.get("/diet-plans", auth, async (req, res) => {
 
 // Add diet plan
 
-app.post("/diet-plans", auth, async (req, res) => {
+app.post("/diet-plans", auth, allowRoles("Admin"), async (req, res) => {
   try {
     const plan = await DietPlan.create({
       memberName: req.body.memberName,
@@ -958,7 +964,8 @@ app.post("/diet-plans", auth, async (req, res) => {
 });
 
 // Update diet plan
-app.put("/diet-plans/:id", auth, async (req, res) => {
+
+app.put("/diet-plans/:id", auth, allowRoles("Admin"), async (req, res) => {
   try {
     const plan = await DietPlan.findByIdAndUpdate(
       req.params.id,
@@ -990,7 +997,8 @@ app.put("/diet-plans/:id", auth, async (req, res) => {
 });
 
 // Delete diet plan
-app.delete("/diet-plans/:id", auth, async (req, res) => {
+
+app.delete("/diet-plans/:id", auth, allowRoles("Admin"), async (req, res) => {
   try {
     await DietPlan.findByIdAndDelete(req.params.id);
 
@@ -1213,7 +1221,8 @@ console.log("QR Request:", req.method, req.body);
 // =========================
 // Dashboard Statistics
 // =========================
-app.get("/dashboard/stats", auth, async (req, res) => {
+
+app.get("/dashboard/stats", auth, allowRoles("Admin"), async (req, res) => {
   try {
     const totalMembers = await Member.countDocuments();
 
@@ -1259,7 +1268,8 @@ app.get("/dashboard/stats", auth, async (req, res) => {
     });
   }
 });
-app.get("/ai-summary", auth, async (req, res) => {
+
+app.get("/ai-summary", auth, allowRoles("Admin"), async (req, res) => {
   try {
     const totalMembers = await Member.countDocuments();
 
@@ -1304,7 +1314,7 @@ app.get("/ai-summary", auth, async (req, res) => {
   }
 });
 
-app.get("/ai/renewal-center", auth, async (req, res) => {
+app.get("/ai/renewal-center", auth, allowRoles("Admin"), async (req, res) => {
   try {
     const members = await Member.find();
 
@@ -1366,7 +1376,7 @@ app.get("/ai/renewal-center", auth, async (req, res) => {
   }
 });
 
-app.get("/ai/revenue-forecast", auth, async (req, res) => {
+app.get("/ai/revenue-forecast", auth, allowRoles("Admin"), async (req, res) => {
   try {
     const members = await Member.find();
 
@@ -1416,7 +1426,7 @@ app.get("/ai/revenue-forecast", auth, async (req, res) => {
   }
 });
 
-app.get("/ai/notifications", auth, async (req, res) => {
+app.get("/ai/notifications", auth, allowRoles("Admin"), async (req, res) => {
   try {
     const notifications = [];
 
