@@ -1259,7 +1259,7 @@ app.get("/dashboard/stats", auth, async (req, res) => {
     });
   }
 });
-app.get("/ai-summary", async (req, res) => {
+app.get("/ai-summary", auth, async (req, res) => {
   try {
     const totalMembers = await Member.countDocuments();
 
@@ -1304,7 +1304,7 @@ app.get("/ai-summary", async (req, res) => {
   }
 });
 
-app.get("/ai/renewal-center", async (req, res) => {
+app.get("/ai/renewal-center", auth, async (req, res) => {
   try {
     const members = await Member.find();
 
@@ -1366,7 +1366,7 @@ app.get("/ai/renewal-center", async (req, res) => {
   }
 });
 
-app.get("/ai/revenue-forecast", async (req, res) => {
+app.get("/ai/revenue-forecast", auth, async (req, res) => {
   try {
     const members = await Member.find();
 
@@ -1416,7 +1416,7 @@ app.get("/ai/revenue-forecast", async (req, res) => {
   }
 });
 
-app.get("/ai/notifications", async (req, res) => {
+app.get("/ai/notifications", auth, async (req, res) => {
   try {
     const notifications = [];
 

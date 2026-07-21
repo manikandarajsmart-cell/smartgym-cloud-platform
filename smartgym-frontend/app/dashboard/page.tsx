@@ -173,7 +173,14 @@ const topPayingMember =
     return;
   }
 
-  fetch(`${process.env.NEXT_PUBLIC_API_URL}/dashboard/stats`)
+const token = localStorage.getItem("smartgym-token");
+
+fetch(`${process.env.NEXT_PUBLIC_API_URL}/dashboard/stats`, {
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+})
+
   .then((res) => res.json())
   .then((data) => {
     if (data.success) {
