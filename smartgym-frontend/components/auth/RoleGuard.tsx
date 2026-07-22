@@ -25,11 +25,17 @@ export default function RoleGuard({
       return;
     }
 
-    if (!role || !allowedRoles.includes(role)) {
-      alert("Access denied");
-      router.replace("/dashboard");
-      return;
-    }
+const normalizedRole = (role || "").toLowerCase();
+
+const normalizedAllowedRoles = allowedRoles.map((r) =>
+  r.toLowerCase()
+);
+
+if (!normalizedAllowedRoles.includes(normalizedRole)) {
+  alert("Access denied");
+  router.replace("/dashboard");
+  return;
+}
 
     setAuthorized(true);
   }, [allowedRoles, router]);

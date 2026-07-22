@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar";
+import RoleGuard from "@/components/auth/RoleGuard";
 
 export default function UsersPage() {
   const [users, setUsers] = useState<any[]>([]);
@@ -165,8 +166,10 @@ const createUser = async () => {
   }
 };
 
-  return (
+return (
+  <RoleGuard allowedRoles={["Admin"]}>
     <>
+
       <Sidebar />
 
       <main className="ml-64 p-8 bg-black min-h-screen text-white">
@@ -353,5 +356,6 @@ const createUser = async () => {
       )}
 
     </>
+  </RoleGuard>
   );
 }

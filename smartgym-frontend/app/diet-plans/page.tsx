@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Sidebar from "../../components/Sidebar";
+import RoleGuard from "@/components/auth/RoleGuard";
 
 export default function DietPlansPage() {
   
@@ -122,7 +123,8 @@ const handleSave = async () => {
   }
 };
 
-  return (
+return (
+  <RoleGuard allowedRoles={["Admin", "Trainer"]}>
     <div
       style={{
         display: "flex",
@@ -131,6 +133,7 @@ const handleSave = async () => {
         minHeight: "100vh",
       }}
     >
+
       <Sidebar />
 
       <div
@@ -355,7 +358,8 @@ const handleSave = async () => {
 
       </div>
     </div>
-  );
+  </RoleGuard>
+);
 }
 
 const inputStyle = {

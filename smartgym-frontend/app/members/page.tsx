@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { storage } from "../../lib/firebase";
+import RoleGuard from "@/components/auth/RoleGuard";
 import {
   ref,
   uploadBytes,
@@ -94,7 +95,8 @@ setPhoto("");
     }
   };
 
-  return (
+return (
+  <RoleGuard allowedRoles={["Admin", "Reception"]}>
     <div
       style={{
         minHeight: "100vh",
@@ -261,5 +263,7 @@ setPhoto("");
         Add Member
       </button>
     </div>
+</RoleGuard>
   );
 }
+

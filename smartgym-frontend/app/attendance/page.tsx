@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
+import RoleGuard from "@/components/auth/RoleGuard";
 
 export default function AttendancePage() {
   const [memberName, setMemberName] = useState("");
@@ -41,7 +42,8 @@ export default function AttendancePage() {
     fetchAttendance();
   }, []);
 
-  return (
+return (
+  <RoleGuard allowedRoles={["Admin", "Trainer", "Reception"]}>
     <div
       style={{
         background: "#000",
@@ -114,5 +116,6 @@ export default function AttendancePage() {
         ))}
       </div>
     </div>
-  );
+  </RoleGuard>
+);
 }

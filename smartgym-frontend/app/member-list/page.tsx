@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import RoleGuard from "@/components/auth/RoleGuard";
 
 export default function MemberListPage() {
 const router = useRouter();
@@ -203,7 +204,8 @@ const activeCount = members.filter(
   (m) => getMemberStatus(m.expiryDate) === "Active"
 ).length;
 
-  return (
+return (
+  <RoleGuard allowedRoles={["Admin", "Reception"]}>
     <div
       style={{
         background: "#000",
@@ -902,7 +904,8 @@ window.open(
         </tbody>
       </table>
     </div>
-  );
+  </RoleGuard>
+);
 }
 
    const quickButtonStyle = {

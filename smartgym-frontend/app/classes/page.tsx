@@ -6,6 +6,7 @@ import Sidebar from "../../components/Sidebar";
 import ClassCard from "./components/ClassCard";
 import ClassForm from "./components/ClassForm";
 import ClassTable from "./components/ClassTable";
+import RoleGuard from "@/components/auth/RoleGuard";
 
 export default function ClassesPage() {
 
@@ -30,7 +31,9 @@ useEffect(() => {
   loadClasses();
 }, []);
 
-  return (
+return (
+  <RoleGuard allowedRoles={["Admin"]}>
+
     <div
       style={{
         display: "flex",
@@ -87,6 +90,8 @@ useEffect(() => {
 />  
       </div>
       </main>
+
     </div>
+  </RoleGuard>
   );
 }

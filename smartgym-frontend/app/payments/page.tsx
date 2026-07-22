@@ -5,6 +5,7 @@ import { saveAs } from "file-saver";
 
 import { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar";
+import RoleGuard from "@/components/auth/RoleGuard";
 
 export default function PaymentsPage() {
   const [memberName, setMemberName] = useState("");
@@ -304,8 +305,9 @@ const exportPaymentsToExcel = () => {
   );
 };
 
-  return (
-    <>
+return (
+  <RoleGuard allowedRoles={["Admin", "Reception"]}>
+    <div>
       <Sidebar />
 
       <main className="ml-64 p-6 bg-black min-h-screen text-white">
@@ -476,7 +478,7 @@ const exportPaymentsToExcel = () => {
           </table>
         </div>
       </main>
- 
-       </>
+</div> 
+</RoleGuard>
 );
 }

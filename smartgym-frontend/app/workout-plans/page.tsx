@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Sidebar from "../../components/Sidebar";
+import RoleGuard from "@/components/auth/RoleGuard";
 
 export default function WorkoutPlansPage() {
   const [plans, setPlans] = useState<any[]>([]);
@@ -108,7 +109,9 @@ export default function WorkoutPlansPage() {
     alert("Failed to delete workout plan");
   }
 };
-  return (
+
+return (
+  <RoleGuard allowedRoles={["Admin", "Trainer"]}> 
     <div
       style={{
         display: "flex",
@@ -317,5 +320,6 @@ export default function WorkoutPlansPage() {
         ))}
       </div>
     </div>
-  );
+  </RoleGuard>
+);
 }
