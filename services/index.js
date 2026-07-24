@@ -11,6 +11,7 @@ const trainerRoutes = require("./routes/trainers");
 const memberRoutes = require("./routes/members");
 const Attendance = require("./models/Attendance");
 const attendanceRoutes = require("./routes/attendance");
+const paymentRoutes = require("./routes/payments");
 require("dotenv").config();
 
 const app = express();
@@ -22,6 +23,7 @@ app.use("/admin", adminRoutes);
 app.use("/trainers", trainerRoutes);
 app.use("/members", memberRoutes);
 app.use("/attendance", attendanceRoutes);
+app.use("/payments", paymentRoutes);
 /* =========================
    MONGODB CONNECTION
 ========================= */
@@ -201,105 +203,6 @@ const Member = require("./models/Member");
 
 const Payment = require("./models/Payment");
 
-/* =========================
-   PAYMENTS
-========================= */
-
-app.get("/payments", auth, async (req, res) => {
-  try {
-
-const payments = await Payment.find({
-  gymId: req.user.gymId,
-}).sort({ _id: -1 });
-
-    res.json({
-      success: true,
-      payments,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: error.message,
-    });
-  }
-});
-
-app.post("/payments", auth, async (req, res) => {
-  try {
-
-const member = await Member.findOne({ name: req.body.memberName });
-
-if (!member) {
-  return res.status(404).json({
-    success: false,
-    message: "Member not found",
-  });
-}
-
-const payment = await Payment.create({
-  memberId: member._id,
-  gymId: member.gymId,
-  memberName: member.name,
-  amount: Number(req.body.amount || 0),
-  month: new Date().toLocaleString("default", {
-    month: "long",
-    year: "numeric",
-  }),
-  status: "Paid",
-});
-
-await Member.findOneAndUpdate(
-  { name: req.body.memberName },
-  {
-    paymentStatus: "Paid",
-    paymentDate: new Date().toLocaleDateString(),
-  }
-);
-
-    res.json({
-      success: true,
-      payment,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: error.message,
-    });
-  }
-});
-
-app.put("/payments/:id", auth, async (req, res) => {
-  try {
-    await Payment.findByIdAndUpdate(
-      req.params.id,
-      req.body
-    );
-
-    res.json({
-      success: true,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: error.message,
-    });
-  }
-});
-
-app.delete("/payments/:id", auth, async (req, res) => {
-  try {
-    await Payment.findByIdAndDelete(req.params.id);
-
-    res.json({
-      success: true,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: error.message,
-    });
-  }
-});
 
 /* =========================
    WORKOUT PLAN SCHEMA
