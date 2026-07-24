@@ -9,6 +9,8 @@ const adminRoutes = require("./routes/admin");
 const Trainer = require("./models/Trainer");
 const trainerRoutes = require("./routes/trainers");
 const memberRoutes = require("./routes/members");
+const Attendance = require("./models/Attendance");
+const attendanceRoutes = require("./routes/attendance");
 require("dotenv").config();
 
 const app = express();
@@ -19,6 +21,7 @@ app.use(express.json());
 app.use("/admin", adminRoutes);
 app.use("/trainers", trainerRoutes);
 app.use("/members", memberRoutes);
+app.use("/attendance", attendanceRoutes);
 /* =========================
    MONGODB CONNECTION
 ========================= */
@@ -290,121 +293,6 @@ app.delete("/payments/:id", auth, async (req, res) => {
     res.json({
       success: true,
     });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: error.message,
-    });
-  }
-});
-
-
-/* =========================
-   ATTENDANCE SCHEMA
-========================= */
-
-const AttendanceSchema = new mongoose.Schema({
-  memberId: String,
-
-  memberName: String,
-
-  date: {
-    type: String,
-    default: () => new Date().toLocaleDateString(),
-  },
-
-  time: {
-    type: String,
-    default: () =>
-      new Date().toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
-  },
-});
-
-const Attendance = mongoose.model(
-  "Attendance",
-  AttendanceSchema
-);
-
-/* =========================
-   ATTENDANCE
-========================= */
-
-app.get("/attendance", auth, async (req, res) => {
-  try {
-    const attendance = await Attendance.find().sort({
-      _id: -1,
-    });
-
-    res.json({
-      success: true,
-      attendance,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: error.message,
-    });
-  }
-});
-
-app.post("/attendance", auth, async (req, res) => {
-console.log("Attendance Request:", req.body);
-  try {
-    const { memberId } = req.body;
-
-    const member = await Member.findOne({ memberId });
-
-    if (!member) {
-      return res.status(404).json({
-        success: false,
-        message: "Invalid Member ID",
-      });
-    }
-
-    const today = new Date().toLocaleDateString();
-
-    const alreadyMarked = await Attendance.findOne({
-      memberId,
-      date: today,
-    });
-
-if (alreadyMarked) {
-  return res.json({
-    success: true,
-    alreadyMarked: true,
-    message: "Attendance already marked today.",
-    member: {
-      name: member.name,
-      memberId: member.memberId,
-      phone: member.phone,
-      status: member.status,
-      expiryDate: member.expiryDate,
-    },
-  });
-}
-
-    const attendance = await Attendance.create({
-      memberId: member.memberId,
-      memberName: member.name,
-      date: today,
-    });
-
-res.json({
-  success: true,
-  message: "Attendance marked successfully.",
-  attendance,
-  member: {
-    memberId: member.memberId,
-    name: member.name,
-    phone: member.phone,
-    status: member.status,
-    expiryDate: member.expiryDate,
-  },
-});
-
   } catch (error) {
     res.status(500).json({
       success: false,
