@@ -5,12 +5,15 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const auth = require("./middleware/auth");
 const allowRoles = require("./middleware/allowRoles");
+const adminRoutes = require("./routes/admin");
 require("dotenv").config();
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
+
+app.use("/admin", adminRoutes);
 
 /* =========================
    MONGODB CONNECTION
@@ -56,6 +59,7 @@ const token = jwt.sign(
     id: user._id,
     email: user.email,
     role: user.role,
+    gymId: user.gymId,
   },
   process.env.JWT_SECRET,
   {
@@ -120,6 +124,7 @@ const token = jwt.sign(
   {
     id: user._id,
     role: user.role,
+    gymId: user.gymId,
   },
   process.env.JWT_SECRET,
   {
@@ -195,7 +200,10 @@ const Payment = require("./models/Payment");
 
 app.get("/payments", auth, async (req, res) => {
   try {
-    const payments = await Payment.find().sort({ _id: -1 });
+
+const payments = await Payment.find({
+  gymId: req.user.gymId,
+}).sort({ _id: -1 });
 
     res.json({
       success: true,
@@ -211,15 +219,27 @@ app.get("/payments", auth, async (req, res) => {
 
 app.post("/payments", auth, async (req, res) => {
   try {
-    const payment = await Payment.create({
-      memberName: req.body.memberName,
-      amount: Number(req.body.amount || 0),
-      month: new Date().toLocaleString("default", {
-        month: "long",
-        year: "numeric",
-      }),
-      status: "Paid",
-    });
+
+const member = await Member.findOne({ name: req.body.memberName });
+
+if (!member) {
+  return res.status(404).json({
+    success: false,
+    message: "Member not found",
+  });
+}
+
+const payment = await Payment.create({
+  memberId: member._id,
+  gymId: member.gymId,
+  memberName: member.name,
+  amount: Number(req.body.amount || 0),
+  month: new Date().toLocaleString("default", {
+    month: "long",
+    year: "numeric",
+  }),
+  status: "Paid",
+});
 
 await Member.findOneAndUpdate(
   { name: req.body.memberName },
@@ -282,7 +302,7 @@ app.get("/members", auth, async (req, res) => {
   try {
 
     const members = await Member.find({
-  gymId: req.query.gymId,
+   gymId: req.user.gymId,
 }).sort({ _id: -1 });
 
     const today = new Date();
@@ -397,7 +417,10 @@ member.paymentStatus = "Paid";
     member.status = "Active";
 
     await member.save();
+
 await Payment.create({
+  memberId: member._id,
+  gymId: member.gymId,
   memberName: member.name,
   amount: member.fee || 0,
   month: new Date().toLocaleString("default", {
@@ -406,6 +429,7 @@ await Payment.create({
   }),
   status: "Paid",
 });
+
     res.json({
       success: true,
       member,
@@ -1316,7 +1340,9 @@ app.get("/ai-summary", auth, allowRoles("Admin"), async (req, res) => {
 
 app.get("/ai/renewal-center", auth, allowRoles("Admin"), async (req, res) => {
   try {
-    const members = await Member.find();
+  const members = await Member.find({
+  gymId: req.user.gymId,
+});
 
     const today = new Date();
     const sevenDaysLater = new Date();
@@ -1378,7 +1404,10 @@ app.get("/ai/renewal-center", auth, allowRoles("Admin"), async (req, res) => {
 
 app.get("/ai/revenue-forecast", auth, allowRoles("Admin"), async (req, res) => {
   try {
-    const members = await Member.find();
+   
+    const members = await Member.find({
+  gymId: req.user.gymId,
+});
 
     const today = new Date();
     const next30Days = new Date();
