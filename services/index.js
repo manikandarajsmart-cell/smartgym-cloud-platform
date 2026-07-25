@@ -16,6 +16,8 @@ const WorkoutPlan = require("./models/WorkoutPlan");
 const workoutPlanRoutes = require("./routes/workoutPlans");
 const Class = require("./models/Class");
 const classRoutes = require("./routes/classes");
+const DietPlan = require("./models/DietPlan");
+const dietPlanRoutes = require("./routes/dietPlans");
 
 require("dotenv").config();
 
@@ -31,6 +33,7 @@ app.use("/attendance", attendanceRoutes);
 app.use("/payments", paymentRoutes);
 app.use("/workout-plans", workoutPlanRoutes);
 app.use("/classes", classRoutes);
+app.use("/diet-plans", dietPlanRoutes);
 
 /* =========================
    MONGODB CONNECTION
@@ -212,32 +215,6 @@ const Member = require("./models/Member");
 const Payment = require("./models/Payment");
 
 /* =========================
-   DIET PLAN SCHEMA
-========================= */
-
-const DietPlanSchema = new mongoose.Schema({
-  memberName: String,
-  breakfast: String,
-  lunch: String,
-  snacks: String,
-  dinner: String,
-  calories: Number,
-  protein: Number,
-  carbs: Number,
-  fat: Number,
-  water: String,
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
-
-const DietPlan = mongoose.model(
-  "DietPlan",
-  DietPlanSchema
-);
-
-/* =========================
    TRAINER NOTES SCHEMA
 ========================= */
 
@@ -256,110 +233,6 @@ const TrainerNote = mongoose.model(
   "TrainerNote",
   TrainerNoteSchema
 );
-
-/* =========================
-   DIET PLANS
-========================= */
-
-// Get all diet plans
-
-app.get("/diet-plans", auth, allowRoles("Admin"), async (req, res) => {
-  try {
-    const plans = await DietPlan.find().sort({
-      createdAt: -1,
-    });
-
-    res.json({
-      success: true,
-      plans,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: error.message,
-    });
-  }
-});
-
-// Add diet plan
-
-app.post("/diet-plans", auth, allowRoles("Admin"), async (req, res) => {
-  try {
-    const plan = await DietPlan.create({
-      memberName: req.body.memberName,
-      breakfast: req.body.breakfast,
-      lunch: req.body.lunch,
-      snacks: req.body.snacks,
-      dinner: req.body.dinner,
-      calories: Number(req.body.calories || 0),
-      protein: Number(req.body.protein || 0),
-      carbs: Number(req.body.carbs || 0),
-      fat: Number(req.body.fat || 0),
-      water: req.body.water,
-    });
-
-    res.json({
-      success: true,
-      plan,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: error.message,
-    });
-  }
-});
-
-// Update diet plan
-
-app.put("/diet-plans/:id", auth, allowRoles("Admin"), async (req, res) => {
-  try {
-    const plan = await DietPlan.findByIdAndUpdate(
-      req.params.id,
-      {
-        memberName: req.body.memberName,
-        breakfast: req.body.breakfast,
-        lunch: req.body.lunch,
-        snacks: req.body.snacks,
-        dinner: req.body.dinner,
-        calories: Number(req.body.calories || 0),
-        protein: Number(req.body.protein || 0),
-        carbs: Number(req.body.carbs || 0),
-        fat: Number(req.body.fat || 0),
-        water: req.body.water,
-      },
-      { new: true }
-    );
-
-    res.json({
-      success: true,
-      plan,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: error.message,
-    });
-  }
-});
-
-// Delete diet plan
-
-app.delete("/diet-plans/:id", auth, allowRoles("Admin"), async (req, res) => {
-  try {
-    await DietPlan.findByIdAndDelete(req.params.id);
-
-    res.json({
-      success: true,
-      message: "Diet Plan Deleted",
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: error.message,
-    });
-  }
-});
 
 /* =========================
    TRAINER NOTES
