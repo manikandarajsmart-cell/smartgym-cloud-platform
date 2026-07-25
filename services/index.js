@@ -12,6 +12,9 @@ const memberRoutes = require("./routes/members");
 const Attendance = require("./models/Attendance");
 const attendanceRoutes = require("./routes/attendance");
 const paymentRoutes = require("./routes/payments");
+const WorkoutPlan = require("./models/WorkoutPlan");
+const workoutPlanRoutes = require("./routes/workoutPlans");
+
 require("dotenv").config();
 
 const app = express();
@@ -24,6 +27,8 @@ app.use("/trainers", trainerRoutes);
 app.use("/members", memberRoutes);
 app.use("/attendance", attendanceRoutes);
 app.use("/payments", paymentRoutes);
+app.use("/workout-plans", workoutPlanRoutes);
+
 /* =========================
    MONGODB CONNECTION
 ========================= */
@@ -204,28 +209,6 @@ const Member = require("./models/Member");
 const Payment = require("./models/Payment");
 
 
-/* =========================
-   WORKOUT PLAN SCHEMA
-========================= */
-
-const WorkoutPlanSchema = new mongoose.Schema({
-  memberName: String,
-  day: String,
-  exercise: String,
-  sets: Number,
-  reps: Number,
-  notes: String,
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
-
-const WorkoutPlan = mongoose.model(
-  "WorkoutPlan",
-  WorkoutPlanSchema
-);
-
 /*
 =========================
 CLASS SCHEMA
@@ -345,93 +328,6 @@ app.delete("/classes/:id", auth, allowRoles("Admin"), async (req, res) => {
   }
 });
 
-/* =========================
-   WORKOUT PLANS
-========================= */
-
-// Get all workout plans
-
-app.get("/workout-plans", auth, allowRoles("Admin"), async (req, res) => {
-  try {
-    const plans = await WorkoutPlan.find().sort({
-      createdAt: -1,
-    });
-
-    res.json({
-      success: true,
-      plans,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: error.message,
-    });
-  }
-});
-
-// Add workout plan
-
-app.post("/workout-plans", auth, allowRoles("Admin"), async (req, res) => {
-  try {
-    const plan = await WorkoutPlan.create({
-      memberName: req.body.memberName,
-      day: req.body.day,
-      exercise: req.body.exercise,
-      sets: Number(req.body.sets || 0),
-      reps: Number(req.body.reps || 0),
-      notes: req.body.notes,
-    });
-
-    res.json({
-      success: true,
-      plan,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: error.message,
-    });
-  }
-});
-
-// Update workout plan
-
-app.put("/workout-plans/:id", auth, allowRoles("Admin"), async (req, res) => {
-  try {
-    await WorkoutPlan.findByIdAndUpdate(
-      req.params.id,
-      req.body
-    );
-
-    res.json({
-      success: true,
-      message: "Workout Plan Updated",
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: error.message,
-    });
-  }
-});
-
-// Delete workout plan
-
-app.delete("/workout-plans/:id", auth, allowRoles("Admin"), async (req, res) => {
-  try {
-    await WorkoutPlan.findByIdAndDelete(req.params.id);
-
-    res.json({
-      success: true,
-      message: "Workout Plan Deleted",
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: error.message,
-    });
-  }
-});
 
 /* =========================
    DIET PLAN SCHEMA
