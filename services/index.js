@@ -18,6 +18,8 @@ const Class = require("./models/Class");
 const classRoutes = require("./routes/classes");
 const DietPlan = require("./models/DietPlan");
 const dietPlanRoutes = require("./routes/dietPlans");
+const TrainerNote = require("./models/TrainerNote");
+const trainerNoteRoutes = require("./routes/trainerNotes");
 
 require("dotenv").config();
 
@@ -34,6 +36,7 @@ app.use("/payments", paymentRoutes);
 app.use("/workout-plans", workoutPlanRoutes);
 app.use("/classes", classRoutes);
 app.use("/diet-plans", dietPlanRoutes);
+app.use("/trainer-notes", trainerNoteRoutes);
 
 /* =========================
    MONGODB CONNECTION
@@ -213,71 +216,6 @@ const Member = require("./models/Member");
 ========================= */
 
 const Payment = require("./models/Payment");
-
-/* =========================
-   TRAINER NOTES SCHEMA
-========================= */
-
-const TrainerNoteSchema = new mongoose.Schema({
-  memberId: String,
-  memberName: String,
-  trainer: String,
-  note: String,
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
-
-const TrainerNote = mongoose.model(
-  "TrainerNote",
-  TrainerNoteSchema
-);
-
-/* =========================
-   TRAINER NOTES
-========================= */
-
-// Get trainer notes
-app.get("/trainer-notes", async (req, res) => {
-  try {
-    const notes = await TrainerNote.find().sort({
-      createdAt: -1,
-    });
-
-    res.json({
-      success: true,
-      notes,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: error.message,
-    });
-  }
-});
-
-// Add trainer note
-app.post("/trainer-notes", async (req, res) => {
-  try {
-    const note = await TrainerNote.create({
-      memberId: req.body.memberId,
-      memberName: req.body.memberName,
-      trainer: req.body.trainer,
-      note: req.body.note,
-    });
-
-    res.json({
-      success: true,
-      note,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: error.message,
-    });
-  }
-});
 
 /* =========================
    PROGRESS SCHEMA
