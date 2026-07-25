@@ -20,7 +20,8 @@ const DietPlan = require("./models/DietPlan");
 const dietPlanRoutes = require("./routes/dietPlans");
 const TrainerNote = require("./models/TrainerNote");
 const trainerNoteRoutes = require("./routes/trainerNotes");
-
+const Progress = require("./models/Progress");
+const progressRoutes = require("./routes/progress");
 require("dotenv").config();
 
 const app = express();
@@ -37,6 +38,7 @@ app.use("/workout-plans", workoutPlanRoutes);
 app.use("/classes", classRoutes);
 app.use("/diet-plans", dietPlanRoutes);
 app.use("/trainer-notes", trainerNoteRoutes);
+app.use("/progress", progressRoutes);
 
 /* =========================
    MONGODB CONNECTION
