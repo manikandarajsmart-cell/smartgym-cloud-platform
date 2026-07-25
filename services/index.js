@@ -14,6 +14,8 @@ const attendanceRoutes = require("./routes/attendance");
 const paymentRoutes = require("./routes/payments");
 const WorkoutPlan = require("./models/WorkoutPlan");
 const workoutPlanRoutes = require("./routes/workoutPlans");
+const Class = require("./models/Class");
+const classRoutes = require("./routes/classes");
 
 require("dotenv").config();
 
@@ -28,6 +30,7 @@ app.use("/members", memberRoutes);
 app.use("/attendance", attendanceRoutes);
 app.use("/payments", paymentRoutes);
 app.use("/workout-plans", workoutPlanRoutes);
+app.use("/classes", classRoutes);
 
 /* =========================
    MONGODB CONNECTION
@@ -207,127 +210,6 @@ const Member = require("./models/Member");
 ========================= */
 
 const Payment = require("./models/Payment");
-
-
-/*
-=========================
-CLASS SCHEMA
-=========================
-*/
-
-const ClassSchema = new mongoose.Schema({
-  className: String,
-  trainer: String,
-  schedule: String,
-  duration: String,
-  capacity: Number,
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
-
-const Class = mongoose.model(
-  "Class",
-  ClassSchema
-);
-
-/*
-=========================
-CLASSES
-=========================
-*/
-
-// Get all classes
-
-app.get("/classes", auth, allowRoles("Admin"), async (req, res) => {
-  try {
-    const classes = await Class.find().sort({
-      createdAt: -1,
-    });
-
-    res.json({
-      success: true,
-      classes,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: error.message,
-    });
-  }
-});
-
-// Add class
-
-app.post("/classes", auth, allowRoles("Admin"), async (req, res) => {
-  try {
-    const newClass = await Class.create({
-      className: req.body.className,
-      trainer: req.body.trainer,
-      schedule: req.body.schedule,
-      duration: req.body.duration,
-      capacity: Number(req.body.capacity || 0),
-    });
-
-    res.json({
-      success: true,
-      class: newClass,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: error.message,
-    });
-  }
-});
-
-// Update class
-
-app.put("/classes/:id", auth, allowRoles("Admin"), async (req, res) => {
-  try {
-    const updatedClass = await Class.findByIdAndUpdate(
-      req.params.id,
-      {
-        className: req.body.className,
-        trainer: req.body.trainer,
-        schedule: req.body.schedule,
-        duration: req.body.duration,
-        capacity: Number(req.body.capacity || 0),
-      },
-      { new: true }
-    );
-
-    res.json({
-      success: true,
-      class: updatedClass,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: error.message,
-    });
-  }
-});
-
-// Delete class
-
-app.delete("/classes/:id", auth, allowRoles("Admin"), async (req, res) => {
-  try {
-    await Class.findByIdAndDelete(req.params.id);
-
-    res.json({
-      success: true,
-      message: "Class Deleted",
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: error.message,
-    });
-  }
-});
-
 
 /* =========================
    DIET PLAN SCHEMA
