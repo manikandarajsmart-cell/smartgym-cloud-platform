@@ -8,6 +8,15 @@ import RoleGuard from "@/components/auth/RoleGuard";
 export default function WorkoutPlansPage() {
   const [plans, setPlans] = useState<any[]>([]);
 
+  const [age, setAge] = useState(25);
+const [gender, setGender] = useState("Male");
+const [goal, setGoal] = useState("Muscle Gain");
+const [experience, setExperience] = useState("Beginner");
+const [daysPerWeek, setDaysPerWeek] = useState(5);
+
+const [aiWorkout, setAiWorkout] = useState<any>(null);
+const [loadingAI, setLoadingAI] = useState(false);
+
   const [memberName, setMemberName] = useState("");
   const [day, setDay] = useState("Monday");
   const [exercise, setExercise] = useState("");
@@ -42,6 +51,54 @@ export default function WorkoutPlansPage() {
     }
   }
 }, []);
+
+const generateAIWorkout = async () => {
+  try {
+    setLoadingAI(true);
+
+    const token = localStorage.getItem("smartgym-token");
+    const res = await axios.post(
+      "https://smartgym.cloud/api/ai-coach/workout",
+      {
+        age,
+        gender,
+        goal,
+        experience,
+        daysPerWeek,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    setAiWorkout(res.data.workoutPlan);
+    alert("✅ AI Workout Generated!");
+
+} catch (err: any) {
+  console.log(err);
+
+  if (err.response) {
+    console.log("Status:", err.response.status);
+    console.log("Data:", err.response.data);
+
+    alert(
+      `Status: ${err.response.status}\n\n${JSON.stringify(
+        err.response.data,
+        null,
+        2
+      )}`
+    );
+  } else {
+    alert(err.message);
+  }
+}
+
+ finally {
+    setLoadingAI(false);
+  }
+};
 
    const handleSave = async () => {
   if (!memberName || !exercise) {
@@ -85,10 +142,12 @@ export default function WorkoutPlansPage() {
     setNotes("");
 
     fetchPlans();
+
   } catch (error) {
     console.log(error);
     alert("❌ Failed");
   }
+
 };
 
     const handleDelete = async (id: string) => {
@@ -132,6 +191,86 @@ return (
         <h1 style={{ fontSize: "42px", marginBottom: "30px" }}>
           🏋️ Workout Plans
         </h1>
+
+      <div
+  style={{
+    background: "#1b1b1b",
+    padding: "20px",
+    borderRadius: "12px",
+    marginBottom: "30px",
+  }}
+>
+  <h2>🧠 AI Workout Generator</h2>
+
+  <input
+    type="number"
+    value={age}
+    onChange={(e) => setAge(Number(e.target.value))}
+    placeholder="Age"
+    style={{ width: "100%", padding: "10px", marginBottom: "10px" }}
+  />
+
+  <input
+    value={goal}
+    onChange={(e) => setGoal(e.target.value)}
+    placeholder="Goal"
+    style={{ width: "100%", padding: "10px", marginBottom: "10px" }}
+  />
+
+  <button
+    onClick={generateAIWorkout}
+    style={{
+      background: "#1976d2",
+      color: "white",
+      padding: "12px 20px",
+      border: "none",
+      borderRadius: "8px",
+      cursor: "pointer",
+    }}
+  >
+    {loadingAI ? "Generating..." : "✨ Generate AI Workout"}
+  </button>
+
+{loadingAI && (
+  <p style={{ marginTop: "15px" }}>⏳ Generating AI workout...</p>
+)}
+
+{aiWorkout && (
+  <div
+    style={{
+      marginTop: "20px",
+      background: "#222",
+      padding: "20px",
+      borderRadius: "10px",
+    }}
+  >
+    <h3>✅ AI Workout Plan</h3>
+
+    {aiWorkout.weeklyPlan.map((day: any) => (
+      <div key={day.day} style={{ marginBottom: "20px" }}>
+        <h4>{day.day}</h4>
+
+        {day.exercises.map((ex: any, index: number) => (
+          <p key={index}>
+            • {ex.name} — {ex.sets} sets × {ex.reps} reps
+          </p>
+        ))}
+      </div>
+    ))}
+
+    <h4>🏃 Cardio</h4>
+    <p>{aiWorkout.cardio}</p>
+
+    <h4>💡 Tips</h4>
+    <ul>
+      {aiWorkout.tips.map((tip: string, index: number) => (
+        <li key={index}>{tip}</li>
+      ))}
+    </ul>
+  </div>
+)}
+
+</div>
 
         <div
           style={{

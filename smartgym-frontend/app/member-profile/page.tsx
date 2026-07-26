@@ -16,6 +16,7 @@ import ProgressHistory from "./components/ProgressHistory";
 import ProgressChart from "./components/ProgressChart";
 import MeasurementsTable from "./components/MeasurementsTable";
 import TransformationGallery from "./components/TransformationGallery";
+import AIMemberInsights from "./components/AIMemberInsights";
 
 export default function MemberProfilePage() {
   const router = useRouter();
@@ -32,8 +33,14 @@ useEffect(() => {
   if (stored) {
     setMember(JSON.parse(stored));
   }
+  const token = localStorage.getItem("smartgym-token");
 
-  fetch(`${process.env.NEXT_PUBLIC_API_URL}/payments`)
+fetch(`${process.env.NEXT_PUBLIC_API_URL}/payments`, {
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+})
+
     .then((res) => res.json())
     .then((data) => {
       if (data.success) {
@@ -41,7 +48,11 @@ useEffect(() => {
       }
     })
       .catch((err) => console.log(err));
-  fetch(`${process.env.NEXT_PUBLIC_API_URL}/attendance`)
+  fetch(`${process.env.NEXT_PUBLIC_API_URL}/attendance`, {
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+})
   .then((res) => res.json())
   .then((data) => {
     if (data.success) {
@@ -49,24 +60,36 @@ useEffect(() => {
     }
   })
   .catch((err) => console.log(err)); 
-  fetch(`${process.env.NEXT_PUBLIC_API_URL}/workout-plans`)
-  .then((res) => res.json())
+  fetch(`${process.env.NEXT_PUBLIC_API_URL}/workout-plans`, {
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+})  
+.then((res) => res.json())
   .then((data) => {
     if (data.success) {
       setWorkouts(data.plans);
     }
   })
   .catch((err) => console.log(err));
-  fetch(`${process.env.NEXT_PUBLIC_API_URL}/diet-plans`)
-  .then((res) => res.json())
+  fetch(`${process.env.NEXT_PUBLIC_API_URL}/diet-plans`, {
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+})  
+.then((res) => res.json())
   .then((data) => {
     if (data.success) {
       setDietPlans(data.plans);
     }
   })
   .catch((err) => console.log(err));
-  fetch(`${process.env.NEXT_PUBLIC_API_URL}/progress`)
-  .then((res) => res.json())
+  fetch(`${process.env.NEXT_PUBLIC_API_URL}/progress`, {
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+})  
+.then((res) => res.json())
   .then((data) => {
     if (data.success) {
       setProgress(data.progress);
@@ -327,6 +350,12 @@ Member ID: <b>{member.memberId || "-"}</b> • Joined{" "}
   workouts={workouts}
   dietPlans={dietPlans}
   status={status}
+/>
+
+<AIMemberInsights
+  member={member}
+  attendance={attendance}
+  payments={payments}
 />
 
 <div

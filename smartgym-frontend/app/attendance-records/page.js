@@ -35,17 +35,29 @@ export default function AttendanceRecordsPage() {
 
   const fetchAttendance = async () => {
     try {
-      const res = await fetch("https://smartgym.cloud/api/attendance");
+
+const token = localStorage.getItem("smartgym-token");
+
+const res = await fetch("https://smartgym.cloud/api/attendance", {
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+});
+
       const data = await res.json();
+console.log("Attendance Data:", data.attendance);
 
       setRecords(data.attendance || []);
-  const today = new Date().toLocaleDateString();
+
+const today = new Date().toLocaleDateString();
 
 setTodayCount(
-  (data.attendance || []).filter(
-    (item) => item.date === today
-  ).length
+  (data.attendance || []).filter((item) => {
+    if (!item.date) return false;
+    return item.date.startsWith(today);
+  }).length
 );
+
     } catch (error) {
       console.log(error);
     }
@@ -94,6 +106,19 @@ setTodayCount(
   >
     📸 Total Attendance: {records.length}
   </div>
+    <div
+  style={{
+    background: "#111",
+    padding: "20px",
+    borderRadius: "12px",
+    border: "1px solid #222",
+    fontSize: "24px",
+    fontWeight: "bold",
+    marginLeft: "20px",
+  }}
+>
+  ✅ Today's Attendance: {todayCount}
+</div>
     <button
   onClick={exportCSV}
   style={{

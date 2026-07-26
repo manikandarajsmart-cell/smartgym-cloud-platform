@@ -53,7 +53,8 @@ const handlePhotoUpload = async (
 
   const handleAddMember = async () => {
     try {
-  const gymId = localStorage.getItem("gymId");
+  const token = localStorage.getItem("smartgym-token");
+
       const response = await fetch(
         "https://smartgym.cloud/api/members",
 
@@ -61,10 +62,10 @@ const handlePhotoUpload = async (
   method: "POST",
   headers: {
     "Content-Type": "application/json",
+  Authorization: `Bearer ${token}`,
   },
 
-  body: JSON.stringify({
-  gymId,
+body: JSON.stringify({
   name,
   phone,
   plan,
@@ -266,4 +267,5 @@ return (
 </RoleGuard>
   );
 }
+
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 type DashboardStats = {
   totalGyms: number;
@@ -17,6 +18,7 @@ type Gym = {
   status: string;
 };
 export default function AdminPage() {
+const router = useRouter();
   const [stats, setStats] = useState<DashboardStats | null>(null);
 const [gyms, setGyms] = useState<Gym[]>([]);  
 const [loading, setLoading] = useState(true);
@@ -110,9 +112,19 @@ if (gymsData.success) {
 
   return (
     <div className="min-h-screen bg-slate-900 text-white p-8">
-      <h1 className="text-4xl font-bold mb-8">
-        Super Admin Dashboard
-      </h1>
+
+        <div className="flex items-center justify-between mb-8">
+  <h1 className="text-4xl font-bold">
+    Super Admin Dashboard
+  </h1>
+
+  <button
+    onClick={() => router.push("/admin/gyms/create")}
+    className="bg-green-600 hover:bg-green-700 px-5 py-3 rounded-lg font-semibold"
+  >
+    + Create Gym
+  </button>
+</div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 

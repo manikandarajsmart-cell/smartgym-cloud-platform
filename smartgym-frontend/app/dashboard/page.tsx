@@ -189,14 +189,24 @@ fetch(`${process.env.NEXT_PUBLIC_API_URL}/dashboard/stats`, {
   })
   .catch(console.error);
 
-  fetch(`${process.env.NEXT_PUBLIC_API_URL}/members`)
+fetch(`${process.env.NEXT_PUBLIC_API_URL}/members`, {
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+})
+
     .then((res) => res.json())
     .then((data) => {
       setMembers(data);
     })
     .catch(console.error);
 
-  fetch(`${process.env.NEXT_PUBLIC_API_URL}/payments`)
+fetch(`${process.env.NEXT_PUBLIC_API_URL}/payments`, {
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+})
+
     .then((res) => res.json())
     .then((data) => {
       if (data.success) {
@@ -205,7 +215,12 @@ fetch(`${process.env.NEXT_PUBLIC_API_URL}/dashboard/stats`, {
     })
     .catch(console.error);
 
-  fetch(`${process.env.NEXT_PUBLIC_API_URL}/attendance`)
+fetch(`${process.env.NEXT_PUBLIC_API_URL}/attendance`, {
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+})
+
     .then((res) => res.json())
     .then((data) => {
       if (data.success) {
@@ -213,7 +228,12 @@ fetch(`${process.env.NEXT_PUBLIC_API_URL}/dashboard/stats`, {
       }
     })
     .catch(console.error);
-fetch(`${process.env.NEXT_PUBLIC_API_URL}/ai/revenue-forecast`)
+fetch(`${process.env.NEXT_PUBLIC_API_URL}/ai/revenue-forecast`, {
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+})
+
   .then((res) => res.json())
   .then((data) => {
     if (data.success) {
