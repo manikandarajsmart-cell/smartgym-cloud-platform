@@ -12,6 +12,18 @@ const MemberSchema = new mongoose.Schema({
     default: null,
   },
 
+organizationId: {
+  type: mongoose.Schema.Types.ObjectId,
+  ref: "Organization",
+  default: null,
+},
+
+branchId: {
+  type: mongoose.Schema.Types.ObjectId,
+  ref: "Branch",
+  default: null,
+},
+
   name: String,
 
   plan: String,
@@ -43,6 +55,52 @@ const MemberSchema = new mongoose.Schema({
     type: String,
     default: "Active",
   },
+});
+
+// =========================
+// INDEXES
+// =========================
+
+// Unique Member ID
+MemberSchema.index({ memberId: 1 }, { unique: true });
+
+// Organization
+MemberSchema.index({ organizationId: 1 });
+
+// Branch
+MemberSchema.index({ branchId: 1 });
+
+// Payment status
+MemberSchema.index({ paymentStatus: 1 });
+
+// Membership status
+MemberSchema.index({ status: 1 });
+
+// Expiry tracking
+MemberSchema.index({ expiryDate: 1 });
+
+// Fast member search inside organization
+MemberSchema.index({
+  organizationId: 1,
+  name: 1,
+});
+
+// Members in a branch
+MemberSchema.index({
+  organizationId: 1,
+  branchId: 1,
+});
+
+// Active members in organization
+MemberSchema.index({
+  organizationId: 1,
+  status: 1,
+});
+
+// Payment tracking
+MemberSchema.index({
+  organizationId: 1,
+  paymentStatus: 1,
 });
 
 module.exports = mongoose.model("Member", MemberSchema);

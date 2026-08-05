@@ -1,9 +1,33 @@
 const mongoose = require("mongoose");
 
 const TrainerSchema = new mongoose.Schema({
-  name: String,
+  gymId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Gym",
+    default: null,
+  },
+
+  organizationId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Organization",
+    default: null,
+  },
+
+  branchId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Branch",
+    default: null,
+  },
+
+  name: {
+    type: String,
+    required: true,
+  },
+
   specialization: String,
+
   salary: Number,
+
   experience: String,
 });
 

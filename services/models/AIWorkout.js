@@ -9,6 +9,26 @@ const ExerciseSchema = new mongoose.Schema({
 
 const AIWorkoutSchema = new mongoose.Schema(
   {
+    // Legacy (temporary)
+    gymId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Gym",
+      default: null,
+    },
+
+    // Multi-tenant
+    organizationId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Organization",
+      default: null,
+    },
+
+    branchId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Branch",
+      default: null,
+    },
+
     trainerId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
@@ -40,3 +60,4 @@ const AIWorkoutSchema = new mongoose.Schema(
 );
 
 module.exports = mongoose.model("AIWorkout", AIWorkoutSchema);
+

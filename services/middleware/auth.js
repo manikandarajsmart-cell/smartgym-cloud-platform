@@ -13,11 +13,23 @@ module.exports = function (req, res, next) {
   const token = authHeader.replace("Bearer ", "");
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    req.user = decoded;
+const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    next();
+req.user = {
+  id: decoded.id,
+  role: decoded.role,
+
+  // Legacy (temporary)
+  gymId: decoded.gymId || null,
+
+  // Multi-tenant
+  organizationId: decoded.organizationId || null,
+  branchId: decoded.branchId || null,
+};
+
+next();
+
   } catch (err) {
     return res.status(401).json({
       success: false,

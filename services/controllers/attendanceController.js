@@ -1,9 +1,20 @@
 const Attendance = require("../models/Attendance");
 const Member = require("../models/Member");
 
+// Get Attendance
 exports.getAttendance = async (req, res) => {
   try {
-    const attendance = await Attendance.find().sort({
+    // Build tenant-aware query
+    const query = {};
+
+    if (req.tenant?.organizationId) {
+      query.organizationId = req.tenant.organizationId;
+    } else if (req.user?.gymId) {
+      // Legacy fallback
+      query.gymId = req.user.gymId;
+    }
+
+    const attendance = await Attendance.find(query).sort({
       _id: -1,
     });
 
@@ -19,13 +30,23 @@ exports.getAttendance = async (req, res) => {
   }
 };
 
+// Mark Attendance
 exports.markAttendance = async (req, res) => {
   console.log("Attendance Request:", req.body);
 
   try {
     const { memberId } = req.body;
 
-    const member = await Member.findOne({ memberId });
+    // Tenant-aware member lookup
+    const memberQuery = { memberId };
+
+    if (req.tenant?.organizationId) {
+      memberQuery.organizationId = req.tenant.organizationId;
+    } else if (req.user?.gymId) {
+      memberQuery.gymId = req.user.gymId;
+    }
+
+    const member = await Member.findOne(memberQuery);
 
     if (!member) {
       return res.status(404).json({
@@ -36,10 +57,19 @@ exports.markAttendance = async (req, res) => {
 
     const today = new Date().toLocaleDateString();
 
-    const alreadyMarked = await Attendance.findOne({
+    // Prevent duplicate attendance within tenant
+    const attendanceQuery = {
       memberId,
       date: today,
-    });
+    };
+
+    if (req.tenant?.organizationId) {
+      attendanceQuery.organizationId = req.tenant.organizationId;
+    } else if (req.user?.gymId) {
+      attendanceQuery.gymId = req.user.gymId;
+    }
+
+    const alreadyMarked = await Attendance.findOne(attendanceQuery);
 
     if (alreadyMarked) {
       return res.json({
@@ -57,6 +87,13 @@ exports.markAttendance = async (req, res) => {
     }
 
     const attendance = await Attendance.create({
+      // Legacy (temporary)
+      gymId: member.gymId,
+
+      // Multi-tenant
+      organizationId: req.tenant?.organizationId || null,
+      branchId: req.tenant?.branchId || null,
+
       memberId: member.memberId,
       memberName: member.name,
       date: today,

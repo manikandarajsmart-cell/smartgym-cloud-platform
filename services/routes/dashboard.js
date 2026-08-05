@@ -7,6 +7,7 @@ const allowRoles = require("../middleware/allowRoles");
 const {
   getStats,
   getAISummary,
+  getSuperAdminStats,
 } = require("../controllers/dashboardController");
 
 router.get(
@@ -21,6 +22,13 @@ router.get(
   auth,
   allowRoles("Admin"),
   getAISummary
+);
+
+router.get(
+  "/super-admin",
+  auth,
+  allowRoles("SUPER_ADMIN"),
+  getSuperAdminStats
 );
 
 module.exports = router;

@@ -2,11 +2,24 @@ const express = require("express");
 const router = express.Router();
 
 const auth = require("../middleware/auth");
+const tenant = require("../middleware/tenant");
 
 const attendanceController = require("../controllers/attendanceController");
 
-router.get("/", auth, attendanceController.getAttendance);
+// Get Attendance
+router.get(
+  "/",
+  auth,
+  tenant,
+  attendanceController.getAttendance
+);
 
-router.post("/", auth, attendanceController.markAttendance);
+// Mark Attendance
+router.post(
+  "/",
+  auth,
+  tenant,
+  attendanceController.markAttendance
+);
 
 module.exports = router;

@@ -1,5 +1,6 @@
 const Member = require("../models/Member");
 const Attendance = require("../models/Attendance");
+const AI = require("../services/ai");
 
 exports.getRenewalCenter = async (req, res) => {
   try {
@@ -167,6 +168,59 @@ exports.getNotifications = async (req, res) => {
       count: notifications.length,
       notifications,
     });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+};
+exports.getDashboardAI = async (req, res) => {
+console.log("===== AI DASHBOARD API CALLED =====");
+console.log("User:", req.user);
+  try {
+    // Temporary demo values
+    // Later we'll replace these with real MongoDB calculations.
+    const healthScore = AI.calculateHealthScore({
+      attendanceRate: 85,
+      paymentStatus: true,
+      engagementScore: 75,
+    });
+
+    const riskScore = AI.calculateRiskScore({
+      attendanceRate: 85,
+      missedPayments: 0,
+      inactiveDays: 3,
+    });
+
+    const engagementScore = AI.calculateEngagementScore({
+      attendanceRate: 85,
+      workoutsCompleted: 18,
+      checkIns: 20,
+    });
+
+    const revenueForecast = AI.calculateRevenueForecast({
+      monthlyRevenue: 450000,
+      growthRate: 8,
+    });
+
+    const advice = AI.generateBusinessAdvice({
+      healthScore,
+      riskScore,
+      engagementScore,
+    });
+
+   res.json({
+  success: true,
+  data: {
+    healthScore,
+    riskScore,
+    engagementScore,
+    revenueForecast,
+    advice,
+  },
+});
+
   } catch (error) {
     res.status(500).json({
       success: false,

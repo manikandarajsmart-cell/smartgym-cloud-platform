@@ -1,11 +1,20 @@
 const Member = require("../models/Member");
 const Payment = require("../models/Payment");
 
+// ==============================
+// GET ALL MEMBERS
+// ==============================
 exports.getAllMembers = async (req, res) => {
   try {
-    const members = await Member.find({
-      gymId: req.user.gymId,
-    }).sort({ _id: -1 });
+    const query = {};
+
+    if (req.tenant?.organizationId) {
+      query.organizationId = req.tenant.organizationId;
+    } else if (req.user?.gymId) {
+      query.gymId = req.user.gymId;
+    }
+
+    const members = await Member.find(query).sort({ _id: -1 });
 
     const today = new Date();
 
@@ -44,6 +53,9 @@ exports.getAllMembers = async (req, res) => {
   }
 };
 
+// ==============================
+// CREATE MEMBER
+// ==============================
 exports.createMember = async (req, res) => {
   try {
     const today = new Date();
@@ -57,8 +69,16 @@ exports.createMember = async (req, res) => {
 
     const member = await Member.create({
       memberId,
+
+      // Legacy
       gymId: req.body.gymId,
+
+      // Multi-tenant
+      organizationId: req.tenant?.organizationId || null,
+      branchId: req.tenant?.branchId || null,
+
       ...req.body,
+
       joinDate: today.toLocaleDateString(),
       expiryDate: expiry.toLocaleDateString(),
       status: "Active",
@@ -76,13 +96,35 @@ exports.createMember = async (req, res) => {
   }
 };
 
+// ==============================
+// UPDATE MEMBER
+// ==============================
 exports.updateMember = async (req, res) => {
   try {
-    const member = await Member.findByIdAndUpdate(
-      req.params.id,
+    const filter = req.tenant?.organizationId
+      ? {
+          _id: req.params.id,
+          organizationId: req.tenant.organizationId,
+        }
+      : {
+          _id: req.params.id,
+          gymId: req.user.gymId,
+        };
+
+    const member = await Member.findOneAndUpdate(
+      filter,
       req.body,
-      { new: true }
+      {
+        new: true,
+      }
     );
+
+    if (!member) {
+      return res.status(404).json({
+        success: false,
+        message: "Member not found",
+      });
+    }
 
     res.json({
       success: true,
@@ -96,9 +138,22 @@ exports.updateMember = async (req, res) => {
   }
 };
 
+// ==============================
+// RENEW MEMBER
+// ==============================
 exports.renewMember = async (req, res) => {
   try {
-    const member = await Member.findById(req.params.id);
+    const filter = req.tenant?.organizationId
+      ? {
+          _id: req.params.id,
+          organizationId: req.tenant.organizationId,
+        }
+      : {
+          _id: req.params.id,
+          gymId: req.user.gymId,
+        };
+
+    const member = await Member.findOne(filter);
 
     if (!member) {
       return res.status(404).json({
@@ -107,10 +162,10 @@ exports.renewMember = async (req, res) => {
       });
     }
 
-    const currentExpiry = new Date();
-    currentExpiry.setMonth(currentExpiry.getMonth() + 1);
+    const expiry = new Date();
+    expiry.setMonth(expiry.getMonth() + 1);
 
-    member.expiryDate = currentExpiry.toLocaleDateString();
+    member.expiryDate = expiry.toLocaleDateString();
     member.status = "Active";
     member.paymentStatus = "Paid";
 
@@ -118,7 +173,14 @@ exports.renewMember = async (req, res) => {
 
     await Payment.create({
       memberId: member._id,
+
+      // Legacy
       gymId: member.gymId,
+
+      // Multi-tenant
+      organizationId: member.organizationId,
+      branchId: member.branchId,
+
       memberName: member.name,
       amount: member.fee || 0,
       month: new Date().toLocaleString("default", {
@@ -140,13 +202,33 @@ exports.renewMember = async (req, res) => {
   }
 };
 
+// ==============================
+// DELETE MEMBER
+// ==============================
 exports.deleteMember = async (req, res) => {
   try {
-    await Member.findByIdAndDelete(req.params.id);
+    const filter = req.tenant?.organizationId
+      ? {
+          _id: req.params.id,
+          organizationId: req.tenant.organizationId,
+        }
+      : {
+          _id: req.params.id,
+          gymId: req.user.gymId,
+        };
+
+    const member = await Member.findOneAndDelete(filter);
+
+    if (!member) {
+      return res.status(404).json({
+        success: false,
+        message: "Member not found",
+      });
+    }
 
     res.json({
       success: true,
-      message: "Member deleted",
+      message: "Member deleted successfully",
     });
   } catch (error) {
     res.status(500).json({
@@ -155,3 +237,4 @@ exports.deleteMember = async (req, res) => {
     });
   }
 };
+

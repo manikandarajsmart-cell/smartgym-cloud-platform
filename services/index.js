@@ -1,4 +1,6 @@
 require("dotenv").config();
+console.log("MONGODB_URI loaded:", !!process.env.MONGODB_URI);
+console.log("MONGODB_URI value:", process.env.MONGODB_URI);
 
 console.log("JWT loaded:", !!process.env.JWT_SECRET);
 console.log("NVIDIA loaded:", !!process.env.NVIDIA_API_KEY);
@@ -6,9 +8,15 @@ console.log("NVIDIA URL:", process.env.NVIDIA_BASE_URL);
 
 const express = require("express");
 const cors = require("cors");
+const compression = require("compression");
+const helmet = require("helmet");
+const rateLimit = require("express-rate-limit");
+const morgan = require("morgan");
+const errorHandler = require("./middleware/errorHandler");
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
 const auth = require("./middleware/auth");
 const allowRoles = require("./middleware/allowRoles");
 const adminRoutes = require("./routes/admin");
@@ -18,6 +26,7 @@ const memberRoutes = require("./routes/members");
 const Attendance = require("./models/Attendance");
 const attendanceRoutes = require("./routes/attendance");
 const paymentRoutes = require("./routes/payments");
+const authRoutes = require("./routes/auth");
 const WorkoutPlan = require("./models/WorkoutPlan");
 const workoutPlanRoutes = require("./routes/workoutPlans");
 const Class = require("./models/Class");
@@ -31,15 +40,59 @@ const progressRoutes = require("./routes/progress");
 const aiRoutes = require("./routes/ai");
 const dashboardRoutes = require("./routes/dashboard");
 const aiCoachRoutes = require("./routes/aiCoach");
+const organizationRoutes = require("./routes/organizations");
+const branchRoutes = require("./routes/branches");
+const billingRoutes = require("./routes/billing");
+const webhookRoutes = require("./routes/webhook");
+const aiCreditRoutes = require("./routes/aiCredits");
+const User = require("./models/User");
+const RefreshToken = require("./models/RefreshToken");
 
 const app = express();
+app.set("trust proxy", 1);
 
-app.use(cors());
+app.use(compression());
+
+app.use(helmet());
+
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+
+  max: 300,
+
+  standardHeaders: true,
+  legacyHeaders: false,
+
+  message: {
+    success: false,
+    message: "Too many requests. Please try again later.",
+  },
+});
+
+app.use(apiLimiter);
+
+app.use(morgan("combined"));
+
+app.use(
+  cors({
+    origin: [
+      "https://smartgym.cloud",
+      "http://localhost:3000",
+    ],
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+    ],
+  })
+);
 app.use(express.json());
 
 app.use("/admin", adminRoutes);
 app.use("/trainers", trainerRoutes);
 app.use("/members", memberRoutes);
+app.use("/auth", authRoutes);
 app.use("/attendance", attendanceRoutes);
 app.use("/payments", paymentRoutes);
 app.use("/workout-plans", workoutPlanRoutes);
@@ -51,6 +104,11 @@ app.use("/ai", aiRoutes);
 app.use("/dashboard", dashboardRoutes);
 app.use("/ai-coach", aiCoachRoutes);
 app.use("/api/ai/workouts", require("./routes/aiWorkouts"));
+app.use("/organizations", organizationRoutes);
+app.use("/branches", branchRoutes);
+app.use("/billing", billingRoutes);
+app.use("/webhooks", webhookRoutes);
+app.use("/ai-credits", aiCreditRoutes);
 
 /* =========================
    MONGODB CONNECTION
@@ -58,166 +116,77 @@ app.use("/api/ai/workouts", require("./routes/aiWorkouts"));
 
 mongoose
   .connect(process.env.MONGODB_URI)
-  .then(() => {
+  .then(async () => {
     console.log("MongoDB Connected");
+    console.log("===== CONNECTION INFO =====");
+console.log("Host:", mongoose.connection.host);
+console.log("Database:", mongoose.connection.name);
+console.log("ReadyState:", mongoose.connection.readyState);
+
+const admin = mongoose.connection.db.admin();
+
+admin.serverStatus()
+  .then((info) => {
+    console.log("Mongo Version:", info.version);
+    console.log("Process:", info.process);
+    console.log("HostName:", info.host);
+    console.log("===========================");
+  })
+  .catch(console.error);
+    console.log("=================================");
+    console.log("Database:", mongoose.connection.db.databaseName);
+    console.log("Collection:", User.collection.name);
+
+    const debugUsers = await User.find(
+      {},
+      {
+        _id: 1,
+        email: 1,
+        role: 1,
+      }
+    );
+
+    console.log("DEBUG USERS:", debugUsers);
+    console.log("=================================");
   })
   .catch((err) => {
-    console.log("MongoDB Error:", err);
+    console.error(err);
   });
 
 /* =========================
    USER SCHEMA
 ========================= */
 
-const User = require("./models/User");
+setTimeout(async () => {
+  console.log("========== RUNTIME DEBUG ==========");
+  console.log("Model:", User.modelName);
+  console.log("Collection:", User.collection.name);
+  console.log("DB:", mongoose.connection.db.databaseName);
+
+  const docs = await User.find({
+    email: "manikandarajsmart@gmail.com"
+  });
+
+  console.log("Runtime query result:", docs);
+  console.log("==================================");
+}, 5000);
 
 /* =========================
    GYM SCHEMA
 ========================= */
 
 const Gym = require("./models/Gym");
+const Branch = require("./models/Branch");
 
 /* =========================
    REGISTER
 ========================= */
 
-app.post("/register", async (req, res) => {
-  try {
-
-const hashedPassword = await bcrypt.hash(req.body.password, 10);
-
-const user = await User.create({
-  ...req.body,
-  password: hashedPassword,
-});
-
-const token = jwt.sign(
-  {
-    id: user._id,
-    email: user.email,
-    role: user.role,
-    gymId: user.gymId,
-  },
-  process.env.JWT_SECRET,
-  {
-    expiresIn: "7d",
-  }
-);
-
-res.json({
-  success: true,
-  token,
-  user,
-});
-
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: error.message,
-    });
-  }
-});
 
 /* =========================
-   LOGIN
+   REFRESH TOKEN
 ========================= */
 
-app.post("/login", async (req, res) => {
-  try {
-    const { email, password } = req.body;
-
-console.log("LOGIN REQUEST:", { email, password });
-
-const userByEmail = await User.findOne({ email });
-
-console.log("USER BY EMAIL:", userByEmail);
-
-const user = await User.findOne({ email });
-
-if (!user) {
-  return res.status(401).json({
-    success: false,
-    message: "Invalid credentials",
-  });
-}
-
-let passwordMatch = false;
-
-// Support both hashed and existing plain-text passwords
-if (user.password && user.password.startsWith("$2")) {
-  passwordMatch = await bcrypt.compare(password, user.password);
-} else {
-  passwordMatch = (password === user.password);
-}
-
-if (!passwordMatch) {
-  return res.status(401).json({
-    success: false,
-    message: "Invalid credentials",
-  });
-}
-
-const token = jwt.sign(
-  {
-    id: user._id,
-    role: user.role,
-    gymId: user.gymId,
-  },
-  process.env.JWT_SECRET,
-  {
-    expiresIn: "7d",
-  }
-);
-
-res.json({
-  success: true,
-  token,
-  user,
-});
-
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: error.message,
-    });
-  }
-});
-
-/* =========================
-   GYMS
-========================= */
-
-app.post("/gyms", async (req, res) => {
-  try {
-    const gym = await Gym.create(req.body);
-
-    res.json({
-      success: true,
-      gym,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: error.message,
-    });
-  }
-});
-
-app.get("/gyms", async (req, res) => {
-  try {
-    const gyms = await Gym.find().sort({ createdAt: -1 });
-
-    res.json({
-      success: true,
-      gyms,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: error.message,
-    });
-  }
-});
 
 /* =========================
    MEMBER SCHEMA
@@ -275,12 +244,54 @@ app.get("/", (req, res) => {
   res.send("Smart Gym Backend Running");
 });
 
+app.use(errorHandler);
+
+/* =========================
+   HEALTH CHECK
+========================= */
+
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    success: true,
+    status: "healthy",
+    service: "SmartGym Cloud Backend",
+    version: "1.0.0",
+    uptime: Math.floor(process.uptime()),
+    database:
+      mongoose.connection.readyState === 1
+        ? "connected"
+        : "disconnected",
+    timestamp: new Date().toISOString(),
+  });
+});
+
 /* =========================
    SERVER
 ========================= */
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`Server Running on Port ${PORT}`);
 });
+
+// Graceful Shutdown
+const shutdown = async (signal) => {
+  console.log(`${signal} received. Shutting down...`);
+
+  server.close(async () => {
+    console.log("HTTP server closed.");
+
+    try {
+      await mongoose.connection.close();
+      console.log("MongoDB connection closed.");
+      process.exit(0);
+    } catch (err) {
+      console.error("Shutdown error:", err);
+      process.exit(1);
+    }
+  });
+};
+
+process.on("SIGINT", () => shutdown("SIGINT"));
+process.on("SIGTERM", () => shutdown("SIGTERM"));

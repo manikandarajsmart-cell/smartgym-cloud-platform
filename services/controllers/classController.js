@@ -1,13 +1,28 @@
 const Class = require("../models/Class");
 
+// ============================
+// Get Classes
+// ============================
 exports.getClasses = async (req, res) => {
   try {
-    const classes = await Class.find().sort({ createdAt: -1 });
+
+    const query = {};
+
+    if (req.tenant?.organizationId) {
+      query.organizationId = req.tenant.organizationId;
+    } else if (req.user?.gymId) {
+      query.gymId = req.user.gymId;
+    }
+
+    const classes = await Class.find(query).sort({
+      createdAt: -1,
+    });
 
     res.json({
       success: true,
       classes,
     });
+
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -16,20 +31,34 @@ exports.getClasses = async (req, res) => {
   }
 };
 
+// ============================
+// Create Class
+// ============================
 exports.createClass = async (req, res) => {
   try {
+
     const newClass = await Class.create({
+
+      // Legacy
+      gymId: req.body.gymId,
+
+      // Multi-tenant
+      organizationId: req.tenant?.organizationId || null,
+      branchId: req.tenant?.branchId || null,
+
       className: req.body.className,
       trainer: req.body.trainer,
       schedule: req.body.schedule,
       duration: req.body.duration,
       capacity: Number(req.body.capacity || 0),
+
     });
 
     res.json({
       success: true,
       class: newClass,
     });
+
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -38,10 +67,24 @@ exports.createClass = async (req, res) => {
   }
 };
 
+// ============================
+// Update Class
+// ============================
 exports.updateClass = async (req, res) => {
   try {
-    const updatedClass = await Class.findByIdAndUpdate(
-      req.params.id,
+
+    const query = {
+      _id: req.params.id,
+    };
+
+    if (req.tenant?.organizationId) {
+      query.organizationId = req.tenant.organizationId;
+    } else if (req.user?.gymId) {
+      query.gymId = req.user.gymId;
+    }
+
+    const updatedClass = await Class.findOneAndUpdate(
+      query,
       {
         className: req.body.className,
         trainer: req.body.trainer,
@@ -49,13 +92,23 @@ exports.updateClass = async (req, res) => {
         duration: req.body.duration,
         capacity: Number(req.body.capacity || 0),
       },
-      { new: true }
+      {
+        new: true,
+      }
     );
+
+    if (!updatedClass) {
+      return res.status(404).json({
+        success: false,
+        message: "Class not found",
+      });
+    }
 
     res.json({
       success: true,
       class: updatedClass,
     });
+
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -64,14 +117,36 @@ exports.updateClass = async (req, res) => {
   }
 };
 
+// ============================
+// Delete Class
+// ============================
 exports.deleteClass = async (req, res) => {
   try {
-    await Class.findByIdAndDelete(req.params.id);
+
+    const query = {
+      _id: req.params.id,
+    };
+
+    if (req.tenant?.organizationId) {
+      query.organizationId = req.tenant.organizationId;
+    } else if (req.user?.gymId) {
+      query.gymId = req.user.gymId;
+    }
+
+    const deletedClass = await Class.findOneAndDelete(query);
+
+    if (!deletedClass) {
+      return res.status(404).json({
+        success: false,
+        message: "Class not found",
+      });
+    }
 
     res.json({
       success: true,
-      message: "Class Deleted",
+      message: "Class deleted successfully",
     });
+
   } catch (error) {
     res.status(500).json({
       success: false,
