@@ -8,6 +8,7 @@ const {
   getStats,
   getAISummary,
   getSuperAdminStats,
+  getOwnerDashboard,
 } = require("../controllers/dashboardController");
 
 router.get(
@@ -29,6 +30,13 @@ router.get(
   auth,
   allowRoles("SUPER_ADMIN"),
   getSuperAdminStats
+);
+
+router.get(
+  "/owner",
+  auth,
+  allowRoles("ORG_OWNER"),
+  getOwnerDashboard
 );
 
 module.exports = router;

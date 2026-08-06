@@ -228,8 +228,114 @@ const getSuperAdminStats = async (req, res) => {
   }
 };
 
+/* ===================================================
+   ORGANIZATION OWNER DASHBOARD
+=================================================== */
+
+const getOwnerDashboard = async (req, res) => {
+  try {
+
+    const organizationId = req.tenant.organizationId;
+
+    const [
+      branches,
+      members,
+      trainers,
+      payments,
+      revenue,
+      activeMembers,
+      expiringMembers,
+    ] = await Promise.all([
+
+      Branch.countDocuments({
+        organizationId,
+      }),
+
+      Member.countDocuments({
+        organizationId,
+      }),
+
+      User.countDocuments({
+        organizationId,
+        role: {
+          $in: ["Trainer", "TRAINER"],
+        },
+      }),
+
+      Payment.countDocuments({
+        organizationId,
+      }),
+
+      Payment.aggregate([
+        {
+          $match: {
+            organizationId,
+          },
+        },
+        {
+          $group: {
+            _id: null,
+            total: {
+              $sum: "$amount",
+            },
+          },
+        },
+      ]),
+
+      Member.countDocuments({
+        organizationId,
+        status: "Active",
+      }),
+
+      Member.countDocuments({
+        organizationId,
+        status: "Expiring Soon",
+      }),
+
+    ]);
+
+    res.json({
+      success: true,
+
+      stats: {
+
+        branches,
+
+        members,
+
+        trainers,
+
+        payments,
+
+        totalRevenue:
+          revenue.length > 0
+            ? revenue[0].total
+            : 0,
+
+        activeMembers,
+
+        expiringMembers,
+
+      },
+
+    });
+
+  } catch (err) {
+
+    res.status(500).json({
+
+      success: false,
+
+      error: err.message,
+
+    });
+
+  }
+};
+
 module.exports = {
   getStats,
   getAISummary,
   getSuperAdminStats,
+  getOwnerDashboard,
 };
