@@ -19,7 +19,6 @@ module.exports = (...allowedRoles) => {
 
     const userRole = req.user.role;
 
-    // Expand legacy roles into SaaS equivalents
     const expandedRoles = new Set();
 
     allowedRoles.forEach((role) => {
