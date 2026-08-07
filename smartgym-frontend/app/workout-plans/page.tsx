@@ -26,18 +26,25 @@ const [loadingAI, setLoadingAI] = useState(false);
   const [editingId, setEditingId] = useState("");
 
   const fetchPlans = async () => {
-    try {
-      const res = await axios.get(
-        "https://smartgym.cloud/api/workout-plans"
-      );
+  try {
+    const token = localStorage.getItem("smartgym-token");
 
-      if (res.data.success) {
-        setPlans(res.data.plans);
+    const res = await axios.get(
+      "https://smartgym.cloud/api/workout-plans",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
-    } catch (error) {
-      console.log(error);
+    );
+
+    if (res.data.success) {
+      setPlans(res.data.plans);
     }
-  };
+  } catch (error) {
+    console.log(error);
+  }
+};
 
   useEffect(() => {
   fetchPlans();
@@ -74,6 +81,7 @@ const generateAIWorkout = async () => {
     );
 
     setAiWorkout(res.data.workoutPlan);
+
     alert("✅ AI Workout Generated!");
 
 } catch (err: any) {
@@ -117,17 +125,33 @@ const generateAIWorkout = async () => {
     };
 
     if (editingId) {
-      await axios.put(
-        `https://smartgym.cloud/api/workout-plans/${editingId}`,
-        data
-      );
+
+    const token = localStorage.getItem("smartgym-token");
+
+await axios.put(
+  `https://smartgym.cloud/api/workout-plans/${editingId}`,
+  data,
+  {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }
+);
 
       alert("✅ Workout Plan Updated");
     } else {
-      await axios.post(
-        "https://smartgym.cloud/api/workout-plans",
-        data
-      );
+
+    const token = localStorage.getItem("smartgym-token");
+
+await axios.post(
+  "https://smartgym.cloud/api/workout-plans",
+  data,
+  {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }
+);
 
       alert("✅ Workout Plan Saved");
     }
@@ -156,9 +180,17 @@ const generateAIWorkout = async () => {
   if (!confirmDelete) return;
 
   try {
-    await axios.delete(
-      `https://smartgym.cloud/api/workout-plans/${id}`
-    );
+
+  const token = localStorage.getItem("smartgym-token");
+
+await axios.delete(
+  `https://smartgym.cloud/api/workout-plans/${id}`,
+  {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }
+);
 
     alert("Workout Plan Deleted");
 

@@ -11,7 +11,7 @@ export default function LoginPage() {
 
   const handleLogin = async () => {
   try {
-    const response = await fetch("/api/login", {
+  const response = await fetch("/api/auth/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -37,18 +37,40 @@ localStorage.setItem("smartgym-token", data.token);
 localStorage.setItem("smartgym-user", JSON.stringify(data.user));
 localStorage.setItem("smartgym-role", data.user.role);
 
+// Multi-tenant
+localStorage.setItem(
+  "organizationId",
+  data.user.organizationId || ""
+);
+
+localStorage.setItem(
+  "branchId",
+  data.user.branchId || ""
+);
+
+localStorage.setItem(
+  "availableBranches",
+  JSON.stringify(data.user.availableBranches || [])
+);
+
 console.log("ROLE =", data.user.role);
 
 const role = String(data.user.role).toLowerCase();
 
-if (role === "admin") {
+if (role === "super_admin") {
+  router.push("/super-admin");
+} else if (role === "admin") {
+  router.push("/dashboard");
+} else if (role === "org_owner") {
+  router.push("/dashboard");
+} else if (role === "org_admin") {
   router.push("/dashboard");
 } else if (role === "trainer") {
   router.push("/trainer/dashboard");
 } else if (role === "member") {
   router.push("/member/dashboard");
 } else {
-  alert("Unknown user role: " + data.user.role);
+  alert("Unknown role: " + role);
 }
 
   } catch (error) {
