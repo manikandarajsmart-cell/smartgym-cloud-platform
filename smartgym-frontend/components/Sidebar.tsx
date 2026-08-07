@@ -86,6 +86,7 @@ export default function Sidebar() {
           <>
             <Link href="/users">Users</Link>
             <Link href="/trainers">Trainers</Link>
+            <Link href="/branches">🏢 Branches</Link>
             <Link href="/classes">Classes</Link>
             <Link href="/needs-attention">
               Needs Attention

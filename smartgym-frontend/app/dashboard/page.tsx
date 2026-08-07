@@ -12,6 +12,9 @@ import TodaySummary from "./components/TodaySummary";
 import RecentActivity from "./components/RecentActivity";
 import AIInsights from "./components/AIInsights";
 import AskSmartGymAI from "./components/AskSmartGymAI";
+import AIDashboard from "./components/AIDashboard";
+import NeedsAttention from "./components/NeedsAttention";
+import BusinessIntelligence from "./components/BusinessIntelligence";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -27,6 +30,7 @@ const [stats, setStats] = useState({
 const [members, setMembers] = useState<any[]>([]);
 const [payments, setPayments] = useState<any[]>([]);
 const [attendance, setAttendance] = useState<any[]>([]);
+const [aiDashboard, setAiDashboard] = useState<any>(null);
 const [revenueForecast, setRevenueForecast] = useState({
   expectedRevenue: 0,
   expectedRenewals: 0,
@@ -196,9 +200,19 @@ fetch(`${process.env.NEXT_PUBLIC_API_URL}/members`, {
 })
 
     .then((res) => res.json())
+
     .then((data) => {
-      setMembers(data);
-    })
+  console.log("MEMBERS API:", data);
+
+  if (Array.isArray(data)) {
+    setMembers(data);
+  } else if (Array.isArray(data.members)) {
+    setMembers(data.members);
+  } else {
+    setMembers([]);
+  }
+})
+
     .catch(console.error);
 
 fetch(`${process.env.NEXT_PUBLIC_API_URL}/payments`, {
@@ -214,6 +228,19 @@ fetch(`${process.env.NEXT_PUBLIC_API_URL}/payments`, {
       }
     })
     .catch(console.error);
+
+fetch(`${process.env.NEXT_PUBLIC_API_URL}/ai/dashboard`, {
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+})
+  .then((res) => res.json())
+  .then((data) => {
+    if (data.success) {
+      setAiDashboard(data.data);
+    }
+  })
+  .catch(console.error);
 
 fetch(`${process.env.NEXT_PUBLIC_API_URL}/attendance`, {
   headers: {
@@ -280,7 +307,27 @@ const quickButtonStyle = {
         }}
       >
 
-    <DashboardHeader />
+<DashboardHeader />
+
+<AIDashboard
+  aiData={aiDashboard}
+  members={members}
+  payments={payments}
+  attendance={attendance}
+/>
+
+<NeedsAttention
+  members={members}
+  payments={payments}
+  attendance={attendance}
+  progress={[]}
+/>
+
+<BusinessIntelligence
+  members={members}
+  payments={payments}
+  attendance={attendance}
+/>
 
 <DashboardStats
   stats={{

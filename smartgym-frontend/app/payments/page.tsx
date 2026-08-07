@@ -2,6 +2,7 @@
 
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
+import Script from "next/script";
 
 import { useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar";
@@ -28,77 +29,144 @@ const paidMembers = new Set(
 ).size;
 
   // FETCH PAYMENTS
-  const fetchPayments = async () => {
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/payments`
-      );
 
-      const data = await response.json();
-
-      if (data.success) {
-        setPayments(data.payments);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  
-  // ADD PAYMENT
-  const addPayment = async () => {
-    if (!memberName || !amount || !month) {
-      alert("Fill all fields");
-      return;
-    }
-
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/payments`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            memberName,
-            amount,
-            month,
-            status: "Paid",
-          }),
-        }
-      );
-
-      const data = await response.json();
-
-      if (data.success) {
-        alert("Payment Added");
-
-        setMemberName("");
-        setAmount("");
-        setMonth("");
-
-        fetchPayments();
-      } else {
-        alert("Failed");
-      }
-    } catch (error) {
-      alert("Server Error");
-    }
-  };
-
-  const fetchMembers = async () => {
+const fetchPayments = async () => {
   try {
+    const token = localStorage.getItem("smartgym-token");
+
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/members`
+      `${process.env.NEXT_PUBLIC_API_URL}/payments`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
     );
 
     const data = await response.json();
 
-    setMembers(data);
+    console.log("Payments API:", data);
+
+    if (data.success) {
+      setPayments(data.payments);
+    } else {
+      console.log(data);
+    }
   } catch (error) {
     console.log(error);
   }
 };
+  
+// ADD PAYMENT
+const addPayment = async () => {
+  if (!memberName || !amount || !month) {
+    alert("Fill all fields");
+    return;
+  }
+
+  try {
+
+    const token = localStorage.getItem("smartgym-token");
+
+    const orderResponse = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/payments/create-order`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          amount: Number(amount),
+          currency: "INR",
+        }),
+      }
+    );
+
+    const orderData = await orderResponse.json();
+
+    if (!orderData.success) {
+      alert("Failed to create order");
+      return;
+    }
+
+    const options = {
+      key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+      amount: orderData.order.amount,
+      currency: orderData.order.currency,
+      name: "SmartGym",
+      description: "Membership Payment",
+      order_id: orderData.order.id,
+
+      handler: async function (response: any) {
+        const saveResponse = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/payments`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              memberName,
+              amount,
+              month,
+              status: "Paid",
+              razorpayPaymentId: response.razorpay_payment_id,
+              razorpayOrderId: response.razorpay_order_id,
+            }),
+          }
+        );
+
+        const saveData = await saveResponse.json();
+
+        if (saveData.success) {
+          alert("✅ Payment Successful");
+          setMemberName("");
+          setAmount("");
+          setMonth("");
+          fetchPayments();
+        } else {
+          alert("Failed to save payment");
+        }
+      },
+
+      theme: {
+        color: "#2563eb",
+      },
+    };
+
+    const razorpay = new (window as any).Razorpay(options);
+    razorpay.open();
+
+  } catch (error) {
+    console.error(error);
+    alert("Server Error");
+  }
+};
+
+const fetchMembers = async () => {
+  try {
+
+    const token = localStorage.getItem("smartgym-token");
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/members`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    const data = await response.json();
+
+    setMembers(data.members || data || []);
+  } catch (error) {
+    console.log(error);
+    setMembers([]);
+  }
+};
+
    useEffect(() => {
   fetchPayments();
   fetchMembers();
@@ -307,7 +375,10 @@ const exportPaymentsToExcel = () => {
 
 return (
   <RoleGuard allowedRoles={["Admin", "Reception"]}>
+    <Script src="https://checkout.razorpay.com/v1/checkout.js" />
+
     <div>
+
       <Sidebar />
 
       <main className="ml-64 p-6 bg-black min-h-screen text-white">
@@ -414,17 +485,50 @@ return (
                   <td className="p-4">{payment.memberName}</td>
 
                   <td className="p-4">
-                    {editingId === payment._id ? (
-                      <input
-                        type="number"
-                        value={editAmount}
-                        onChange={(e) => setEditAmount(e.target.value)}
-                        className="bg-zinc-800 p-2 rounded"
-                      />
-                    ) : (
-                      `₹${payment.amount}`
-                    )}
-                  </td>
+  <div className="flex items-center gap-2 flex-wrap">
+    <span
+      className={`px-3 py-1 rounded-xl text-white ${
+        payment.status === "Paid"
+          ? "bg-green-500"
+          : "bg-red-500"
+      }`}
+    >
+      {payment.status}
+    </span>
+
+    {editingId === payment._id ? (
+      <button
+        onClick={() => saveEdit(payment._id)}
+        className="bg-blue-600 px-3 py-1 rounded"
+      >
+        Save
+      </button>
+    ) : (
+      <>
+        <button
+          onClick={() => startEdit(payment)}
+          className="bg-yellow-500 text-black px-3 py-1 rounded"
+        >
+          Edit
+        </button>
+
+        <button
+          onClick={() => printReceipt(payment)}
+          className="bg-green-600 px-3 py-1 rounded"
+        >
+          Receipt
+        </button>
+      </>
+    )}
+
+    <button
+      onClick={() => deletePayment(payment._id)}
+      className="bg-red-600 px-3 py-1 rounded"
+    >
+      Delete
+    </button>
+  </div>
+</td>
 
                   <td className="p-4">{payment.month}</td>
 

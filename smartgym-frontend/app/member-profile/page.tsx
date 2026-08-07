@@ -355,6 +355,7 @@ Member ID: <b>{member.memberId || "-"}</b> • Joined{" "}
 <AIMemberInsights
   member={member}
   attendance={attendance}
+  progress={progress}
   payments={payments}
 />
 
